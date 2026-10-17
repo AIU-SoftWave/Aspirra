@@ -1,438 +1,371 @@
-# Aspirra
-### AI-Powered Adaptive Goal Planning Platform
+# Aspirra — Student Success & Career Planner
 
-> Turn ambitions into actionable plans — and adapt as life changes.
+**AI-powered university student planning and development platform**
 
-Aspirra is a proposed AI-powered web platform that helps people turn long-term goals into structured, realistic, and measurable plans. Users describe what they want to achieve in natural language, and Aspirra helps break that goal into milestones, tasks, habits, deadlines, and a schedule. As users work through the plan, the platform tracks progress, highlights risks, and recommends adjustments based on their activity.
+Aspirra helps university students organize their academic responsibilities, develop productive habits, build career-ready skills, and achieve their goals. Students can describe a goal in natural language and receive a structured plan of milestones, tasks, habits, deadlines, and priorities. Aspirra tracks progress and can recommend plan adjustments when a student falls behind.
 
-> **Project status:** Initial concept / proposal  
-> **Project type:** Academic team software project  
-> **Working name:** Aspirra  
-> **Note:** Features and technologies in this README are proposed and may change during requirements analysis and implementation.
+> **Project:** CSE454 — Advanced Software Engineering  
+> **Institution:** Alamein International University  
+> **Status:** Academic project in planning and requirements analysis. Features and technologies below are proposed and may change as the team finalizes requirements.
 
----
+## Contents
 
-## Table of Contents
+- [Problem Statement](#problem-statement)
+- [Vision and Objectives](#vision-and-objectives)
+- [Target Users](#target-users)
+- [Core System Flow](#core-system-flow)
+- [Proposed Features](#proposed-features)
+- [Suggested MVP](#suggested-mvp)
+- [Proposed Architecture](#proposed-architecture)
+- [Proposed Technology Stack](#proposed-technology-stack)
+- [Team Ownership](#team-ownership)
+- [Requirements and Traceability](#requirements-and-traceability)
+- [Repository Structure](#repository-structure)
+- [Development Workflow](#development-workflow)
+- [Jira Project Management](#jira-project-management)
+- [Quality Attributes](#quality-attributes)
+- [Roadmap](#roadmap)
+- [Getting Started](#getting-started)
+- [Contributing](#contributing)
+- [Team Members](#team-members)
+- [License](#license)
 
-- [1. Problem Statement](#1-problem-statement)
-- [2. Vision](#2-vision)
-- [3. Objectives](#3-objectives)
-- [4. Proposed Solution](#4-proposed-solution)
-- [5. Core Features](#5-core-features)
-- [6. Example User Journey](#6-example-user-journey)
-- [7. High-Level Workflow](#7-high-level-workflow)
-- [8. Proposed System Modules](#8-proposed-system-modules)
-- [9. AI and Intelligent Components](#9-ai-and-intelligent-components)
-- [10. Proposed Architecture and Technology](#10-proposed-architecture-and-technology)
-- [11. Initial Data Model](#11-initial-data-model)
-- [12. Non-Functional Requirements](#12-non-functional-requirements)
-- [13. MVP Scope](#13-mvp-scope)
-- [14. Development Roadmap](#14-development-roadmap)
-- [15. Success Metrics and Evaluation](#15-success-metrics-and-evaluation)
-- [16. Risks and Considerations](#16-risks-and-considerations)
-- [17. Open Questions](#17-open-questions)
-- [18. Contributing](#18-contributing)
+## Problem Statement
 
----
+University students often manage courses, assignments, exams, academic goals, personal habits, skill development, and career preparation using separate tools. This can make it difficult to prioritize tasks, create realistic schedules, track progress, and adapt when deadlines or workloads change.
 
-## 1. Problem Statement
+Aspirra aims to bring these activities together in one student-focused platform. It combines academic organization with AI-assisted planning, progress analytics, and career development so students can connect daily actions to long-term academic and professional goals.
 
-People often set meaningful long-term goals but struggle to translate them into concrete actions. Goals can be too broad, plans may be unrealistic, and everyday responsibilities can make it difficult to maintain consistency. Traditional task and habit trackers help users record activities, but they may leave users to decide how to structure a goal, how to schedule its work, and how to recover when they fall behind.
+## Vision and Objectives
 
-Aspirra aims to bridge the gap between **deciding what to achieve** and **knowing what to do next**.
+**Vision:** Help university students turn ambitions into realistic plans, understand their progress, and make steady progress toward academic success and career readiness.
 
-## 2. Vision
+**Objectives:**
 
-Build an intelligent planning platform that helps users turn ambitions into clear, actionable steps and continuously adjust those steps as their circumstances and progress change.
+- Centralize academic goals, courses, assignments, and exams.
+- Turn natural-language goals into actionable milestones and tasks.
+- Generate study plans that consider deadlines, availability, and progress.
+- Support habit building and consistent progress tracking.
+- Connect career goals with skills, projects, portfolios, and job preparation.
+- Identify potential delays and suggest practical plan adjustments.
 
-## 3. Objectives
+## Target Users
 
-- Convert natural-language goal descriptions into structured plans.
-- Connect goals to milestones, tasks, and recurring habits.
-- Help users create realistic schedules based on deadlines and availability.
-- Track execution and provide clear progress analytics.
-- Identify potential delays and estimate whether a goal is on track.
-- Recommend practical plan adjustments when progress changes.
-- Provide an AI coach grounded in the user's actual plan and activity.
-- Offer a maintainable, secure, and extensible software platform.
+### Primary user: University student
 
-## 4. Proposed Solution
+Students can organize academic work, set goals, receive AI-assisted plans, track habits and skills, monitor progress, and prepare for future careers.
 
-Aspirra combines goal management, task and habit tracking, scheduling, analytics, and AI-assisted planning in one platform.
+### Potential secondary user: Platform administrator
 
-The main concept is a connected hierarchy:
+An administrator may manage student accounts and review platform-level usage statistics. The final role permissions and scope must be defined during requirements analysis.
 
-```text
-Goal
- ├── Milestone
- │    ├── Task
- │    ├── Task
- │    └── Habit
- ├── Milestone
- │    ├── Task
- │    └── Habit
- └── Progress and outcome metrics
-```
+## Core System Flow
 
-A goal is not simply a title with a percentage. It has a desired outcome, a target date where applicable, measurable milestones, and the activities intended to move it forward. Completing tasks and recording habits contributes to progress, while the system keeps the relationships visible to the user.
-
-AI-generated plans should be **editable proposals**, not unquestionable instructions. Users should be able to review, change, or reject suggested tasks and schedules before applying them.
-
-## 5. Core Features
-
-### 5.1 Goal Creation and Management
-- Create goals with a description, target outcome, priority, and optional deadline.
-- Categorize goals, set measurable success criteria, and track status.
-- Edit, pause, archive, or complete goals.
-- View goals in a dashboard and detailed goal workspace.
-
-### 5.2 AI Goal Decomposition
-- Accept a goal written in natural language.
-- Ask follow-up questions when essential information is missing.
-- Suggest milestones, tasks, habits, dependencies, estimates, and deadlines.
-- Return structured data that can be validated before saving.
-- Allow users to preview and edit the proposed plan.
-
-### 5.3 Milestones and Tasks
-- Organize work into milestones.
-- Manage task descriptions, priorities, due dates, estimated duration, and status.
-- Represent task dependencies where one task must precede another.
-- Calculate milestone progress from its underlying work using documented rules.
-
-### 5.4 Habit Tracking
-- Create recurring habits linked to a goal or milestone.
-- Record completions and review consistency over time.
-- Support appropriate recurrence patterns and missed entries.
-- Show how a habit is intended to support a goal.
-
-### 5.5 Smart Scheduling
-- Collect the user's available time and preferred working periods.
-- Suggest a schedule based on task duration, priority, dependencies, and deadlines.
-- Detect overloaded periods and scheduling conflicts.
-- Let users approve or adjust the proposed schedule.
-
-### 5.6 Adaptive Planning
-- Detect when a plan is falling behind.
-- Explain the factors contributing to delay, such as missed tasks or insufficient available time.
-- Recommend rescheduling, reprioritization, or scope adjustments.
-- Show proposed changes and request user approval before applying significant changes.
-
-### 5.7 Progress Analytics and Predictions
-- Show goal and milestone progress, task completion, and habit consistency.
-- Compare planned activity with actual activity.
-- Identify trends and possible deadline risks.
-- Estimate likely completion dates or on-track status when enough reliable data exists.
-- Explain estimates and uncertainty instead of presenting predictions as guarantees.
-
-### 5.8 AI Goal Coach
-- Answer questions about the user's current plans and progress.
-- Summarize accomplishments and outstanding work.
-- Explain why a goal may be behind schedule.
-- Suggest practical next steps based on available user data.
-- Respect permissions and only access data the user is authorized to view.
-
-### 5.9 Notifications and Reminders
-- Remind users about scheduled tasks and habits.
-- Notify users about approaching deadlines and important plan changes.
-- Support configurable notification preferences.
-- Avoid excessive or repetitive notifications.
-
-### 5.10 Optional Future Features
-These features are not required for the initial MVP and should be considered only after the core experience works well:
-- Shared goals and accountability partners.
-- Collaborative or team goals with task assignment.
-- Calendar integration.
-- Weekly AI-generated progress reports.
-- Additional integrations and export options.
-
-## 6. Example User Journey
-
-**Example goal:** “I want to become a .NET backend developer and be ready to apply for internships within eight months.”
-
-1. **Describe:** The user enters the goal and their target timeframe.
-2. **Clarify:** Aspirra asks about current experience, available study time, and other relevant constraints.
-3. **Generate:** The AI proposes milestones such as C# fundamentals, Web API development, databases, security, projects, deployment, and interview preparation.
-4. **Review:** The user edits and approves the proposed milestones, tasks, and habits.
-5. **Schedule:** The system suggests a weekly plan based on the user's availability and task dependencies.
-6. **Execute:** The user completes tasks and records recurring habits.
-7. **Analyze:** Aspirra compares planned progress with actual progress and identifies possible delays.
-8. **Adapt:** If the user falls behind, Aspirra proposes a revised schedule and explains the changes.
-9. **Reflect:** The user reviews progress and adjusts the goal or plan when needed.
-
-This is an illustrative example, not a claim that the platform can guarantee a career outcome.
-
-## 7. High-Level Workflow
+1. A student enters a goal in natural language.
+2. AI proposes a roadmap containing milestones, tasks, habits, deadlines, and priorities.
+3. The student reviews and edits the proposed plan.
+4. The system schedules activities based on deadlines, priorities, workload, availability, and dependencies.
+5. The student completes activities and records progress.
+6. Aspirra analyzes progress and identifies missed tasks or possible risks.
+7. Aspirra recommends adjustments, such as rescheduling or reprioritizing work, for the student to review.
 
 ```mermaid
 flowchart TD
-    A[User describes a goal] --> B[Collect constraints and context]
-    B --> C[AI generates structured plan]
-    C --> D[Validate plan and dependencies]
-    D --> E[User reviews and edits]
-    E --> F[Save approved goal plan]
-    F --> G[Schedule tasks and habits]
-    G --> H[Track activity and progress]
-    H --> I[Analyze performance and deadline risk]
-    I --> J{Plan needs adjustment?}
-    J -- No --> H
-    J -- Yes --> K[Generate recommendations]
-    K --> L[User reviews proposed changes]
-    L --> G
+    A[Student enters a goal] --> B[AI generates a roadmap]
+    B --> C[Student reviews and edits plan]
+    C --> D[Tasks, habits and deadlines]
+    D --> E[Smart scheduling]
+    E --> F[Student completes activities]
+    F --> G[Progress analysis]
+    G --> H{Plan still realistic?}
+    H -- Yes --> F
+    H -- No --> I[Recommend plan adjustment]
+    I --> J[Student reviews changes]
+    J --> E
 ```
 
-## 8. Proposed System Modules
+AI-generated content is a suggestion, not guaranteed academic or career advice. Students should be able to review and edit plans before consequential schedule changes are applied.
 
-The following is a starting point for dividing responsibilities and defining boundaries. The final module ownership should be agreed upon by the team.
+## Proposed Features
 
-| Module | Responsibility |
-|---|---|
-| Identity and User Profile | Authentication, profile, preferences, and availability |
-| Goal Management | Goals, categories, target outcomes, and lifecycle |
-| Planning and Tasks | Milestones, tasks, dependencies, and status |
-| Habit Management | Recurrence rules, habit records, and consistency |
-| AI Planning | Goal interpretation, plan generation, and structured output validation |
-| Scheduling and Adaptation | Schedule proposals, conflict detection, and replanning |
-| Analytics and Prediction | Progress calculations, trends, and deadline-risk estimates |
-| AI Coach | Context-aware questions, summaries, and recommendations |
-| Notifications | Reminders, preferences, and scheduled notifications |
-| Administration | Operational overview, user support, and aggregate platform metrics |
+The following list describes the intended product vision. The team will prioritize features against the agreed minimum viable product (MVP), course requirements, and available time.
 
-For a manageable first release, several modules can be implemented together. A modular monolith is a reasonable starting architecture; separate microservices are not necessary unless a clear requirement emerges.
+| # | Feature | Description |
+|---:|---|---|
+| 1 | Student Profile | Academic level, major, interests, skills, career interests, and availability. |
+| 2 | Academic Goal Management | Semester goals, course goals, GPA targets, assignment goals, and exam goals. |
+| 3 | AI Goal Planner | Convert a natural-language goal into milestones, tasks, habits, deadlines, and priorities. |
+| 4 | AI Study Plan Generator | Create personalized study plans and recommend adjustments based on progress and available time. |
+| 5 | Course Management | Manage courses, grades, assignments, projects, quizzes, exams, and course progress. |
+| 6 | Assignment & Exam Planner | Track deadlines, priorities, preparation schedules, and exam countdowns. |
+| 7 | Career Roadmap | Select a target career and track required skills, learning steps, and career progress. |
+| 8 | Skill Tracking | Track technical and soft skills, skill levels, learning progress, and career skill requirements. |
+| 9 | Project & Portfolio Management | Track projects, connect them to skills, and maintain a portfolio. |
+| 10 | Habit Management | Track study, exercise, reading, coding, and other habits, including streaks and goal connections. |
+| 11 | Smart Scheduling | Organize tasks using deadlines, priorities, workload, availability, and dependencies. |
+| 12 | Adaptive Planning | Detect when a student falls behind and recommend rescheduling or reprioritizing work. |
+| 13 | AI Student Coach | Provide personalized recommendations using the student's goals, tasks, habits, and progress. |
+| 14 | Academic Performance Analytics | Show grade trends, course performance, study consistency, assignment completion, and GPA progress. |
+| 15 | Prediction & Early Warning | Estimate goal completion and identify potential academic or deadline risks. |
+| 16 | Dashboard | Show today's tasks, upcoming deadlines, goal progress, habit streaks, academic performance, and career progress. |
+| 17 | Notifications | Provide assignment, exam, study, missed-task, goal, and deadline reminders. |
+| 18 | Study Groups / Accountability | Support shared goals, study groups, accountability partners, and shared progress. |
+| 19 | Internship & Job Preparation | Track applications, interview preparation, CV/portfolio progress, and required skills. |
+| 20 | Admin Dashboard | Support student management, system statistics, usage analytics, and activity monitoring. |
 
-## 9. AI and Intelligent Components
+## Suggested MVP
 
-AI should support the product's workflow rather than exist as a standalone chatbot.
+The full vision is broad for a five-person academic team. A suggested initial MVP includes:
 
-### Goal decomposition
-Use an LLM to interpret goal descriptions and propose structured milestones, tasks, habits, and estimates. Define a schema and validate generated output before it reaches the application.
+- Student profile and availability.
+- Academic goals and milestones.
+- Courses, assignments, and exam deadlines.
+- AI-assisted goal decomposition into tasks and milestones.
+- Basic study planning and task scheduling.
+- Task completion and habit tracking.
+- A dashboard showing upcoming tasks and goal progress.
+- Basic progress analytics and reminders.
 
-### Scheduling and optimization
-Use deterministic rules or an optimization algorithm for constraints such as task dependencies, available hours, due dates, and scheduling conflicts. The LLM may help interpret preferences, but should not be solely responsible for satisfying hard constraints.
+Advanced prediction, extensive AI coaching, study groups, and full career/job-preparation management can be prioritized for later phases if time is limited. The team should confirm the final MVP with the course requirements and teaching assistants.
 
-### Progress analysis
-Calculate progress from stored task and habit records using transparent rules. Use historical activity to identify trends and, if sufficient data is available, estimate deadline risk.
+## Proposed Architecture
 
-### Adaptive replanning
-Combine actual progress, remaining work, deadlines, and user availability to produce a revised plan. Explain changes and let the user approve them.
+A **modular monolith** is a practical starting point for a five-person team: modules have clear responsibilities and interfaces while sharing one deployable backend. The team can revisit the architecture after requirements and subsystem interfaces are finalized.
 
-### AI coach and grounding
-Retrieve relevant information from the user's authorized goal and activity data before generating advice. Distinguish stored facts, calculated metrics, and AI-generated suggestions.
+```mermaid
+flowchart TB
+    UI[Web Frontend] --> API[Backend API]
+    API --> ST[Student and Identity Module]
+    API --> AC[Academic Management Module]
+    API --> GP[Goal and Task Planning Module]
+    API --> SH[Scheduling and Habit Module]
+    API --> CR[Career Development Module]
+    API --> AN[Analytics and Coaching Module]
+    API --> NO[Notifications Module]
+    ST --> DB[(Relational Database)]
+    AC --> DB
+    GP --> DB
+    SH --> DB
+    CR --> DB
+    AN --> DB
+    NO --> DB
+    GP --> AI[External AI Provider]
+    AN --> AI
+```
 
-### Evaluation
-AI output should be assessed for:
-- Structural validity and completeness.
-- Relevance to the stated goal.
-- Actionability and appropriate granularity.
-- Feasibility against user constraints.
-- Consistency with task dependencies.
-- User acceptance and amount of editing required.
+### Architecture principles
 
-The team should avoid claiming that AI-generated plans or completion predictions are accurate until they have been evaluated.
+- Keep module responsibilities and dependencies explicit.
+- Define interfaces for interactions between subsystems.
+- Validate and authorize requests on the backend.
+- Store structured student data in a relational database.
+- Handle AI-provider errors, rate limits, and unavailable services.
+- Validate AI output against an expected schema before saving it.
+- Keep generated plans editable and require student review before consequential changes.
+- Avoid unnecessary microservices and distributed-system complexity in the first version.
 
-## 10. Proposed Architecture and Technology
+## Proposed Technology Stack
 
-These are **initial suggestions**, not finalized requirements.
+These are initial suggestions and must be agreed by the team before implementation.
 
-| Layer | Candidate technology | Purpose |
+| Layer | Proposed technology | Purpose |
 |---|---|---|
-| Frontend | Next.js / React with TypeScript | Responsive web application |
-| Backend | ASP.NET Core Web API | Business logic and API |
-| Database | PostgreSQL or SQL Server | Users, goals, tasks, habits, and activity |
-| Data access | Entity Framework Core | Persistence and migrations |
-| AI integration | An LLM API behind an application service | Goal decomposition and coaching |
-| Background jobs | Hangfire or an equivalent scheduler | Reminders and scheduled processing |
-| Authentication | ASP.NET Core Identity; token strategy to be decided | Identity and authorization |
-| Deployment | Docker and Docker Compose | Reproducible environments and deployment |
-| Testing | xUnit plus API/integration testing tools | Automated verification |
-| CI | GitHub Actions | Build, test, and quality checks |
+| Frontend | React / Next.js with TypeScript | Responsive student web application |
+| Backend | ASP.NET Core Web API with C# | API and application logic |
+| Data access | Entity Framework Core | Data persistence and migrations |
+| Database | PostgreSQL or SQL Server | Structured academic and planning data |
+| AI integration | LLM API behind an application interface | Goal decomposition, study-plan suggestions, and coaching |
+| Design | Figma | GUI screens and user flows |
+| Project management | Jira Scrum | Backlog, epics, stories, sprints, estimates, and burndown |
+| Source control | Git and GitHub | Monorepo, branches, pull requests, and reviews |
+| Optional deployment | Docker Compose | Reproducible local environment |
+| Optional CI | GitHub Actions | Automated build and test checks |
 
-### Architectural principles
-- Begin with a **modular monolith** and clear module boundaries.
-- Keep AI-provider-specific code behind interfaces.
-- Validate all input, including AI-generated structured output.
-- Enforce authorization on the server for every user-owned resource.
-- Keep API keys and secrets out of source control.
-- Make progress calculations deterministic and testable.
-- Add background processing only where asynchronous work is needed.
-- Document architecture decisions as the design evolves.
+Do not commit API keys or other secrets. Use environment variables and keep local environment files untracked.
 
-## 11. Initial Data Model
+## Team Ownership
 
-A possible initial domain model:
+The assignment requires each of the five members to own four high-level functional requirements. The following is a proposed division; replace placeholders with actual team details and finalize the requirements collaboratively.
 
-- **User** — account and profile.
-- **Goal** — owner, title, description, target outcome, deadline, priority, and status.
-- **Milestone** — goal relationship, description, order, and completion criteria.
-- **Task** — milestone or goal relationship, description, status, priority, estimate, due date, and dependencies.
-- **Habit** — goal/milestone relationship, recurrence definition, and status.
-- **HabitEntry** — dated record of a habit occurrence.
-- **TaskActivity** — relevant task status changes and completion history.
-- **Availability** — user-defined working periods and time constraints.
-- **ScheduleItem** — proposed or approved placement of work in a time period.
-- **PlanRevision** — plan version, reason for change, and approval state.
-- **AIPlanGeneration** — generation metadata, validation result, and user edits, avoiding unnecessary sensitive prompt retention.
-- **Notification** — recipient, type, scheduled time, and delivery status.
-
-Relationships and fields should be refined through use cases, database design, and privacy requirements. Avoid storing duplicate progress values when they can be reliably derived; if snapshots are needed for history or performance, document how they are maintained.
-
-## 12. Non-Functional Requirements
-
-### Security and privacy
-- Users can access only resources they own or are explicitly authorized to share.
-- Store secrets in environment configuration or a secret manager.
-- Protect authentication flows and validate inputs.
-- Minimize personal data sent to external AI providers.
-- Define retention and deletion rules for user data and AI-related records.
-
-### Reliability
-- Validate generated plans before saving them.
-- Handle AI-provider failures, timeouts, rate limits, and malformed responses.
-- Avoid duplicate notifications and repeated processing where possible.
-- Provide understandable errors and preserve user edits.
-
-### Usability and accessibility
-- Make AI-generated plans easy to inspect and edit.
-- Provide responsive layouts and clear empty, loading, and error states.
-- Make progress metrics understandable and accessible.
-
-### Maintainability and testability
-- Separate business rules from controllers and external integrations.
-- Use automated unit and integration tests.
-- Document API contracts and significant architecture decisions.
-
-### Performance
-- Paginate larger collections and use database indexes where appropriate.
-- Process slow AI calls and scheduled notifications asynchronously when necessary.
-- Measure performance before adding infrastructure for scale.
-
-## 13. MVP Scope
-
-The first release should validate the core value before attempting every proposed feature.
-
-### Must have
-- User registration, authentication, and profile.
-- Create and manage goals.
-- AI-generated milestones and tasks from a goal description.
-- Review and edit a generated plan before saving it.
-- Link tasks and habits to goals/milestones.
-- Record task and habit completion.
-- Calculate and display goal progress.
-- A basic schedule based on deadlines and user availability.
-- Basic progress dashboard.
-- Tests, documentation, and a deployable environment.
-
-### Should have
-- AI coach grounded in saved goal data.
-- Missed-task detection and suggested replanning.
-- Deadline-risk indicators with transparent rules.
-- Notifications and reminders.
-
-### Could have later
-- Advanced optimization.
-- Predictive models trained or calibrated on sufficient activity data.
-- Shared goals and accountability partners.
-- Calendar integrations and advanced administration analytics.
-
-**Scope rule:** A reliable end-to-end workflow is more valuable than many incomplete features.
-
-## 14. Development Roadmap
-
-| Phase | Focus | Expected outcome |
+| Member | Ownership area | Proposed service/module labels |
 |---|---|---|
-| 1. Discovery | Problem validation, user personas, use cases, competitor review | Approved requirements and scope |
-| 2. Design | User flows, wireframes, domain model, architecture decisions | Reviewed design and technical plan |
-| 3. Foundation | Repository setup, CI, authentication, database, API conventions | Working application foundation |
-| 4. Core Planning | Goals, milestones, tasks, habits, and progress rules | Usable non-AI planning workflow |
-| 5. AI Planning | Structured goal decomposition, validation, editing flow | AI-generated plans users can review |
-| 6. Scheduling | Availability, task constraints, schedule proposals | Initial smart scheduling |
-| 7. Analytics and Adaptation | Progress dashboard, delay detection, replanning proposals | Evidence-based plan adjustment |
-| 8. Quality and Release | Security review, usability testing, deployment, documentation | Evaluated project release |
+| Member 1 / Team Leader | Academic management | `student-service`, `academic-service`, `course-service`, `assessment-service` |
+| Member 2 | AI planning and scheduling | `goal-planner-service`, `study-planner-service`, `scheduling-service`, `adaptation-service` |
+| Member 3 | Career and skill development | `career-service`, `skill-service`, `portfolio-service`, `job-preparation-service` |
+| Member 4 | Habits, insights, and coaching | `habit-service`, `analytics-service`, `prediction-service`, `ai-coach-service` |
+| Member 5 | Engagement and platform management | `dashboard-service`, `notification-service`, `study-group-service`, `administration-service` |
 
-The order and duration should be adjusted to the academic calendar, team capacity, and supervisor feedback.
+These names are logical ownership labels for planning and Jira; they do not require each module to be a separate deployable microservice. Final service names must match the team table, repository folders, and Jira story labels. Each high-level functional requirement should have one accountable owner and at least two low-level requirements.
 
-## 15. Success Metrics and Evaluation
+## Requirements and Traceability
 
-Define measurable acceptance criteria before implementation. Candidate metrics include:
+Use stable IDs throughout the proposal, diagrams, Jira, and implementation.
 
-- **Plan validity:** percentage of generated plans that pass schema and business-rule validation.
-- **Plan usefulness:** user rating of relevance and actionability.
-- **Editing effort:** amount of generated content users change before approval.
-- **Scheduling feasibility:** percentage of proposed schedules that respect defined availability and dependency constraints.
-- **Progress correctness:** tests confirming progress calculations for representative scenarios.
-- **Prediction evaluation:** compare estimates with observed outcomes only when enough suitable data exists.
-- **Reliability:** API error rate and handling of AI-provider failures.
-- **Usability:** completion rate and feedback from representative test users.
+| Artifact | Suggested ID | Example |
+|---|---|---|
+| Business requirement | `BR-01` | Measurable business outcome |
+| Customer requirement | `CR-01` | Student need or expectation |
+| High-level functional requirement | `FR-01` | Manage Academic Goals |
+| Low-level functional requirement | `FR-01.1` | One specific system behavior |
+| Non-functional requirement | `NFR-01` | Measurable quality constraint |
+| User story | `US-001` | User goal with acceptance criteria |
+| Subsystem | `SUB-01` | Academic Management |
+| Interface | `IAcademicService` | Subsystem contract |
 
-For an academic evaluation, compare the AI-assisted workflow with a manual planning workflow using a small, clearly described user study. Report sample size, methodology, limitations, and results honestly.
+Example traceability chain: `BR-01 → CR-01 → FR-01 → US-001 → Jira epic/story`.
 
-## 16. Risks and Considerations
+User stories should follow:
 
-| Risk | Mitigation |
-|---|---|
-| Generated plans are vague or unrealistic | Use structured output, constraints, validation, and user review |
-| AI output is inconsistent | Test representative cases and support retries or manual editing |
-| Scope becomes too large | Prioritize the MVP and defer optional collaboration/integrations |
-| Predictions lack enough data | Begin with transparent heuristic indicators; avoid unsupported accuracy claims |
-| Scheduling ignores real constraints | Enforce hard constraints in deterministic scheduling logic |
-| External AI costs or outages | Set usage limits, monitor costs, handle failures, and consider provider abstraction |
-| Sensitive personal data exposure | Minimize collection, enforce authorization, and review provider data policies |
-| Users lose trust after automatic changes | Show a diff and ask approval before significant replanning |
+> As a [user], I want [capability], so that [benefit].
 
-## 17. Open Questions
+Acceptance criteria should be testable and follow:
 
-Resolve these as part of requirements analysis:
+> Given [context], when [action], then [expected outcome].
 
-- Who is the initial target audience: students, professionals, or general users?
-- Which goal categories will the MVP support?
-- Which fields are required before AI plan generation?
-- Which LLM provider or model will be used, and what is the budget?
-- How will goal and milestone progress be calculated?
-- Which scheduling constraints are hard requirements?
-- Will the system support recurring tasks as well as habits?
-- What data can the AI coach access, and how will it be retrieved?
-- Will plan revisions always require user approval?
-- What evaluation methodology is feasible within the project timeline?
-- Which features are mandatory for supervisor acceptance?
+## Repository Structure
 
-## 18. Contributing
-
-Aspirra is currently a project concept under development. Team members should:
-
-1. Discuss and agree on requirements before implementing major features.
-2. Create issues for work items and keep them small enough to review.
-3. Use feature branches and pull requests.
-4. Add tests for business rules and important bug fixes.
-5. Update documentation when APIs, data models, or architecture decisions change.
-6. Never commit credentials, API keys, or private user data.
-
-### Suggested repository structure
+Proposed monorepo layout; adjust it to match the final architecture and course requirements.
 
 ```text
 aspirra/
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   └── pull_request_template.md
 ├── docs/
 │   ├── requirements/
 │   ├── architecture/
 │   ├── diagrams/
-│   └── decisions/
+│   ├── decisions/
+│   └── proposal/
 ├── src/
 │   ├── frontend/
 │   └── backend/
+│       └── Aspirra.Api/
 ├── tests/
-├── .github/
-│   └── workflows/
-├── .env.example
 ├── .gitignore
 └── README.md
 ```
 
-Adjust this structure to match the team's final architecture.
+For a modular monolith, backend modules can be folders or class libraries within one solution. Keep the structure consistent with the agreed subsystem design and service ownership.
 
----
+## Development Workflow
 
-## Project Summary
+### Branching strategy
 
-**Aspirra** aims to go beyond a conventional goal or habit tracker. Its central workflow is:
+The assignment requires:
 
-**Describe a goal → generate a structured plan → review and schedule it → track execution → analyze progress → adapt the plan.**
+- `main` — protected branch for reviewed, stable work.
+- `develop` — shared integration branch.
+- One feature branch per service, for example `feature/academic-service`.
 
-The project's main engineering challenge is to combine useful AI-generated plans with reliable task relationships, feasible scheduling, transparent progress calculations, and responsible adaptation based on real user activity.
+### Pull request workflow
+
+1. Confirm the related Jira task.
+2. Create a feature branch from `develop`.
+3. Make a focused change and add/update tests where appropriate.
+4. Open a pull request into `develop` and link the Jira story.
+5. Request review from another team member and address feedback.
+6. Merge after the agreed checks pass; promote reviewed releases to `main` when appropriate.
+
+Never commit secrets, generated build artifacts, or unrelated changes. Pull requests should describe the change and how it was tested; include screenshots for relevant UI changes.
+
+## Jira Project Management
+
+**Jira Scrum is required for this assignment; Trello is not accepted.** Recommended setup:
+
+- One Jira Scrum project for Aspirra.
+- One epic per high-level functional requirement.
+- One story per user story, linked to its epic.
+- Each story has its acceptance criteria, story points, assignee, and service-name label.
+- A prioritized product backlog.
+- Sprint 1 created and started from the backlog.
+- Sprint 1 burndown chart available for submission.
+- Both teaching assistants added to the Jira board.
+
+Suggested workflow: `Backlog → Ready → In Progress → In Review → Done`.
+
+Use the agreed working days per week, sprint length, and days-per-story-point assumption consistently. Before a sprint is completed, use planned sprint capacity as planned velocity; report actual velocity after completed sprints.
+
+## Quality Attributes
+
+The final proposal must contain three or four measurable non-functional requirements from different categories. The following are candidate examples to validate with the team and TA, not finalized commitments.
+
+| Category | Candidate requirement |
+|---|---|
+| Performance | The API responds within 500 ms for 95% of ordinary non-AI requests under a defined test load. |
+| Security | Protected student-data endpoints require authentication and enforce authorization, verified with an agreed set of access-control tests. |
+| Reliability | Failed AI-provider requests are handled without losing previously saved student data in defined test scenarios. |
+| Usability | A first-time test user can create a goal and review a generated plan within a specified time during a usability test. |
+
+For each NFR, define the conditions and measurement method. Avoid vague terms such as “fast” or “secure” without measurable criteria.
+
+## Roadmap
+
+The course project is planned across 12 weeks. Sprint length and dates should be agreed by the team.
+
+| Phase | Focus | Expected output |
+|---|---|---|
+| 1 | Project definition and requirements | Proposal, related work, requirements, traceability, initial use case diagram |
+| 2 | Design and planning | Architecture, interfaces, data model, Figma screens, backlog and estimates |
+| 3 | Foundation | Repository setup, frontend/backend foundation, database, initial integration |
+| 4 | Core academic planning | Student profile, goals, courses, assessments, tasks, and deadlines |
+| 5 | AI planning and scheduling | Goal decomposition, study-plan suggestions, scheduling |
+| 6 | Progress and refinement | Habits, dashboard, basic analytics, testing, improvements |
+| 7 | Final validation | Integration, documentation, demonstration, and submission preparation |
+
+This roadmap is indicative. The detailed sprint plan must use story estimates, team capacity, dependencies, and the course deadline.
+
+## Getting Started
+
+Development commands will be added after the team finalizes the technology stack and repository structure.
+
+Expected tools, depending on the final stack:
+
+- Git
+- .NET SDK compatible with the chosen ASP.NET Core version
+- Node.js and the chosen package manager
+- Database server or Docker environment, if selected
+- An AI-provider API key for AI features, if required
+
+Initial setup:
+
+1. Clone the repository.
+2. Review the requirements and architecture documents in `docs/`.
+3. Configure local environment variables according to the team's setup instructions.
+4. Start the required development services.
+5. Run the frontend, backend, and tests using instructions to be added when the stack is confirmed.
+
+Never commit real credentials. Add local environment files to `.gitignore` and use an example environment file with placeholder values when needed.
+
+## Contributing
+
+All members are expected to contribute through GitHub and Jira.
+
+1. Work from an assigned Jira task.
+2. Create a feature branch from `develop`.
+3. Implement the change and add tests or documentation as needed.
+4. Open a pull request and link the Jira story.
+5. Request review and address feedback.
+6. Merge after the team's agreed review checks pass.
+
+Keep pull requests focused and communicate changes that affect shared interfaces or requirements.
+
+## Team Members
+
+Replace the placeholders before submission. Use university emails and usernames as required by the assignment.
+
+| University ID | Name | University email | GitHub username | Owned services |
+|---|---|---|---|---|
+| `[ID]` | `[Member 1]` | `[Email]` | `[GitHub]` | Academic management |
+| `[ID]` | `[Member 2]` | `[Email]` | `[GitHub]` | AI planning and scheduling |
+| `[ID]` | `[Member 3]` | `[Email]` | `[GitHub]` | Career and skill development |
+| `[ID]` | `[Member 4]` | `[Email]` | `[GitHub]` | Habits, analytics, and coaching |
+| `[ID]` | `[Member 5]` | `[Email]` | `[GitHub]` | Dashboard, notifications, groups, administration |
+
+Each member must own at least two services. The final service names must match the repository and Jira labels. Add all team members and both teaching assistants to the GitHub repository and Jira project as required.
+
+**Jira board:** `[Add Jira board URL]`
+
+## License
+
+No license has been selected yet. Add a license after the team agrees on reuse and distribution terms.
