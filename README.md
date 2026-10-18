@@ -90,28 +90,28 @@ AI-generated content is a suggestion, not guaranteed academic or career advice. 
 
 The following list describes the intended product vision. The team will prioritize features against the agreed minimum viable product (MVP), course requirements, and available time.
 
-| # | Feature | Description |
-|---:|---|---|
-| 1 | Student Profile | Academic level, major, interests, skills, career interests, and availability. |
-| 2 | Academic Goal Management | Semester goals, course goals, GPA targets, assignment goals, and exam goals. |
-| 3 | AI Goal Planner | Convert a natural-language goal into milestones, tasks, habits, deadlines, and priorities. |
-| 4 | AI Study Plan Generator | Create personalized study plans and recommend adjustments based on progress and available time. |
-| 5 | Course Management | Manage courses, grades, assignments, projects, quizzes, exams, and course progress. |
-| 6 | Assignment & Exam Planner | Track deadlines, priorities, preparation schedules, and exam countdowns. |
-| 7 | Career Roadmap | Select a target career and track required skills, learning steps, and career progress. |
-| 8 | Skill Tracking | Track technical and soft skills, skill levels, learning progress, and career skill requirements. |
-| 9 | Project & Portfolio Management | Track projects, connect them to skills, and maintain a portfolio. |
-| 10 | Habit Management | Track study, exercise, reading, coding, and other habits, including streaks and goal connections. |
-| 11 | Smart Scheduling | Organize tasks using deadlines, priorities, workload, availability, and dependencies. |
-| 12 | Adaptive Planning | Detect when a student falls behind and recommend rescheduling or reprioritizing work. |
-| 13 | AI Student Coach | Provide personalized recommendations using the student's goals, tasks, habits, and progress. |
-| 14 | Academic Performance Analytics | Show grade trends, course performance, study consistency, assignment completion, and GPA progress. |
-| 15 | Prediction & Early Warning | Estimate goal completion and identify potential academic or deadline risks. |
-| 16 | Dashboard | Show today's tasks, upcoming deadlines, goal progress, habit streaks, academic performance, and career progress. |
-| 17 | Notifications | Provide assignment, exam, study, missed-task, goal, and deadline reminders. |
-| 18 | Study Groups / Accountability | Support shared goals, study groups, accountability partners, and shared progress. |
-| 19 | Internship & Job Preparation | Track applications, interview preparation, CV/portfolio progress, and required skills. |
-| 20 | Admin Dashboard | Support student management, system statistics, usage analytics, and activity monitoring. |
+|   # | Feature                        | Description                                                                                                      |
+| --: | ------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+|   1 | Student Profile                | Academic level, major, interests, skills, career interests, and availability.                                    |
+|   2 | Academic Goal Management       | Semester goals, course goals, GPA targets, assignment goals, and exam goals.                                     |
+|   3 | AI Goal Planner                | Convert a natural-language goal into milestones, tasks, habits, deadlines, and priorities.                       |
+|   4 | AI Study Plan Generator        | Create personalized study plans and recommend adjustments based on progress and available time.                  |
+|   5 | Course Management              | Manage courses, grades, assignments, projects, quizzes, exams, and course progress.                              |
+|   6 | Assignment & Exam Planner      | Track deadlines, priorities, preparation schedules, and exam countdowns.                                         |
+|   7 | Career Roadmap                 | Select a target career and track required skills, learning steps, and career progress.                           |
+|   8 | Skill Tracking                 | Track technical and soft skills, skill levels, learning progress, and career skill requirements.                 |
+|   9 | Project & Portfolio Management | Track projects, connect them to skills, and maintain a portfolio.                                                |
+|  10 | Habit Management               | Track study, exercise, reading, coding, and other habits, including streaks and goal connections.                |
+|  11 | Smart Scheduling               | Organize tasks using deadlines, priorities, workload, availability, and dependencies.                            |
+|  12 | Adaptive Planning              | Detect when a student falls behind and recommend rescheduling or reprioritizing work.                            |
+|  13 | AI Student Coach               | Provide personalized recommendations using the student's goals, tasks, habits, and progress.                     |
+|  14 | Academic Performance Analytics | Show grade trends, course performance, study consistency, assignment completion, and GPA progress.               |
+|  15 | Prediction & Early Warning     | Estimate goal completion and identify potential academic or deadline risks.                                      |
+|  16 | Dashboard                      | Show today's tasks, upcoming deadlines, goal progress, habit streaks, academic performance, and career progress. |
+|  17 | Notifications                  | Provide assignment, exam, study, missed-task, goal, and deadline reminders.                                      |
+|  18 | Study Groups / Accountability  | Support shared goals, study groups, accountability partners, and shared progress.                                |
+|  19 | Internship & Job Preparation   | Track applications, interview preparation, CV/portfolio progress, and required skills.                           |
+|  20 | Admin Dashboard                | Support student management, system statistics, usage analytics, and activity monitoring.                         |
 
 ## Suggested MVP
 
