@@ -2,7 +2,13 @@
 
 **AI-powered university student planning and development platform**
 
-Aspirra helps university students organize their academic responsibilities, develop productive habits, build career-ready skills, and achieve their goals. Students can describe a goal in natural language and receive a structured plan of milestones, tasks, habits, deadlines, and priorities. Aspirra tracks progress and can recommend plan adjustments when a student falls behind.
+Every student has big goals, but turning them into daily action is the hard part. Aspirra is an AI-powered platform that makes it simple.
+
+Share a goal like "reach a 3.5 GPA" or "land a software internship", and Aspirra builds your roadmap of milestones, tasks, habits, and deadlines. You stay in control by editing the plan, and Aspirra fits it around your real schedule.
+
+Life gets busy and plans slip. When yours does, Aspirra warns you early and recommends a way back on track, and nothing changes until you approve it. Along the way it tracks your skills, projects, and portfolio, so every study session moves you closer to your career.
+
+Study, habits, and career growth, all in one place.
 
 > **Project:** CSE454 — Advanced Software Engineering  
 > **Institution:** Alamein International University  
@@ -15,6 +21,7 @@ Aspirra helps university students organize their academic responsibilities, deve
 - [Target Users](#target-users)
 - [Core System Flow](#core-system-flow)
 - [Proposed Features](#proposed-features)
+- [Related Work](#related-work)
 - [Suggested MVP](#suggested-mvp)
 - [Proposed Architecture](#proposed-architecture)
 - [Proposed Technology Stack](#proposed-technology-stack)
@@ -32,9 +39,11 @@ Aspirra helps university students organize their academic responsibilities, deve
 
 ## Problem Statement
 
-University students often manage courses, assignments, exams, academic goals, personal habits, skill development, and career preparation using separate tools. This can make it difficult to prioritize tasks, create realistic schedules, track progress, and adapt when deadlines or workloads change.
+Students don't fail from a lack of ability. They fail because nothing connects their goals to their daily actions.
 
-Aspirra aims to bring these activities together in one student-focused platform. It combines academic organization with AI-assisted planning, progress analytics, and career development so students can connect daily actions to long-term academic and professional goals.
+Deadlines sit in a calendar, tasks in a notes app, grades on the university portal, and career plans only in the student's head. So goals stay too big to act on, schedules ignore real available time, and plans break when a single task is missed. Nobody warns the student early, and study stays disconnected from the skills and projects a career requires. The result is missed deadlines, lower grades, stress, and abandoned goals.
+
+**What Aspirra solves:** Aspirra turns a goal into a realistic, editable plan, adapts it when the student falls behind, warns about risks early, and links daily study to career skills, all in one platform.
 
 ## Vision and Objectives
 
@@ -53,11 +62,20 @@ Aspirra aims to bring these activities together in one student-focused platform.
 
 ### Primary user: University student
 
+University students are the people most affected, especially:
+
+- **First-year students**, who are still learning to plan and are adjusting to the university workload.
+- **Students with heavy workloads**, who juggle many courses, projects, and part-time work or activities.
+- **Senior students**, who must balance coursework and graduation projects with portfolios and job applications.
+- **Students who fall behind**, who have no easy way to recover once a plan breaks.
+
 Students can organize academic work, set goals, receive AI-assisted plans, track habits and skills, monitor progress, and prepare for future careers.
 
 ### Potential secondary user: Platform administrator
 
 An administrator may manage student accounts and review platform-level usage statistics. The final role permissions and scope must be defined during requirements analysis.
+
+Instructors and academic advisors are affected indirectly, because they deal with late submissions and struggling students. They are not the main users of the system.
 
 ## Core System Flow
 
@@ -112,6 +130,33 @@ The following list describes the intended product vision. The team will prioriti
 |  18 | Study Groups / Accountability  | Support shared goals, study groups, accountability partners, and shared progress.                                |
 |  19 | Internship & Job Preparation   | Track applications, interview preparation, CV/portfolio progress, and required skills.                           |
 |  20 | Admin Dashboard                | Support student management, system statistics, usage analytics, and activity monitoring.                         |
+
+## Related Work
+
+| System      | Description                                                                                                                                                      | Limitations                                                                                                                                                                                                                                 |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Shovel      | A student planner where AI turns natural language into tasks, imports timetables, syncs calendars, checks if the schedule is realistic, and tracks study streaks | Plans only short-term study tasks. No long-term goal roadmap, no career or skill tracking, no study groups, no early-warning prediction. Paid subscription                                                                                  |
+| MyStudyLife | A free planner for classes, assignments, and exams, with deadline reminders and a Pomodoro timer.                                                                | Mostly manual entry. No AI planning, no goal breakdown, no adaptive rescheduling, no career or skill features.                                                                                                                              |
+| StudntX     | An AI assistant that builds study plans around the student's schedule and tracks habits and streaks.                                                             | Focuses only on study plans and habits. No career roadmap, no skill or portfolio tracking, no analytics or early warning, no study groups.                                                                                                  |
+| Reclaim.ai  | A web-based smart calendar that automatically blocks time for tasks and habits, and suggests a time-blocked day that the user approves or adjusts.               | Built as a general calendar, not for students. No course, grade, or exam tracking, no goal-to-plan breakdown, no career or skill features, no study groups. Its scheduling follows set rules rather than understanding the student's goals. |
+
+### Comparison table
+
+| Feature                                                  | Shovel | MyStudyLife | StudntX | Reclaim.ai | Aspirra |
+| -------------------------------------------------------- | ------ | ----------- | ------- | ---------- | ------- |
+| Natural-language input to tasks                          | Yes    | No          | Yes     | No         | Yes     |
+| Full goal roadmap (milestones, tasks, habits, deadlines) | No     | No          | Partial | No         | Yes     |
+| Course, assignment, and exam tracking                    | Yes    | Yes         | Yes     | No         | Yes     |
+| AI study plan around availability                        | Yes    | No          | Yes     | Partial    | Yes     |
+| Schedule feasibility check                               | Yes    | No          | No      | No         | Yes     |
+| Adaptive replanning when behind (student approves)       | No     | No          | No      | Partial    | Yes     |
+| Habit tracking with streaks                              | Yes    | No          | Yes     | Partial    | Yes     |
+| Deadline reminders                                       | Yes    | Yes         | Yes     | Yes        | Yes     |
+| Career roadmap and skill tracking                        | No     | No          | No      | No         | Yes     |
+| Project and portfolio management                         | No     | No          | No      | No         | Yes     |
+| Prediction and early warning                             | No     | No          | No      | No         | Yes     |
+| Study groups and accountability                          | No     | No          | No      | No         | Yes     |
+| Admin dashboard                                          | No     | No          | No      | No         | Yes     |
 
 ## Suggested MVP
 
@@ -336,19 +381,6 @@ Initial setup:
 5. Run the frontend, backend, and tests using instructions to be added when the stack is confirmed.
 
 Never commit real credentials. Add local environment files to `.gitignore` and use an example environment file with placeholder values when needed.
-
-## Contributing
-
-All members are expected to contribute through GitHub and Jira.
-
-1. Work from an assigned Jira task.
-2. Create a feature branch from `develop`.
-3. Implement the change and add tests or documentation as needed.
-4. Open a pull request and link the Jira story.
-5. Request review and address feedback.
-6. Merge after the team's agreed review checks pass.
-
-Keep pull requests focused and communicate changes that affect shared interfaces or requirements.
 
 ## Team Members
 
