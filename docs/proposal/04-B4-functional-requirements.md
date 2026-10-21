@@ -182,7 +182,7 @@
 | FR-14.1 | The system shall calculate the remaining workload of each active goal from its unfinished scheduled tasks and their scheduled durations. | Mostafa Khamis Abozead | CR-06 |
 | FR-14.2 | The system shall calculate the remaining available study time of each active goal up to its target date, using the student's availability. | Mostafa Khamis Abozead | CR-06 |
 | FR-14.3 | The system shall calculate the percentage of planned task duration completed for each active goal. | Mostafa Khamis Abozead | CR-06 |
-| FR-14.4 | The system shall display the remaining workload, remaining available study time, and workload completion ratio of each active goal. | Mostafa Khamis Abozead | CR-06 |
+| FR-14.4 | The system shall display the remaining workload, remaining available study time, and the percentage of planned task duration completed for each active goal. | Mostafa Khamis Abozead | CR-06 |
 | FR-14.5 | The system shall mark an active goal as overloaded when its remaining workload exceeds its remaining available study time. | Mostafa Khamis Abozead | CR-06 |
 
 #### FR-15 — Predict and Warn Early
@@ -190,7 +190,7 @@
 
 | ID | Requirement | Owner | Linked to |
 |---|---|---|---|
-| FR-15.1 | The system shall estimate the likelihood of completing each active goal before its target date from its workload completion ratio and remaining available study time. | Mostafa Khamis Abozead | CR-06 |
+| FR-15.1 | The system shall estimate the likelihood of completing each active goal before its target date from its percentage of planned task duration completed and its remaining available study time. | Mostafa Khamis Abozead | CR-06 |
 | FR-15.2 | The system shall generate an early warning for an active goal before its target date when the goal is marked as overloaded. | Mostafa Khamis Abozead | CR-06, CR-10 |
 | FR-15.3 | The system shall identify which scheduled tasks of an active goal push its workload over its available study time. | Mostafa Khamis Abozead | CR-06, CR-10 |
 | FR-15.4 | The system shall suggest recovery actions for a goal with an active early warning so the student can recover before the target date. | Mostafa Khamis Abozead | CR-11 |
@@ -262,7 +262,7 @@
 ## Traceability Notes
 
 - **FR-01**: Profile management (including availability, used by scheduling) is mapped to CR-01, the only documented need covering planning courses and workload.
-- **FR-02**: Goal lifecycle is mapped to CR-01 (planning) and CR-02 (knowing what is due and when). B3 has no CR dedicated to goal tracking, so these are the closest documented needs.
+- **FR-02**: Goal lifecycle is mapped to CR-01 (planning) and CR-02 (knowing what is due and when): creating a goal with a target date and priority maps to both, the target date and the completed state map to CR-02, and updating the details, archiving, and deleting map to CR-01. B3 has no CR dedicated to goal tracking, so CR-01 and CR-02 are the closest documented needs for these rows.
 - **FR-03.2**: Narrowed to course credits and weekly workload, which are covered by CR-01 and CR-04. Grade recording was removed because no CR in B3 supports grades.
 - **FR-03.3**: Course progress is mapped to CR-02 (outstanding assignments) and CR-04 (workload in one realistic schedule).
 - **FR-04.3 / FR-04.4**: Assignment status tracking is mapped to CR-02 and CR-04; exam preparation reminders are mapped to CR-02, since CR-05 concerns prioritisation when deadlines collide.
@@ -277,7 +277,7 @@
 - **FR-14 (narrowed)**: Previously this FR covered grade trends, assignment completion rates, and GPA progress, which no CR in B3 supports. It is now **Analyze Study Workload**, defined only by the workload-planning need in CR-06 (knowing early when the workload is too much to finish): remaining workload, remaining available study time, the percentage of planned task duration completed, and the overloaded state.
 - **FR-15**: Reworked around the same workload need. Early warnings are raised for goals already marked as overloaded, which is exactly the early warning CR-10 describes; recovery suggestions are mapped to CR-11.
 - **FR-16.1 / FR-16.2**: Coaching recommendations and deadline-aware study advice are mapped to CR-06 and CR-10; recovery strategies to CR-11; motivational guidance to CR-12.
-- **FR-17**: Renumbered after the splits. FR-17.2 shows the current status of each goal, mapped to CR-02 (knowing what is due and when). FR-17.3 shows the completion percentage of each goal, mapped to CR-01 (progress against the plan) and CR-02 (progress against the target date). Habit streaks are mapped to CR-03 and career progress to CR-07. FR-17.5 previously showed an academic performance summary, which had no supporting CR; it now shows the study workload summary under CR-06.
+- **FR-17**: Renumbered after the splits. Today's tasks and upcoming deadlines are mapped to CR-02 (knowing what is due and when). FR-17.2 shows the current status of each goal, mapped to CR-02, because the status is read against the goal's target date. FR-17.3 shows the completion percentage of each goal, mapped to CR-01 (progress against the planned work) and CR-02 (progress against the goal's target date). As with FR-02, B3 has no CR dedicated to goal tracking, so CR-01 and CR-02 are the closest documented needs for these two rows. Habit streaks are mapped to CR-03 and career progress to CR-07. FR-17.5 previously showed an academic performance summary, which had no supporting CR; it now shows the study workload summary under CR-06.
 - **FR-18**: Reminders for scheduled study tasks are mapped to CR-04 and CR-05; habit reminders and habit streak milestones to CR-03; deadline reminders to CR-02; early warning notifications to CR-10.
 - **FR-19**: Creating and joining a study group, and finding and connecting with an accountability partner, were split into separate behaviours, all mapped to CR-12.
 - **FR-20**: Account management is mapped to CR-13; issue investigation and resolution to CR-15; registered students, active students, and platform feature usage statistics to CR-14; retention metrics to CR-16.
