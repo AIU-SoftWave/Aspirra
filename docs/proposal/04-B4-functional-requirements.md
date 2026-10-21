@@ -15,17 +15,17 @@
 | FR-05 | Plan Goals with AI | Yomna Mohamed Fekry | CR-01, CR-04 |
 | FR-06 | Generate Study Plans | Yomna Mohamed Fekry | CR-01, CR-04, CR-06 |
 | FR-07 | Enable Smart Scheduling | Yomna Mohamed Fekry | CR-04, CR-05 |
-| FR-08 | Enable Adaptive Planning | Yomna Mohamed Fekry | CR-05, CR-06, CR-11 |
+| FR-08 | Enable Adaptive Planning | Yomna Mohamed Fekry | CR-04, CR-05, CR-06, CR-11 |
 | FR-09 | Manage Career Roadmaps | Arwa Mohey Hamdy | CR-07, CR-09 |
 | FR-10 | Track Skills | Arwa Mohey Hamdy | CR-08, CR-09 |
 | FR-11 | Manage Projects and Portfolios | Arwa Mohey Hamdy | CR-08 |
 | FR-12 | Manage Internship and Job Preparation | Arwa Mohey Hamdy | CR-07, CR-08 |
 | FR-13 | Manage Habits | Mostafa Khamis Abozead | CR-03, CR-12 |
-| FR-14 | Analyze Academic Performance | Mostafa Khamis Abozead | **UNRESOLVED** (no explicit CR in B3) |
+| FR-14 | Analyze Study Workload | Mostafa Khamis Abozead | CR-06 |
 | FR-15 | Predict and Warn Early | Mostafa Khamis Abozead | CR-06, CR-10, CR-11 |
 | FR-16 | Coach Students with AI | Mostafa Khamis Abozead | CR-06, CR-10, CR-11, CR-12 |
-| FR-17 | Display Student Dashboard | Muhammed Hany Hamdy | CR-02, CR-03, CR-07 (FR-17.5 UNRESOLVED) |
-| FR-18 | Send Notifications | Muhammed Hany Hamdy | CR-02, CR-03, CR-05, CR-10 |
+| FR-17 | Display Student Dashboard | Muhammed Hany Hamdy | CR-01, CR-02, CR-03, CR-06, CR-07 |
+| FR-18 | Send Notifications | Muhammed Hany Hamdy | CR-02, CR-03, CR-04, CR-05, CR-10 |
 | FR-19 | Manage Study Groups and Accountability | Muhammed Hany Hamdy | CR-12 |
 | FR-20 | Manage Administration | Muhammed Hany Hamdy | CR-13, CR-14, CR-15, CR-16 |
 
@@ -47,10 +47,10 @@
 | ID | Requirement | Owner | Linked to |
 |---|---|---|---|
 | FR-02.1 | The system shall allow a student to create an academic goal with a title, description, target date, and priority. | Ahmed Mohamed Ahmed | CR-01, CR-02 |
-| FR-02.2 | The system shall allow a student to update an existing academic goal's details. | Ahmed Mohamed Ahmed | CR-02 |
+| FR-02.2 | The system shall allow a student to update the details of an existing academic goal. | Ahmed Mohamed Ahmed | CR-01 |
 | FR-02.3 | The system shall allow a student to update the target date of an existing academic goal. | Ahmed Mohamed Ahmed | CR-02 |
 | FR-02.4 | The system shall allow a student to mark an academic goal as completed. | Ahmed Mohamed Ahmed | CR-02 |
-| FR-02.5 | The system shall allow a student to archive an academic goal. | Ahmed Mohamed Ahmed | CR-02 |
+| FR-02.5 | The system shall allow a student to archive an academic goal. | Ahmed Mohamed Ahmed | CR-01 |
 | FR-02.6 | The system shall allow a student to delete an academic goal they created. | Ahmed Mohamed Ahmed | CR-01 |
 
 #### FR-03 — Manage Courses
@@ -59,8 +59,8 @@
 | ID | Requirement | Owner | Linked to |
 |---|---|---|---|
 | FR-03.1 | The system shall allow a student to add a course with course name, course code, instructor, and semester details. | Ahmed Mohamed Ahmed | CR-01 |
-| FR-03.2 | The system shall allow a student to record course grades and credits for each course. | Ahmed Mohamed Ahmed | CR-01 |
-| FR-03.3 | The system shall allow a student to view course progress including completed assignments and current standing. | Ahmed Mohamed Ahmed | CR-02, CR-04 |
+| FR-03.2 | The system shall allow a student to record the credits and the weekly workload of each course. | Ahmed Mohamed Ahmed | CR-01, CR-04 |
+| FR-03.3 | The system shall allow a student to view the progress of a course, including its completed and outstanding assignments. | Ahmed Mohamed Ahmed | CR-02, CR-04 |
 | FR-03.4 | The system shall allow a student to update course information. | Ahmed Mohamed Ahmed | CR-01 |
 | FR-03.5 | The system shall allow a student to remove a course. | Ahmed Mohamed Ahmed | CR-01 |
 
@@ -91,10 +91,10 @@
 
 | ID | Requirement | Owner | Linked to |
 |---|---|---|---|
-| FR-06.1 | The system shall generate a personalized study plan based on courses, deadlines, and student availability. | Yomna Mohamed Fekry | CR-01 |
+| FR-06.1 | The system shall generate a personalized study plan based on courses, deadlines, and student availability. | Yomna Mohamed Fekry | CR-01, CR-04 |
 | FR-06.2 | The system shall distribute study tasks across available time slots while respecting priorities. | Yomna Mohamed Fekry | CR-04 |
-| FR-06.3 | The system shall allow a student to regenerate the study plan based on updated availability or deadlines. | Yomna Mohamed Fekry | CR-06 |
-| FR-06.4 | The system shall validate AI-generated study plan output against an expected schema before saving. | Yomna Mohamed Fekry | CR-04 |
+| FR-06.3 | The system shall allow a student to regenerate the study plan after an availability or deadline change. | Yomna Mohamed Fekry | CR-04, CR-06 |
+| FR-06.4 | The system shall reject an AI-generated study plan that does not match the expected plan structure and retain the previously saved plan. | Yomna Mohamed Fekry | CR-04 |
 
 #### FR-07 — Enable Smart Scheduling
 **Owner:** Yomna Mohamed Fekry | **Linked to:** CR-04, CR-05
@@ -107,13 +107,13 @@
 | FR-07.4 | The system shall allow a student to manually adjust scheduled tasks and times. | Yomna Mohamed Fekry | CR-04 |
 
 #### FR-08 — Enable Adaptive Planning
-**Owner:** Yomna Mohamed Fekry | **Linked to:** CR-05, CR-06, CR-11
+**Owner:** Yomna Mohamed Fekry | **Linked to:** CR-04, CR-05, CR-06, CR-11
 
 | ID | Requirement | Owner | Linked to |
 |---|---|---|---|
 | FR-08.1 | The system shall detect when a student is falling behind on tasks or deadlines. | Yomna Mohamed Fekry | CR-06 |
-| FR-08.2 | The system shall recommend rescheduling tasks when behind schedule. | Yomna Mohamed Fekry | CR-05 |
-| FR-08.3 | The system shall recommend reprioritizing tasks when behind schedule. | Yomna Mohamed Fekry | CR-05 |
+| FR-08.2 | The system shall recommend rescheduling tasks when the student is behind schedule. | Yomna Mohamed Fekry | CR-04, CR-05 |
+| FR-08.3 | The system shall recommend reprioritizing tasks when the student is behind schedule. | Yomna Mohamed Fekry | CR-05 |
 | FR-08.4 | The system shall require student approval before applying adaptive plan changes. | Yomna Mohamed Fekry | CR-11 |
 | FR-08.5 | The system shall allow a student to accept adaptive planning recommendations. | Yomna Mohamed Fekry | CR-11 |
 | FR-08.6 | The system shall allow a student to reject adaptive planning recommendations. | Yomna Mohamed Fekry | CR-11 |
@@ -129,7 +129,7 @@
 | FR-09.3 | The system shall generate a career roadmap with required skills, learning steps, and milestones. | Arwa Mohey Hamdy | CR-07 |
 | FR-09.4 | The system shall allow a student to track progress toward completing career roadmap milestones. | Arwa Mohey Hamdy | CR-09 |
 | FR-09.5 | The system shall allow a student to update their target career. | Arwa Mohey Hamdy | CR-09 |
-| FR-09.6 | The system shall regenerate the career roadmap after a target career is updated. | Arwa Mohey Hamdy | CR-09 |
+| FR-09.6 | The system shall regenerate the career roadmap after the target career is updated. | Arwa Mohey Hamdy | CR-09 |
 
 #### FR-10 — Track Skills
 **Owner:** Arwa Mohey Hamdy | **Linked to:** CR-08, CR-09
@@ -137,7 +137,7 @@
 | ID | Requirement | Owner | Linked to |
 |---|---|---|---|
 | FR-10.1 | The system shall allow a student to add technical and soft skills with current skill level. | Arwa Mohey Hamdy | CR-08 |
-| FR-10.2 | The system shall compare a student's skills against required skills for their target career. | Arwa Mohey Hamdy | CR-09 |
+| FR-10.2 | The system shall compare a student's skills against the required skills of their target career. | Arwa Mohey Hamdy | CR-09 |
 | FR-10.3 | The system shall identify skill gaps based on career requirements. | Arwa Mohey Hamdy | CR-09 |
 | FR-10.4 | The system shall allow a student to update skill levels as they progress. | Arwa Mohey Hamdy | CR-09 |
 
@@ -147,8 +147,8 @@
 | ID | Requirement | Owner | Linked to |
 |---|---|---|---|
 | FR-11.1 | The system shall allow a student to add a project with title, description, technologies, and completion status. | Arwa Mohey Hamdy | CR-08 |
-| FR-11.2 | The system shall allow a student to link projects to skills they demonstrate. | Arwa Mohey Hamdy | CR-08 |
-| FR-11.3 | The system shall generate a portfolio view of completed projects with details. | Arwa Mohey Hamdy | CR-08 |
+| FR-11.2 | The system shall allow a student to link projects to the skills they demonstrate. | Arwa Mohey Hamdy | CR-08 |
+| FR-11.3 | The system shall generate a portfolio view of the student's completed projects. | Arwa Mohey Hamdy | CR-08 |
 | FR-11.4 | The system shall allow a student to add project links and documentation to their portfolio. | Arwa Mohey Hamdy | CR-08 |
 
 #### FR-12 — Manage Internship and Job Preparation
@@ -169,64 +169,64 @@
 | ID | Requirement | Owner | Linked to |
 |---|---|---|---|
 | FR-13.1 | The system shall allow a student to create a habit with name, frequency, goal, and reminder settings. | Mostafa Khamis Abozead | CR-03 |
-| FR-13.2 | The system shall allow a student to mark habits as completed for each scheduled day. | Mostafa Khamis Abozead | CR-03 |
+| FR-13.2 | The system shall allow a student to mark a habit as completed for a scheduled day. | Mostafa Khamis Abozead | CR-03 |
 | FR-13.3 | The system shall track habit streaks based on consecutive completions. | Mostafa Khamis Abozead | CR-03 |
-| FR-13.4 | The system shall allow a student to link habits to academic goals for motivation tracking. | Mostafa Khamis Abozead | CR-12 |
+| FR-13.4 | The system shall allow a student to link habits to academic goals. | Mostafa Khamis Abozead | CR-12 |
 
-#### FR-14 — Analyze Academic Performance
-**Owner:** Mostafa Khamis Abozead | **Linked to:** **UNRESOLVED** (no explicit CR in B3)
+#### FR-14 — Analyze Study Workload
+**Owner:** Mostafa Khamis Abozead | **Linked to:** CR-06
 
 | ID | Requirement | Owner | Linked to |
 |---|---|---|---|
-| FR-14.1 | The system shall calculate grade trends across courses and semesters. | Mostafa Khamis Abozead | **UNRESOLVED** (no explicit CR in B3) |
-| FR-14.2 | The system shall display grade trends across courses and semesters. | Mostafa Khamis Abozead | **UNRESOLVED** (no explicit CR in B3) |
-| FR-14.3 | The system shall track assignment completion rates per course. | Mostafa Khamis Abozead | **UNRESOLVED** (no explicit CR in B3) |
-| FR-14.4 | The system shall calculate GPA progress based on recorded course grades. | Mostafa Khamis Abozead | **UNRESOLVED** (no explicit CR in B3) |
-| FR-14.5 | The system shall display GPA progress based on recorded course grades. | Mostafa Khamis Abozead | **UNRESOLVED** (no explicit CR in B3) |
+| FR-14.1 | The system shall calculate the remaining workload of each active goal from its unfinished scheduled tasks and their scheduled durations. | Mostafa Khamis Abozead | CR-06 |
+| FR-14.2 | The system shall calculate the remaining available study time of each active goal up to its target date, using the student's availability. | Mostafa Khamis Abozead | CR-06 |
+| FR-14.3 | The system shall calculate the workload completion ratio of each active goal from its completed and unfinished scheduled tasks. | Mostafa Khamis Abozead | CR-06 |
+| FR-14.4 | The system shall display the remaining workload, remaining available study time, and workload completion ratio of each active goal. | Mostafa Khamis Abozead | CR-06 |
+| FR-14.5 | The system shall mark an active goal as overloaded when its remaining workload exceeds its remaining available study time. | Mostafa Khamis Abozead | CR-06 |
 
 #### FR-15 — Predict and Warn Early
 **Owner:** Mostafa Khamis Abozead | **Linked to:** CR-06, CR-10, CR-11
 
 | ID | Requirement | Owner | Linked to |
 |---|---|---|---|
-| FR-15.1 | The system shall estimate goal completion probability based on current progress and remaining time. | Mostafa Khamis Abozead | CR-06 |
-| FR-15.2 | The system shall identify academic risks when assignment completion falls below expected rates. | Mostafa Khamis Abozead | CR-10 |
-| FR-15.3 | The system shall generate early warnings for students at risk of missing deadlines. | Mostafa Khamis Abozead | CR-10 |
-| FR-15.4 | The system shall suggest recovery actions for students who are at risk of falling behind. | Mostafa Khamis Abozead | CR-11 |
+| FR-15.1 | The system shall estimate the likelihood of completing each active goal before its target date from its workload completion ratio and remaining available study time. | Mostafa Khamis Abozead | CR-06 |
+| FR-15.2 | The system shall generate an early warning for an active goal before its target date when the goal is marked as overloaded. | Mostafa Khamis Abozead | CR-06, CR-10 |
+| FR-15.3 | The system shall identify which scheduled tasks of an active goal push its workload over its available study time. | Mostafa Khamis Abozead | CR-06, CR-10 |
+| FR-15.4 | The system shall suggest recovery actions for a goal with an active early warning so the student can recover before the target date. | Mostafa Khamis Abozead | CR-11 |
 
 #### FR-16 — Coach Students with AI
 **Owner:** Mostafa Khamis Abozead | **Linked to:** CR-06, CR-10, CR-11, CR-12
 
 | ID | Requirement | Owner | Linked to |
 |---|---|---|---|
-| FR-16.1 | The system shall provide personalized recommendations based on goals, tasks, habits, and progress. | Mostafa Khamis Abozead | CR-06 |
+| FR-16.1 | The system shall provide personalized recommendations based on the student's goals, scheduled tasks, habits, and workload progress. | Mostafa Khamis Abozead | CR-06 |
 | FR-16.2 | The system shall offer study advice tailored to upcoming deadlines and workload. | Mostafa Khamis Abozead | CR-06, CR-10 |
 | FR-16.3 | The system shall suggest recovery strategies when a student falls behind their plan. | Mostafa Khamis Abozead | CR-11 |
 | FR-16.4 | The system shall provide motivational guidance to help students stay on track with their goals. | Mostafa Khamis Abozead | CR-12 |
 
 #### FR-17 — Display Student Dashboard
-**Owner:** Muhammed Hany Hamdy | **Linked to:** CR-02, CR-03, CR-07 (FR-17.5 UNRESOLVED)
+**Owner:** Muhammed Hany Hamdy | **Linked to:** CR-01, CR-02, CR-03, CR-06, CR-07
 
 | ID | Requirement | Owner | Linked to |
 |---|---|---|---|
 | FR-17.1 | The system shall display today's tasks and upcoming deadlines on the student dashboard. | Muhammed Hany Hamdy | CR-02 |
-| FR-17.2 | The system shall display goal progress on the dashboard. | Muhammed Hany Hamdy | CR-02 |
-| FR-17.3 | The system shall display goal completion percentages on the dashboard. | Muhammed Hany Hamdy | CR-02 |
+| FR-17.2 | The system shall display goal progress on the dashboard. | Muhammed Hany Hamdy | CR-01, CR-02 |
+| FR-17.3 | The system shall display goal completion percentages on the dashboard. | Muhammed Hany Hamdy | CR-01, CR-02 |
 | FR-17.4 | The system shall display habit streaks and completion status on the dashboard. | Muhammed Hany Hamdy | CR-03 |
-| FR-17.5 | The system shall display an academic performance summary on the dashboard. | Muhammed Hany Hamdy | **UNRESOLVED** (no explicit CR in B3) |
+| FR-17.5 | The system shall display the study workload summary of each active goal on the dashboard. | Muhammed Hany Hamdy | CR-06 |
 | FR-17.6 | The system shall display career progress on the dashboard. | Muhammed Hany Hamdy | CR-07 |
 
 #### FR-18 — Send Notifications
-**Owner:** Muhammed Hany Hamdy | **Linked to:** CR-02, CR-03, CR-05, CR-10
+**Owner:** Muhammed Hany Hamdy | **Linked to:** CR-02, CR-03, CR-04, CR-05, CR-10
 
 | ID | Requirement | Owner | Linked to |
 |---|---|---|---|
 | FR-18.1 | The system shall send reminders for upcoming assignments and exam deadlines. | Muhammed Hany Hamdy | CR-02 |
-| FR-18.2 | The system shall send reminders for scheduled study tasks. | Muhammed Hany Hamdy | CR-05 |
+| FR-18.2 | The system shall send reminders for scheduled study tasks. | Muhammed Hany Hamdy | CR-04, CR-05 |
 | FR-18.3 | The system shall send reminders for scheduled habits. | Muhammed Hany Hamdy | CR-03 |
 | FR-18.4 | The system shall send early warning notifications when a student is at risk of missing deadlines. | Muhammed Hany Hamdy | CR-10 |
 | FR-18.5 | The system shall send goal milestone reminders. | Muhammed Hany Hamdy | CR-02 |
-| FR-18.6 | The system shall send achievement notifications. | Muhammed Hany Hamdy | CR-02 |
+| FR-18.6 | The system shall notify a student when a habit streak reaches a new milestone. | Muhammed Hany Hamdy | CR-03 |
 
 #### FR-19 — Manage Study Groups and Accountability
 **Owner:** Muhammed Hany Hamdy | **Linked to:** CR-12
@@ -260,33 +260,30 @@
 
 ## Traceability Notes
 
-- **FR-01.3**: Linked to CR-01 (profile management) to align with the student profile need; no longer linked to CR-02.
-- **FR-02**: Low-level requirements renumbered sequentially (FR-02.1 through FR-02.6); updating goal details and updating the target date were split into separate behaviors. Goal lifecycle management is mapped to CR-01 (planning) and CR-02 (due dates) as the closest documented needs, since B3 has no CR dedicated to goal tracking.
-- **FR-03.2**: Recording course grades and credits is mapped to CR-01 (planning courses and workload); the performance analysis that consumes these grades is the unresolved gap described under FR-14.
-- **FR-04.3 / FR-04.4**: Assignment status tracking is mapped to CR-02 and CR-04; exam preparation reminders are mapped to CR-02 (knowing when the exam is due) instead of CR-05, which concerns prioritisation when deadlines collide.
-- **FR-05**: Review, edit milestones, and edit tasks split into FR-05.3, FR-05.4, and FR-05.5; the approval behavior is now FR-05.6.
-- **FR-07.4**: Manual adjustment of scheduled tasks is mapped to CR-04 (fitting work into one realistic schedule) instead of CR-05.
-- **FR-08.2**: Split into recommend rescheduling (FR-08.2) and recommend reprioritizing (FR-08.3).
-- **FR-09.1**: Split into select from the predefined list (FR-09.1) and enter a custom career (FR-09.2).
-- **FR-10.1 / FR-10.4**: Recording skills is mapped to CR-08 (showing skills to employers in one place) and updating skill levels to CR-09 (closing the gap against career requirements); CR-07 was removed from FR-10 because it concerns balancing coursework with job preparation.
-- **FR-12.3 / FR-12.4**: CV and portfolio update tracking split into separate behaviors; outcome and feedback recording split into FR-12.5 and FR-12.6, both mapped to CR-07 (job preparation).
-- **FR-14 (unresolved gap)**: No Customer Requirement in B3 explicitly covers academic performance analytics (grade trends, GPA progress, assignment completion rates). CR-02 only covers knowing what is due and when. All five FR-14 requirements are therefore marked **UNRESOLVED** instead of being force-linked to an unrelated CR. A customer requirement for academic performance analytics must be added to B3 (BR-01/BR-02 area) by the team, after which FR-14 can be linked.
-- **FR-16.2**: Study advice on deadlines and workload is mapped to CR-06 (workload too heavy to finish) in addition to CR-10.
-- **FR-17.1**: Linked to CR-02 (knowing what is due and when).
-- **FR-17.2 / FR-17.3**: Goal progress split into display goal progress and display goal completion percentages, both linked to CR-02.
-- **FR-17.4**: Habit streaks linked to CR-03 (building study habits) instead of CR-05 (prioritisation under collision).
-- **FR-17.5 (unresolved gap)**: The academic performance summary on the dashboard depends on the same academic performance analytics need as FR-14, so it is marked **UNRESOLVED** with the rest of the FR-14 group.
-- **FR-17.6**: Career progress linked to CR-07.
-- **FR-18.2 / FR-18.3**: Reminders split into scheduled study tasks (CR-05) and scheduled habits (CR-03).
-- **FR-19.1 / FR-19.2**: Creating and joining a study group split into separate behaviors; finding and connecting with an accountability partner split into FR-19.5 and FR-19.6.
-- **FR-20.7**: Platform feature usage statistics added under CR-14 ("how many students use the platform and how they use it"), completing registered students (FR-20.5), active students (FR-20.6), and feature usage (FR-20.7); retention remains under CR-16 (FR-20.10).
+- **FR-01**: Profile management (including availability, used by scheduling) is mapped to CR-01, the only documented need covering planning courses and workload.
+- **FR-02**: Goal lifecycle is mapped to CR-01 (planning) and CR-02 (knowing what is due and when). B3 has no CR dedicated to goal tracking, so these are the closest documented needs.
+- **FR-03.2**: Narrowed to course credits and weekly workload, which are covered by CR-01 and CR-04. Grade recording was removed because no CR in B3 supports grades.
+- **FR-03.3**: Course progress is mapped to CR-02 (outstanding assignments) and CR-04 (workload in one realistic schedule).
+- **FR-04.3 / FR-04.4**: Assignment status tracking is mapped to CR-02 and CR-04; exam preparation reminders are mapped to CR-02, since CR-05 concerns prioritisation when deadlines collide.
+- **FR-05**: Review, edit milestones, and edit tasks were split into FR-05.3, FR-05.4, and FR-05.5; the approval behaviour is FR-05.6. Review and edit are mapped to CR-04 because the student must be able to fit the AI proposal into a realistic schedule.
+- **FR-06.1 / FR-06.3 / FR-06.4**: Plan generation is mapped to CR-01 and CR-04; regeneration after a change is also mapped to CR-06, since a changed workload may no longer be finishable. Invalid AI output is rejected while the last valid plan is kept, which protects the realistic schedule required by CR-04.
+- **FR-07**: Conflict resolution alternatives are mapped to CR-05 (knowing what to do first when deadlines collide); manual adjustment is mapped to CR-04 (fitting the work into one realistic schedule).
+- **FR-08.2 / FR-08.3**: Rescheduling is mapped to CR-04 and CR-05; reprioritising is mapped to CR-05. Accept, reject, and modify are mapped to CR-11, the documented need for a clear way to recover after a plan breaks.
+- **FR-09 / FR-10**: Career roadmap and skill work are mapped to CR-07 (balancing coursework with job preparation) and CR-09 (knowing which skills are missing for the target career). FR-10.1 is mapped to CR-08, since recorded skills are the content the student shows to employers in one place.
+- **FR-11 / FR-12**: Projects, portfolio, CV, and portfolio updates are mapped to CR-08 (showing skills and projects to employers in one place); application tracking, interview preparation, outcomes, and feedback are mapped to CR-07 (job preparation).
+- **FR-13.4**: Linking habits to academic goals is mapped to CR-12, the documented need for motivation and support after missing tasks.
+- **FR-14 (narrowed)**: Previously this FR covered grade trends, assignment completion rates, and GPA progress, which no CR in B3 supports. It is now **Analyze Study Workload**, defined only by the workload-planning need in CR-06 (knowing early when the workload is too much to finish): remaining workload, remaining available study time, workload completion ratio, and the overloaded state.
+- **FR-15**: Reworked around the same workload need. Early warnings are raised for goals already marked as overloaded, which is exactly the early warning CR-10 describes; recovery suggestions are mapped to CR-11.
+- **FR-16.1 / FR-16.2**: Coaching recommendations and deadline-aware study advice are mapped to CR-06 and CR-10; recovery strategies to CR-11; motivational guidance to CR-12.
+- **FR-17**: Renumbered after the splits. Goal progress and completion percentages are mapped to CR-01 and CR-02; habit streaks to CR-03; career progress to CR-07. FR-17.5 previously showed an academic performance summary, which had no supporting CR; it now shows the study workload summary under CR-06.
+- **FR-18**: Reminders for scheduled study tasks are mapped to CR-04 and CR-05; habit reminders and habit streak milestones to CR-03; deadline reminders to CR-02; early warning notifications to CR-10.
+- **FR-19**: Creating and joining a study group, and finding and connecting with an accountability partner, were split into separate behaviours, all mapped to CR-12.
+- **FR-20**: Account management is mapped to CR-13; issue investigation and resolution to CR-15; registered students, active students, and platform feature usage statistics to CR-14; retention metrics to CR-16.
 
-### Unresolved traceability gaps
+### Scope notes
 
-| FR | Requirement group | Gap | Action required |
-|---|---|---|---|
-| FR-14 | FR-14.1 to FR-14.5 | No CR in B3 covers grades, GPA, or grade-trend analytics | Add a customer requirement for academic performance analytics to B3 and link FR-14 |
-| FR-17.5 | Academic performance summary on the dashboard | Same missing need as FR-14 | Link to the new academic performance CR once added |
+- Grade trends, assignment completion rates, GPA progress, and grade recording are **not** part of B4, because no Customer Requirement in B3 supports them. If the team wants these capabilities, a customer requirement must be added to B3 first, and FR-14 plus FR-17.5 can then be extended accordingly.
+- Career, job-preparation, and study-group requirements are kept because the assignment requires four high-level FRs per member and the README assigns these areas to Members 3 and 5. They remain later-phase items against the suggested MVP and must be prioritised in the backlog (C8).
 
 ## Checklist
 
@@ -296,12 +293,13 @@
 - [x] Add owner next to each FR
 - [x] All low-level requirements start with "The system shall ..."
 - [x] Each requirement describes one specific behavior
-- [x] Requirements are testable and traceable to CRs where supported
+- [x] Requirements are testable and traceable to CRs in B3
 - [x] Team member names from A2 team table are used
 - [x] All CR IDs from B3 are used exactly as written
 - [x] Exactly 20 high-level FRs with 4 per team member
 - [x] Low-level numbering is sequential and consistent after all splits
 - [x] Compound requirements split into atomic behaviors (FR-02, FR-05, FR-08, FR-09, FR-12, FR-18, FR-19, FR-20)
-- [x] Every FR has an accountable owner and a valid CR mapping, except the two rows explicitly flagged as unresolved (FR-14 group, FR-17.5)
-- [ ] All FRs have undisputed traceability to existing CRs — blocked: B3 has no customer requirement for academic performance analytics, so FR-14.1–FR-14.5 and FR-17.5 remain marked **UNRESOLVED**
-- [ ] Teammate review of this deliverable — not yet performed (Reviewer remains TBD, Status remains Draft)
+- [x] Every FR links to at least one existing CR that supports its behavior, with no unsupported or unlinked rows
+- [x] High-level rows, section headers, and low-level rows agree on owner and CR mappings
+- [x] Markdown tables and headings render correctly
+- [ ] Teammate review of this deliverable — not yet performed, so Reviewer stays TBD and Status stays Draft
