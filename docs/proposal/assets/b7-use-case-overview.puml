@@ -1,0 +1,49 @@
+@startuml b7-use-case-overview
+!pragma layout smetana
+title Aspirra — Use Case Overview
+
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 12
+skinparam ArrowColor #4A6FA5
+skinparam ArrowThickness 1.2
+skinparam ActorBackgroundColor #E8F0FB
+skinparam ActorBorderColor #2F5597
+skinparam UsecaseBackgroundColor #F7F9FC
+skinparam UsecaseBorderColor #4A6FA5
+skinparam UsecaseFontColor #1F2937
+skinparam PackageBackgroundColor #FFFFFF
+skinparam PackageBorderColor #94A3B8
+skinparam PackageFontColor #334155
+
+actor Student as Student
+actor Administrator as Admin
+actor "AI Service" as AIService <<external system>>
+
+rectangle "Aspirra" {
+  usecase "Academic Planning\nFR-01 to FR-08" as Academic
+  usecase "Career and Portfolio\nFR-09 to FR-12" as Career
+  usecase "Wellbeing and Coaching\nFR-13 to FR-16" as Wellbeing
+  usecase "Engagement\nFR-17 to FR-19" as Engagement
+  usecase "Administration\nFR-20" as Administration
+}
+
+Student -- Academic
+Student -- Career
+Student -- Wellbeing
+Student -- Engagement
+
+AIService -- Academic : AI-enabled
+AIService -- Career : AI-enabled
+AIService -- Wellbeing : AI-enabled
+
+Admin -- Administration
+
+legend right
+  This overview shows the five use-case domains.
+  Each domain is expanded in a separate detail diagram.
+endlegend
+
+@enduml
