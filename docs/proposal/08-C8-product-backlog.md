@@ -7,7 +7,7 @@
 Each high-level FR is one feature (one epic in Jira), broken into user stories numbered under it as in the lab notation (FR-02 → US-02.1, US-02.2, …). **Covers** lists the low-level FRs each story implements; a low-level FR that is a system rule (e.g. FR-01.4 "validate required fields") is written as an acceptance criterion of its story. **Priority** (High = MVP, then Medium, then Low) is the order used in the sprint plan (C9).
 
 ### FR-01 — Manage Student Profile
-![FR-01 user stories](c8-figures/FR-01-manage-student-profile.png)
+![FR-01 user stories](assets/c8-figures/FR-01-manage-student-profile.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -17,7 +17,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-01.3 View Profile Story | As a student, I need to view my complete profile, so that I can check that my information is correct. | • Given a saved profile, when the student opens "My Profile", then all profile fields are shown.<br>• Given an optional field was never filled, when the profile is shown, then the field shows "Not set". | FR-01.3 | High |
 
 ### FR-02 — Manage Academic Goals
-![FR-02 user stories](c8-figures/FR-02-manage-academic-goals.png)
+![FR-02 user stories](assets/c8-figures/FR-02-manage-academic-goals.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -29,7 +29,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-02.5 Delete Goal Story | As a student, I need to delete a goal I created, so that goals I added by mistake are removed. | • Given a goal, when the student clicks "Delete" and confirms, then the goal is permanently removed.<br>• Given the confirmation dialog, when the student clicks "Cancel", then the goal is kept. | FR-02.6 | Medium |
 
 ### FR-03 — Manage Courses
-![FR-03 user stories](c8-figures/FR-03-manage-courses.png)
+![FR-03 user stories](assets/c8-figures/FR-03-manage-courses.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -40,7 +40,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-03.4 Remove Course Story | As a student, I need to remove a course, so that dropped courses are no longer in my plan. | • Given a course, when the student clicks "Remove" and confirms, then it is removed from the course list.<br>• Given the course has assignments, when it is removed, then the student is warned that its assignments will also be removed. | FR-03.5 | Medium |
 
 ### FR-04 — Manage Assignments and Exams
-![FR-04 user stories](c8-figures/FR-04-manage-assignments-and-exams.png)
+![FR-04 user stories](assets/c8-figures/FR-04-manage-assignments-and-exams.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -51,7 +51,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-04.4 Exam Preparation Reminder Story | As a student, I need to set preparation reminders for my upcoming exams, so that I start studying early enough. | • Given an upcoming exam, when the student sets a reminder (e.g. 3 days before), then the reminder is saved with the exam.<br>• Given a reminder time after the exam date, when the student saves, then an error is shown. | FR-04.4 | Medium |
 
 ### FR-05 — Plan Goals with AI
-![FR-05 user stories](c8-figures/FR-05-plan-goals-with-ai.png)
+![FR-05 user stories](assets/c8-figures/FR-05-plan-goals-with-ai.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -61,7 +61,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-05.3 Approve AI Plan Story | As a student, I need to approve the AI plan before it is added to my goals, so that nothing changes without my consent. | • Given a reviewed plan, when the student clicks "Approve", then its milestones and tasks are added to the goal.<br>• Given a reviewed plan, when the student clicks "Discard", then nothing is saved. | FR-05.6 | High |
 
 ### FR-06 — Generate Study Plans
-![FR-06 user stories](c8-figures/FR-06-generate-study-plans.png)
+![FR-06 user stories](assets/c8-figures/FR-06-generate-study-plans.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -70,7 +70,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-06.2 Regenerate Study Plan Story | As a student, I need to regenerate my study plan after my availability or a deadline changes, so that the plan stays realistic. | • Given the availability or a deadline has changed, when the student clicks "Regenerate", then a new plan is created from the new data.<br>• Given the new plan is rejected as invalid, when regeneration ends, then the previous plan is kept. | FR-06.3 | Medium |
 
 ### FR-07 — Enable Smart Scheduling
-![FR-07 user stories](c8-figures/FR-07-enable-smart-scheduling.png)
+![FR-07 user stories](assets/c8-figures/FR-07-enable-smart-scheduling.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -81,7 +81,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-07.4 Mark Task Done Story | As a student, I need to mark a scheduled task as done, so that my progress and remaining workload stay up to date. | • Given a scheduled task, when the student marks it as done, then it is shown as completed.<br>• Given a task is marked as done, when the workload of its goal is calculated, then the task no longer counts as remaining workload.<br>• Given a completed task, when the student marks it as not done, then it counts as remaining workload again. | FR-07.5 | High |
 
 ### FR-08 — Enable Adaptive Planning
-![FR-08 user stories](c8-figures/FR-08-enable-adaptive-planning.png)
+![FR-08 user stories](assets/c8-figures/FR-08-enable-adaptive-planning.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -91,7 +91,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-08.3 Respond to Recommendations Story | As a student, I need to accept, reject or modify each recommendation, so that my plan only changes when I approve it. | • Given a recommendation, when the student clicks "Accept", then the plan is updated.<br>• Given a recommendation, when the student clicks "Reject", then the plan is not changed.<br>• Given a recommendation, when the student edits it and accepts, then the edited version is applied.<br>• Given the student has not responded, when the plan is shown, then no recommendation has been applied. | FR-08.4, FR-08.5, FR-08.6, FR-08.7 | Medium |
 
 ### FR-09 — Manage Career Roadmaps
-![FR-09 user stories](c8-figures/FR-09-manage-career-roadmaps.png)
+![FR-09 user stories](assets/c8-figures/FR-09-manage-career-roadmaps.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -102,7 +102,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-09.4 Change Target Career Story | As a senior student, I need to change my target career and get a new roadmap, so that my plan follows my new direction. | • Given a target career, when the student selects a different career and confirms, then the target career is updated.<br>• Given the target career was updated, when the change is saved, then a new roadmap is generated for the new career. | FR-09.5, FR-09.6 | Low |
 
 ### FR-10 — Track Skills
-![FR-10 user stories](c8-figures/FR-10-track-skills.png)
+![FR-10 user stories](assets/c8-figures/FR-10-track-skills.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -112,7 +112,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-10.3 Update Skill Level Story | As a student, I need to update my skill levels as I improve, so that my skill gaps stay accurate. | • Given a skill, when the student changes its level and saves, then the new level is shown.<br>• Given a gap skill reaches the required level, when the gaps are shown again, then it is no longer marked as a gap. | FR-10.4 | Low |
 
 ### FR-11 — Manage Projects and Portfolios
-![FR-11 user stories](c8-figures/FR-11-manage-projects-and-portfolios.png)
+![FR-11 user stories](assets/c8-figures/FR-11-manage-projects-and-portfolios.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -122,7 +122,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-11.3 View Portfolio Story | As a senior student, I need a portfolio view of my completed projects, so that I can show my work to employers. | • Given completed projects, when the student opens "Portfolio", then only completed projects are shown with their links and skills.<br>• Given no completed projects, when the portfolio is opened, then the message "No completed projects yet" is shown. | FR-11.3 | Low |
 
 ### FR-12 — Manage Internship and Job Preparation
-![FR-12 user stories](c8-figures/FR-12-manage-internship-and-job-preparation.png)
+![FR-12 user stories](assets/c8-figures/FR-12-manage-internship-and-job-preparation.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -133,7 +133,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-12.4 Record Outcome and Feedback Story | As a senior student, I need to record the outcome and feedback of each application, so that I can improve my next applications. | • Given an application, when the student sets the outcome (accepted / rejected / no response), then it is saved.<br>• Given an application, when the student writes feedback and saves, then the feedback is shown with the application. | FR-12.5, FR-12.6 | Low |
 
 ### FR-13 — Manage Habits
-![FR-13 user stories](c8-figures/FR-13-manage-habits.png)
+![FR-13 user stories](assets/c8-figures/FR-13-manage-habits.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -143,7 +143,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-13.3 Link Habit to Goal Story | As a student, I need to link a habit to an academic goal, so that I see how my habits support my goals. | • Given a habit and an active goal, when the student links them, then the habit is shown inside the goal.<br>• Given the goal is archived, when the habit is shown, then the link is shown as inactive. | FR-13.4 | Medium |
 
 ### FR-14 — Analyze Study Workload
-![FR-14 user stories](c8-figures/FR-14-analyze-study-workload.png)
+![FR-14 user stories](assets/c8-figures/FR-14-analyze-study-workload.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -152,7 +152,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-14.2 Overloaded Goal Story | As a student with a heavy workload, I need a goal to be marked as overloaded when its work does not fit my time, so that I know early that I cannot finish it as planned. | • Given remaining workload > remaining available study time, when the workload is calculated, then the goal is marked "Overloaded".<br>• Given remaining workload ≤ remaining available study time, when the workload is calculated, then the goal is not marked "Overloaded". | FR-14.5 | Medium |
 
 ### FR-15 — Predict and Warn Early
-![FR-15 user stories](c8-figures/FR-15-predict-and-warn-early.png)
+![FR-15 user stories](assets/c8-figures/FR-15-predict-and-warn-early.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -162,7 +162,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-15.3 Recovery Actions Story | As a student who is falling behind, I need suggested recovery actions for a warned goal, so that I can still recover before the target date. | • Given an active early warning, when the student opens it, then at least one recovery action is suggested (e.g. extend the target date, add study time, remove a task).<br>• Given the student applies an action, when the workload is recalculated, then the new result is shown. | FR-15.4 | Medium |
 
 ### FR-16 — Coach Students with AI
-![FR-16 user stories](c8-figures/FR-16-coach-students-with-ai.png)
+![FR-16 user stories](assets/c8-figures/FR-16-coach-students-with-ai.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -172,7 +172,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-16.3 Motivational Guidance Story | As a student who is falling behind, I need motivational guidance, so that I stay on track with my goals. | • Given the student has missed tasks this week, when the coach page is opened, then a motivational message is shown.<br>• Given the student completed all tasks this week, when the coach page is opened, then a positive progress message is shown. | FR-16.4 | Low |
 
 ### FR-17 — Display Student Dashboard
-![FR-17 user stories](c8-figures/FR-17-display-student-dashboard.png)
+![FR-17 user stories](assets/c8-figures/FR-17-display-student-dashboard.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -184,7 +184,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-17.5 Career Progress Story | As a senior student, I need to see my career roadmap progress on my dashboard, so that I keep job preparation in view. | • Given a career roadmap, when the dashboard is opened, then its progress percentage is shown.<br>• Given no target career, when the dashboard is opened, then a "Set your target career" link is shown. | FR-17.6 | Low |
 
 ### FR-18 — Send Notifications
-![FR-18 user stories](c8-figures/FR-18-send-notifications.png)
+![FR-18 user stories](assets/c8-figures/FR-18-send-notifications.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -195,7 +195,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-18.4 Streak Milestone Notification Story | As a student, I need to be notified when my habit streak reaches a milestone, so that I feel motivated to continue. | • Given a habit streak reaches 7, 30 or 100 days, when it is updated, then the student receives a congratulation notification.<br>• Given the streak is not at a milestone, when it is updated, then no notification is sent. | FR-18.6 | Medium |
 
 ### FR-19 — Manage Study Groups and Accountability
-![FR-19 user stories](c8-figures/FR-19-manage-study-groups-and-accountability.png)
+![FR-19 user stories](assets/c8-figures/FR-19-manage-study-groups-and-accountability.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
@@ -207,7 +207,7 @@ Each high-level FR is one feature (one epic in Jira), broken into user stories n
 | US-19.5 Support Messages Story | As a study group member, I need to send support messages to my group, so that we encourage each other. | • Given a group, when a member sends a message, then all members can see it.<br>• Given an empty message, when the member clicks "Send", then nothing is sent. | FR-19.8 | Low |
 
 ### FR-20 — Manage Administration
-![FR-20 user stories](c8-figures/FR-20-manage-administration.png)
+![FR-20 user stories](assets/c8-figures/FR-20-manage-administration.png)
 
 
 | Story | User story | Acceptance criteria | Covers | Priority |
