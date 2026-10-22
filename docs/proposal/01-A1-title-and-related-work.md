@@ -1,4 +1,4 @@
---# A1 — Title, description, problem & related work
+# A1 — Title, description, problem & related work
 
 > Issue: #1 · Part: A · Owner: TBD · Reviewer: TBD · Status: Draft
 
@@ -89,7 +89,7 @@ Instructors and academic advisors are affected indirectly, because they deal wit
 ## Checklist
 
 - [x] Write title, description, problem statement and affected users
-- [ ] List the main features of the system
-- [ ] Research at least 3 related systems/apps
-- [ ] Summarize each system's limitations
-- [ ] Build the features x systems comparison table (Aspirra last)
+- [x] List the main features of the system
+- [x] Research at least 3 related systems/apps
+- [x] Summarize each system's limitations
+- [x] Build the features x systems comparison table (Aspirra last)

@@ -54,6 +54,7 @@ The use case model is split into an overview and five detail diagrams so that ea
 | Student | Primary | Manages academic work, plans, habits, career preparation, and collaboration features. |
 | Administrator | Primary | Manages student accounts, platform statistics, account issues, and retention metrics. |
 | AI Service | Secondary (external) | Generates goal roadmaps, study and adaptive plans, career roadmaps, skill-gap insights, predictions, and coaching recommendations. |
+| Email Service | Secondary (external) | Delivers reminders, notifications, and early warnings. |
 
 ### Use cases
 
@@ -76,7 +77,7 @@ The use case model is split into an overview and five detail diagrams so that ea
 | FR-15 | Predict and Warn Early | Student | AI Service | Includes FR-14; included by FR-08 |
 | FR-16 | Coach Students with AI | Student | AI Service | Includes FR-14 |
 | FR-17 | Display Student Dashboard | Student | — | Includes FR-14 |
-| FR-18 | Send Notifications | Student | — | — |
+| FR-18 | Send Notifications | Student | Email Service | — |
 | FR-19 | Manage Study Groups and Accountability | Student | — | — |
 | FR-20 | Manage Administration | Administrator | — | — |
 

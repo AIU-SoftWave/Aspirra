@@ -45,7 +45,7 @@
 
 ## Reports
 
-- **Sprint report / burndown:** [SCRUM Sprint 1 — burndown/report](https://aspirra.atlassian.net/jira/software/projects/SCRUM/boards/1/reports/burndown-chart?sprint=1). A rendered burndown chart screenshot requires an authenticated browser session and was not captured automatically by `acli`.
+- **Sprint report / burndown:** [SCRUM Sprint 1 — burndown/report](https://aspirra.atlassian.net/jira/software/projects/SCRUM/boards/1/reports/burndown-chart?sprint=1)
 
 ## Cleanup performed
 

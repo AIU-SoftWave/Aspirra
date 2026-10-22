@@ -1,6 +1,10 @@
-# Aspirra: Business & Customer Requirements
+# B3 — Business & Customer Requirements
 
-## Business Requirements
+> Issue: #3 · Part: B · Owner: TBD · Reviewer: TBD · Status: Draft
+
+## Content
+
+### Business Requirements
 
 | ID | Business Requirement |
 |---|---|
@@ -13,9 +17,9 @@
 | BR-07 | Reduce the time spent on student account support by 40% within one year of launch. |
 | BR-08 | Keep at least 50% of registered students active every month within 6 months of launch. |
 
-## Customer Requirements
+### Customer Requirements
 
-### User type 1: First-year students
+#### User type 1: First-year students
 
 | ID | Customer Requirement | Linked to |
 |---|---|---|
@@ -23,7 +27,7 @@
 | CR-02 | First-year students need to know what is due and when across all their courses. | BR-01 |
 | CR-03 | First-year students need to build good study habits from the start. | BR-05 |
 
-### User type 2: Students with heavy workloads
+#### User type 2: Students with heavy workloads
 
 | ID | Customer Requirement | Linked to |
 |---|---|---|
@@ -31,7 +35,7 @@
 | CR-05 | Students with heavy workloads need to know what to do first when many deadlines collide. | BR-01 |
 | CR-06 | Students with heavy workloads need to know early when their workload is too much to finish. | BR-02 |
 
-### User type 3: Senior students
+#### User type 3: Senior students
 
 | ID | Customer Requirement | Linked to |
 |---|---|---|
@@ -39,7 +43,7 @@
 | CR-08 | Senior students need to show their skills and projects to employers in one place. | BR-06 |
 | CR-09 | Senior students need to know which skills they are missing for their target career. | BR-06 |
 
-### User type 4: Students who fall behind
+#### User type 4: Students who fall behind
 
 | ID | Customer Requirement | Linked to |
 |---|---|---|
@@ -47,7 +51,7 @@
 | CR-11 | Students who fall behind need a clear way to recover after their plan breaks. | BR-02 |
 | CR-12 | Students who fall behind need to stay motivated after missing tasks, with support from friends or study partners. | BR-08 |
 
-### User type 5: Administrator
+#### User type 5: Administrator
 
 | ID | Customer Requirement | Linked to |
 |---|---|---|

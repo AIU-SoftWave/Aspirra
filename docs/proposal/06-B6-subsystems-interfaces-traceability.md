@@ -21,16 +21,16 @@ Each subsystem groups related high-level FRs. Each FR is one service, with its o
 
 | ID | Subsystem | High-level FRs | Services |
 |---|---|---|---|
-| SUB-01 | Student Profile | FR-01 Manage Student Profile | student-profile |
-| SUB-02 | Academic Management | FR-02 Manage Academic Goals<br>FR-03 Manage Courses<br>FR-04 Manage Assignments and Exams | academic-goal-management<br>course-management<br>assignment-exam-planner |
-| SUB-03 | AI Planning & Scheduling | FR-05 Plan Goals with AI<br>FR-06 Generate Study Plans<br>FR-07 Enable Smart Scheduling<br>FR-08 Enable Adaptive Planning | ai-goal-planner<br>ai-study-plan-generator<br>smart-scheduling<br>adaptive-planning |
-| SUB-04 | Career Development | FR-09 Manage Career Roadmaps<br>FR-10 Track Skills<br>FR-11 Manage Projects and Portfolios<br>FR-12 Manage Internship and Job Preparation | career-roadmap<br>skill-tracking<br>project-portfolio-management<br>internship-job-preparation |
-| SUB-05 | Habit Tracking | FR-13 Manage Habits | habit-management |
-| SUB-06 | Insights & Coaching | FR-14 Analyze Study Workload<br>FR-15 Predict and Warn Early<br>FR-16 Coach Students with AI | academic-performance-analytics<br>prediction-early-warning<br>ai-student-coach |
-| SUB-07 | Student Dashboard | FR-17 Display Student Dashboard | dashboard |
-| SUB-08 | Notifications | FR-18 Send Notifications | notifications |
-| SUB-09 | Study Groups & Accountability | FR-19 Manage Study Groups and Accountability | study-groups-accountability |
-| SUB-10 | Administration | FR-20 Manage Administration | admin-dashboard |
+| SUB-01 | Student Profile | FR-01 Manage Student Profile | student-service |
+| SUB-02 | Academic Management | FR-02 Manage Academic Goals<br>FR-03 Manage Courses<br>FR-04 Manage Assignments and Exams | academic-service<br>course-service<br>assessment-service |
+| SUB-03 | AI Planning & Scheduling | FR-05 Plan Goals with AI<br>FR-06 Generate Study Plans<br>FR-07 Enable Smart Scheduling<br>FR-08 Enable Adaptive Planning | goal-planner-service<br>study-planner-service<br>scheduling-service<br>adaptation-service |
+| SUB-04 | Career Development | FR-09 Manage Career Roadmaps<br>FR-10 Track Skills<br>FR-11 Manage Projects and Portfolios<br>FR-12 Manage Internship and Job Preparation | career-service<br>skill-service<br>portfolio-service<br>job-preparation-service |
+| SUB-05 | Habit Tracking | FR-13 Manage Habits | habit-service |
+| SUB-06 | Insights & Coaching | FR-14 Analyze Study Workload<br>FR-15 Predict and Warn Early<br>FR-16 Coach Students with AI | analytics-service<br>prediction-service<br>ai-coach-service |
+| SUB-07 | Student Dashboard | FR-17 Display Student Dashboard | dashboard-service |
+| SUB-08 | Notifications | FR-18 Send Notifications | notification-service |
+| SUB-09 | Study Groups & Accountability | FR-19 Manage Study Groups and Accountability | study-group-service |
+| SUB-10 | Administration | FR-20 Manage Administration | administration-service |
 
 ### Interfaces
 

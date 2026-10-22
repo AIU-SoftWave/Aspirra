@@ -106,6 +106,7 @@
 | FR-07.2 | The system shall detect scheduling conflicts between tasks and overlapping time slots. | Yomna Mohamed Fekry | CR-04 |
 | FR-07.3 | The system shall suggest alternative time slots when scheduling conflicts occur. | Yomna Mohamed Fekry | CR-05 |
 | FR-07.4 | The system shall allow a student to manually adjust scheduled tasks and times. | Yomna Mohamed Fekry | CR-04 |
+| FR-07.5 | The system shall allow a student to mark a scheduled task as completed or not completed. | Yomna Mohamed Fekry | CR-04, CR-06 |
 
 #### FR-08 — Enable Adaptive Planning
 **Owner:** Yomna Mohamed Fekry | **Linked to:** CR-04, CR-05, CR-06, CR-11

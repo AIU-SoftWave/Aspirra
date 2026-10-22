@@ -230,15 +230,15 @@ Do not commit API keys or other secrets. Use environment variables and keep loca
 
 ## Team Ownership
 
-The assignment requires each of the five members to own four high-level functional requirements. The following is a proposed division; replace placeholders with actual team details and finalize the requirements collaboratively.
+The assignment requires each of the five members to own four high-level functional requirements. The division below is final and matches the proposal, repository, and Jira labels.
 
-| Member | Ownership area | Proposed service/module labels |
+| Member | Ownership area | Service/module labels |
 |---|---|---|
-| Member 1 / Team Leader | Academic management | `student-service`, `academic-service`, `course-service`, `assessment-service` |
-| Member 2 | AI planning and scheduling | `goal-planner-service`, `study-planner-service`, `scheduling-service`, `adaptation-service` |
-| Member 3 | Career and skill development | `career-service`, `skill-service`, `portfolio-service`, `job-preparation-service` |
-| Member 4 | Habits, insights, and coaching | `habit-service`, `analytics-service`, `prediction-service`, `ai-coach-service` |
-| Member 5 | Engagement and platform management | `dashboard-service`, `notification-service`, `study-group-service`, `administration-service` |
+| Ahmed Mohamed Ahmed / Team Leader | Academic management | `student-service`, `academic-service`, `course-service`, `assessment-service` |
+| Yomna Mohamed Fekry | AI planning and scheduling | `goal-planner-service`, `study-planner-service`, `scheduling-service`, `adaptation-service` |
+| Arwa Mohey Hamdy | Career and skill development | `career-service`, `skill-service`, `portfolio-service`, `job-preparation-service` |
+| Mostafa Khamis Abozead | Habits, insights, and coaching | `habit-service`, `analytics-service`, `prediction-service`, `ai-coach-service` |
+| Muhammed Hany Hamdy | Engagement and platform management | `dashboard-service`, `notification-service`, `study-group-service`, `administration-service` |
 
 These names are logical ownership labels for planning and Jira; they do not require each module to be a separate deployable microservice. Final service names must match the team table, repository folders, and Jira story labels. Each high-level functional requirement should have one accountable owner and at least two low-level requirements.
 
@@ -384,19 +384,17 @@ Never commit real credentials. Add local environment files to `.gitignore` and u
 
 ## Team Members
 
-Replace the placeholders before submission. Use university emails and usernames as required by the assignment.
-
 | University ID | Name | University email | GitHub username | Owned services |
 |---|---|---|---|---|
-| `[ID]` | `[Member 1]` | `[Email]` | `[GitHub]` | Academic management |
-| `[ID]` | `[Member 2]` | `[Email]` | `[GitHub]` | AI planning and scheduling |
-| `[ID]` | `[Member 3]` | `[Email]` | `[GitHub]` | Career and skill development |
-| `[ID]` | `[Member 4]` | `[Email]` | `[GitHub]` | Habits, analytics, and coaching |
-| `[ID]` | `[Member 5]` | `[Email]` | `[GitHub]` | Dashboard, notifications, groups, administration |
+| 23101359 | Ahmed Mohamed Ahmed | ahmed.abdo.2024@aiu.edu.eg | AbooSalh | `student-service`, `academic-service`, `course-service`, `assessment-service` |
+| 23101506 | Yomna Mohamed Fekry | yomna.hosney.2024@aiu.edu.eg | YomnaElmenawy | `goal-planner-service`, `study-planner-service`, `scheduling-service`, `adaptation-service` |
+| 23101371 | Arwa Mohey Hamdy | arwa.hamdy.2024@aiu.edu.eg | ArwaMohey | `career-service`, `skill-service`, `portfolio-service`, `job-preparation-service` |
+| 23101484 | Mostafa Khamis Abozead | mostafa.abozead.2024@aiu.edu.eg | Mostafa-abozead | `habit-service`, `analytics-service`, `prediction-service`, `ai-coach-service` |
+| 23102359 | Muhammed Hany Hamdy | mohamed.abuaaliyah.2024@aiu.edu.eg | muhammedhanii | `dashboard-service`, `notification-service`, `study-group-service`, `administration-service` |
 
-Each member must own at least two services. The final service names must match the repository and Jira labels. Add all team members and both teaching assistants to the GitHub repository and Jira project as required.
+Each member owns four services. The service names match the repository and Jira labels. Add all team members and the teaching assistants to the GitHub repository and Jira project as required.
 
-**Jira board:** `[Add Jira board URL]`
+**Jira board:** [Aspirra Project — SCRUM board](https://aspirra.atlassian.net/jira/software/projects/SCRUM/boards/1)
 
 ## License
 

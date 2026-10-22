@@ -108,6 +108,8 @@ Percentage = 24.00 ÷ 225 × 100 = 10.7%
 
 The single-point estimate was **24.00 days (10.7%) optimistic**: it planned for less work than the team will most probably need.
 
+The total is computed from unrounded per-story values. The per-story rows are rounded to two decimals, so summing the displayed rows gives 248.94 rather than 249.00.
+
 ### Step 3 — Is the team still enough?
 
 ```
