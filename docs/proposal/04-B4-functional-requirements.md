@@ -106,6 +106,7 @@
 | FR-07.2 | The system shall detect scheduling conflicts between tasks and overlapping time slots. | Yomna Mohamed Fekry | CR-04 |
 | FR-07.3 | The system shall suggest alternative time slots when scheduling conflicts occur. | Yomna Mohamed Fekry | CR-05 |
 | FR-07.4 | The system shall allow a student to manually adjust scheduled tasks and times. | Yomna Mohamed Fekry | CR-04 |
+| FR-07.5 | The system shall allow a student to mark a scheduled task as completed. | Yomna Mohamed Fekry | CR-04 |
 
 #### FR-08 — Enable Adaptive Planning
 **Owner:** Yomna Mohamed Fekry | **Linked to:** CR-04, CR-05, CR-06, CR-11
@@ -270,6 +271,7 @@
 - **FR-06.1 / FR-06.3**: Plan generation is mapped to CR-01 and CR-04; regeneration after an availability or deadline change is also mapped to CR-06, since a changed workload may no longer be finishable.
 - **FR-06.4 / FR-06.5**: Split into rejecting an invalid AI-generated plan and retaining the previously saved plan. Both are mapped to CR-04, because the student must keep a plan that still fits courses, projects, and work into one realistic schedule when a generation attempt fails.
 - **FR-07**: Conflict resolution alternatives are mapped to CR-05 (knowing what to do first when deadlines collide); manual adjustment is mapped to CR-04 (fitting the work into one realistic schedule).
+- **FR-07.5**: Marking a scheduled task as completed is mapped to CR-04. FR-08.1, FR-14.1 and FR-14.3 depend on knowing which scheduled tasks are finished.
 - **FR-08.2 / FR-08.3**: Rescheduling is mapped to CR-04 and CR-05; reprioritising is mapped to CR-05. Accept, reject, and modify are mapped to CR-11, the documented need for a clear way to recover after a plan breaks.
 - **FR-09 / FR-10**: Career roadmap and skill work are mapped to CR-07 (balancing coursework with job preparation) and CR-09 (knowing which skills are missing for the target career). FR-10.1 is mapped to CR-08, since recorded skills are the content the student shows to employers in one place.
 - **FR-11 / FR-12**: Projects, portfolio, CV, and portfolio updates are mapped to CR-08 (showing skills and projects to employers in one place); application tracking, interview preparation, outcomes, and feedback are mapped to CR-07 (job preparation).
