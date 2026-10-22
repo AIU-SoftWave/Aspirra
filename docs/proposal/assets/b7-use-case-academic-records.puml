@@ -1,0 +1,59 @@
+@startuml b7-use-case-academic-records
+!pragma layout smetana
+title Aspirra — Academic Records and Goals (FR-01 to FR-05)
+
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 12
+skinparam ArrowColor #4A6FA5
+skinparam ArrowThickness 1.2
+skinparam ActorBackgroundColor #E8F0FB
+skinparam ActorBorderColor #2F5597
+skinparam UsecaseBackgroundColor #F7F9FC
+skinparam UsecaseBorderColor #4A6FA5
+skinparam UsecaseFontColor #1F2937
+skinparam UsecaseFontSize 12
+skinparam PackageBackgroundColor #FFFFFF
+skinparam PackageBorderColor #94A3B8
+skinparam PackageFontColor #334155
+skinparam usecase<<ai>> {
+  BackgroundColor #EEF2FF
+  BorderColor #6366F1
+}
+
+actor Student as Student
+actor "AI Service" as AIService <<external system>>
+
+rectangle "Aspirra" {
+  package "Student-managed records" {
+    usecase "FR-01\nManage Student Profile" as UC01
+    usecase "FR-03\nManage Courses" as UC03
+    usecase "FR-04\nManage Assignments and Exams" as UC04
+  }
+
+  package "Academic goals" {
+    usecase "FR-02\nManage Academic Goals" as UC02
+    usecase "FR-05\nPlan Goals with AI" as UC05 <<ai>>
+  }
+}
+
+Student -- UC01
+Student -- UC02
+Student -- UC03
+Student -- UC04
+Student -- UC05
+
+AIService -- UC05 : generates goal roadmap
+
+UC05 .> UC02 : <<extend>>
+
+legend right
+  <b>Reading the diagram</b>
+  Default use cases are managed directly by the student.
+  Indigo use cases are supported by the external AI Service.
+  <<extend>> means AI goal planning is optional.
+endlegend
+
+@enduml

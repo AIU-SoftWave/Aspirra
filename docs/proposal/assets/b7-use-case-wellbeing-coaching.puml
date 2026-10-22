@@ -1,0 +1,48 @@
+@startuml b7-use-case-wellbeing-coaching
+!pragma layout smetana
+title Aspirra — Wellbeing and Coaching Use Cases
+
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 12
+skinparam ArrowColor #4A6FA5
+skinparam ArrowThickness 1.2
+skinparam ActorBackgroundColor #E8F0FB
+skinparam ActorBorderColor #2F5597
+skinparam UsecaseBackgroundColor #F7F9FC
+skinparam UsecaseBorderColor #4A6FA5
+skinparam UsecaseFontColor #1F2937
+skinparam PackageBackgroundColor #FFFFFF
+skinparam PackageBorderColor #94A3B8
+skinparam PackageFontColor #334155
+
+actor Student as Student
+actor "AI Service" as AIService <<external system>>
+
+rectangle "Aspirra" {
+  package "Wellbeing and Coaching" {
+    usecase "FR-13\nManage Habits" as UC13
+    usecase "FR-14\nAnalyze Study Workload" as UC14
+    usecase "FR-15\nPredict and Warn Early" as UC15
+    usecase "FR-16\nCoach Students with AI" as UC16
+  }
+}
+
+Student -- UC13
+Student -- UC14
+Student -- UC15
+Student -- UC16
+
+AIService -- UC15 : risk prediction
+AIService -- UC16 : coaching
+
+UC15 .> UC14 : <<include>>
+UC16 .> UC14 : <<include>>
+
+legend right
+  Prediction and coaching both use the workload analysis in FR-14.
+endlegend
+
+@enduml

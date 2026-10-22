@@ -1,0 +1,53 @@
+@startuml b7-use-case-engagement-administration
+!pragma layout smetana
+title Aspirra — Engagement and Administration Use Cases
+
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 12
+skinparam ArrowColor #4A6FA5
+skinparam ArrowThickness 1.2
+skinparam ActorBackgroundColor #E8F0FB
+skinparam ActorBorderColor #2F5597
+skinparam UsecaseBackgroundColor #F7F9FC
+skinparam UsecaseBorderColor #4A6FA5
+skinparam UsecaseFontColor #1F2937
+skinparam PackageBackgroundColor #FFFFFF
+skinparam PackageBorderColor #94A3B8
+skinparam PackageFontColor #334155
+
+actor Student as Student
+actor Administrator as Admin
+
+rectangle "Aspirra" {
+  package "Engagement" {
+    usecase "FR-17\nDisplay Student Dashboard" as UC17
+    usecase "FR-18\nSend Notifications" as UC18
+    usecase "FR-19\nManage Study Groups and Accountability" as UC19
+  }
+
+  package "Administration" {
+    usecase "FR-20\nManage Administration" as UC20
+  }
+
+  package "Shared from Wellbeing and Coaching" as Shared {
+    usecase "FR-14\nAnalyze Study Workload" as UC14
+  }
+}
+
+Student -- UC17
+Student -- UC18
+Student -- UC19
+
+Admin -- UC20
+
+UC17 .> UC14 : <<include>>
+
+legend right
+  The dashboard includes the workload summary from FR-14.
+  Administration is available only to the Administrator actor.
+endlegend
+
+@enduml
