@@ -1,0 +1,45 @@
+@startuml b7-use-case-career-portfolio
+!pragma layout smetana
+title Aspirra — Career and Portfolio Use Cases
+
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 12
+skinparam ArrowColor #4A6FA5
+skinparam ArrowThickness 1.2
+skinparam ActorBackgroundColor #E8F0FB
+skinparam ActorBorderColor #2F5597
+skinparam UsecaseBackgroundColor #F7F9FC
+skinparam UsecaseBorderColor #4A6FA5
+skinparam UsecaseFontColor #1F2937
+skinparam PackageBackgroundColor #FFFFFF
+skinparam PackageBorderColor #94A3B8
+skinparam PackageFontColor #334155
+
+actor Student as Student
+actor "AI Service" as AIService <<external system>>
+
+rectangle "Aspirra" {
+  package "Career and Portfolio" {
+    usecase "FR-09\nManage Career Roadmaps" as UC09
+    usecase "FR-10\nTrack Skills" as UC10
+    usecase "FR-11\nManage Projects and Portfolios" as UC11
+    usecase "FR-12\nManage Internship and Job Preparation" as UC12
+  }
+}
+
+Student -- UC09
+Student -- UC10
+Student -- UC11
+Student -- UC12
+
+AIService -- UC09 : roadmap generation
+AIService -- UC10 : skill-gap analysis
+
+legend right
+  The AI Service supports career-roadmap generation and skill-gap analysis.
+endlegend
+
+@enduml

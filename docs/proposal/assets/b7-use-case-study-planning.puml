@@ -1,0 +1,70 @@
+@startuml b7-use-case-study-planning
+!pragma layout smetana
+title Aspirra — Study Planning and Adaptation (FR-06 to FR-08)
+
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 12
+skinparam ArrowColor #4A6FA5
+skinparam ArrowThickness 1.2
+skinparam ActorBackgroundColor #E8F0FB
+skinparam ActorBorderColor #2F5597
+skinparam UsecaseBackgroundColor #F7F9FC
+skinparam UsecaseBorderColor #4A6FA5
+skinparam UsecaseFontColor #1F2937
+skinparam UsecaseFontSize 12
+skinparam PackageBackgroundColor #FFFFFF
+skinparam PackageBorderColor #94A3B8
+skinparam PackageFontColor #334155
+skinparam usecase<<ai>> {
+  BackgroundColor #EEF2FF
+  BorderColor #6366F1
+}
+skinparam usecase<<shared>> {
+  BackgroundColor #FFF7ED
+  BorderColor #F59E0B
+}
+
+actor Student as Student
+actor "AI Service" as AIService <<external system>>
+
+rectangle "Aspirra" {
+  package "Study planning" {
+    usecase "FR-06\nGenerate Study Plans" as UC06 <<ai>>
+    usecase "FR-07\nEnable Smart Scheduling" as UC07
+  }
+
+  package "Adaptive planning" {
+    usecase "FR-08\nEnable Adaptive Planning" as UC08 <<ai>>
+  }
+
+  package "Shared from Wellbeing and Coaching" as Shared {
+    usecase "FR-14\nAnalyze Study Workload" as UC14 <<shared>>
+    usecase "FR-15\nPredict and Warn Early" as UC15 <<shared>>
+  }
+}
+
+Student -- UC06
+Student -- UC07
+Student -- UC08
+
+AIService -- UC06 : generates plan
+AIService -- UC08 : adaptation
+AIService -- UC15 : risk prediction
+
+UC06 .> UC07 : <<include>>
+UC08 .> UC06 : <<extend>>
+UC08 .> UC14 : <<include>>
+UC08 .> UC15 : <<include>>
+UC15 .> UC14 : <<include>>
+
+legend right
+  <b>Reading the diagram</b>
+  Indigo use cases use the external AI Service.
+  Amber use cases are shared with the Wellbeing and Coaching view.
+  <<include>> = required behaviour; <<extend>> = optional behaviour.
+endlegend
+
+@enduml
