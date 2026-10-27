@@ -1,0 +1,33 @@
+@startuml habit-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Habit Service (FR-13) | Owner: Mostafa Khamis Abozead\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "Habit" as Habit {
+  * habitId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  goalId : VARCHAR(50)
+  name : VARCHAR(150)
+  frequency : VARCHAR(30)
+  goalTarget : VARCHAR(150)
+  reminderTime : TIME
+  currentStreak : INT
+  isActive : BOOLEAN
+  createdAt : DATETIME
+  updatedAt : DATETIME
+}
+
+entity "HabitLog" as HabitLog {
+  * logId : VARCHAR(50) <<PK>>
+  --
+  habitId : VARCHAR(50) <<FK to Habit>>
+  logDate : DATE
+  completed : BOOLEAN
+  completedAt : DATETIME
+}
+
+Habit ||--o{ HabitLog : "has logs"
+' Note: goalId/studentId are logical references (no cross-service FK)
+@enduml

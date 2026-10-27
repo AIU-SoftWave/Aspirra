@@ -1,0 +1,23 @@
+@startuml notification-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Notification Service (FR-18) | Owner: Muhammed Hany Hamdy\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "Notification" as Notification {
+  * notificationId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  type : VARCHAR(50)
+  title : VARCHAR(150)
+  message : TEXT
+  channel : VARCHAR(20)
+  sourceService : VARCHAR(50)
+  sourceId : VARCHAR(50)
+  isRead : BOOLEAN
+  sentAt : DATETIME
+  readAt : DATETIME
+}
+
+' Note: sourceId references are logical (no cross-service FK)
+@enduml

@@ -1,0 +1,103 @@
+@startuml academic-service-class-diagram
+title Level 3: Code - Class Diagram (academic-service) - FR-02\nOwner: Ahmed Mohamed Ahmed
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IGoal <<provided>> {
+  +createGoal(studentId, data): Goal
+  +updateGoal(goalId, data): Goal
+  +completeGoal(goalId): void
+  +archiveGoal(goalId): void
+  +restoreGoal(goalId): void
+  +deleteGoal(goalId): void
+  +getGoals(studentId, status): List<Goal>
+}
+
+class GoalService <<component>> {
+  -studentProfile: IStudentProfile
+  -repository: IGoalRepository
+  -goalValidator: GoalValidator
+  --
+  +createGoal(...) / updateGoal(...)
+  +completeGoal(...) / archiveGoal(...)
+  +restoreGoal(...) / deleteGoal(...)
+  +getGoals(...)
+}
+
+IGoal <|.. GoalService
+class GoalValidator <<component>> {
+  +validate(data): ValidationResult
+  +isFuture(date): boolean
+}
+GoalService --> GoalValidator
+
+interface IStudentProfile <<required - Student service>> {
+  +createProfile(studentId, data): Profile
+  +updateProfile(studentId, data): Profile
+  +getProfile(studentId): Profile
+  +getAvailability(studentId): List<TimeSlot>
+}
+
+GoalService --> IStudentProfile
+interface IGoalRepository <<required - Database>> {
+  +save(item: Goal): void
+  +findById(id): Goal
+  +findByOwner(ownerId): List<Goal>
+}
+
+GoalService --> IGoalRepository
+class Goal {
+  -goalId: String
+  -studentId: String
+  -title: String
+  -description: String
+  -targetDate: Date
+  -priority: String
+  -status: GoalStatus
+  --
+  +complete(): void
+  +archive(): void
+}
+enum GoalStatus {
+  Active
+  Completed
+  Archived
+}
+IGoalRepository --> Goal
+Goal --> GoalStatus
+note bottom of GoalService
+SOLID applied:
+S - GoalService only coordinates; GoalValidator each do one job.
+O - new behaviour is added by new implementations, not by editing GoalService.
+L - GoalService can replace any other IGoal implementation.
+I - IGoal has only the operations its clients use.
+D - GoalService depends on interfaces (IStudentProfile, IGoalRepository), not on concrete classes.
+end note
+@enduml

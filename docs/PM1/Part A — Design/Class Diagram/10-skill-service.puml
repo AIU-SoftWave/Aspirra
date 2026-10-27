@@ -1,0 +1,95 @@
+@startuml skill-service-class-diagram
+title Level 3: Code - Class Diagram (skill-service) - FR-10\nOwner: Arwa Mohey Hamdy
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface ISkill <<provided>> {
+  +addSkill(studentId, skill): Skill
+  +updateLevel(skillId, level): void
+  +getSkills(studentId): List<Skill>
+  +getSkillGaps(studentId): List<SkillGap>
+}
+
+class SkillService <<component>> {
+  -career: ICareer
+  -repository: ISkillRepository
+  -skillGapCalculator: SkillGapCalculator
+  --
+  +addSkill(...) / updateLevel(...)
+  +getSkills(...) / getSkillGaps(...)
+}
+
+ISkill <|.. SkillService
+class SkillGapCalculator <<component>> {
+  +compare(skills, required): List<SkillGap>
+}
+SkillService --> SkillGapCalculator
+
+interface ICareer <<required - Career service>> {
+  +setTargetCareer(studentId, career): void
+  +getRoadmap(studentId): Roadmap
+  +completeMilestone(milestoneId): void
+  +getProgress(studentId): int
+  +getRequiredSkills(studentId): List<RequiredSkill>
+}
+
+SkillService --> ICareer
+interface ISkillRepository <<required - Database>> {
+  +save(item: Skill): void
+  +findById(id): Skill
+  +findByOwner(ownerId): List<Skill>
+}
+
+SkillService --> ISkillRepository
+class Skill {
+  -skillId: String
+  -studentId: String
+  -name: String
+  -type: String
+  -level: int
+}
+class SkillGap {
+  -skill: String
+  -currentLevel: int
+  -requiredLevel: int
+  --
+  +isGap(): boolean
+}
+ISkillRepository --> Skill
+Skill ..> SkillGap
+note bottom of SkillService
+SOLID applied:
+S - SkillService only coordinates; SkillGapCalculator each do one job.
+O - new behaviour is added by new implementations, not by editing SkillService.
+L - SkillService can replace any other ISkill implementation.
+I - ISkill has only the operations its clients use.
+D - SkillService depends on interfaces (ICareer, ISkillRepository), not on concrete classes.
+end note
+@enduml

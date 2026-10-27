@@ -1,0 +1,16 @@
+@startuml dashboard-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Dashboard Service (FR-17) | Owner: Muhammed Hany Hamdy\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "DashboardView" as DashboardView {
+  * dashboardViewId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  viewData : TEXT
+  lastRefreshedAt : DATETIME
+}
+
+' Note: dashboard aggregates data from other services via interfaces; no owned cross-service entities stored as FK
+@enduml

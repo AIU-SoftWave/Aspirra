@@ -1,0 +1,35 @@
+@startuml habit-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Habit Service (FR-13) | Owner: Mostafa Khamis Abozead
+
+Container_Boundary(habitBoundary, "Habit Service") {
+  
+  ' Provided interface
+  Component(iHabit, "IHabit", "Provided Interface", "createHabit, completeHabit, getStreaks, linkToGoal")
+  
+  ' Core components
+  Component(habitService, "HabitService", "Component", "Manages habits and streaks. Applies SOLID principles.")
+  Component(streakCalculator, "StreakCalculator", "Component", "Calculates habit streaks")
+  
+  ' Persistence
+  Component(habitRepo, "IHabitRepository", "Repository Interface / Component", "Data access for Habit, HabitLog (owned)")
+  
+  ' Domain
+  Component(domainModel, "Habit, HabitLog, HabitFrequency", "Domain Model", "Owned entities and enums")
+}
+
+' Required interfaces
+Container_Ext(academicSvc, "Academic Service", "ASP.NET Core API", "Provides IGoal")
+
+' Internal relationships
+Rel(iHabit, habitService, "Delegates calls")
+Rel(habitService, streakCalculator, "Uses")
+Rel(habitService, habitRepo, "Uses (IHabitRepository)")
+Rel(habitRepo, domainModel, "Maps to/from")
+
+' Cross-service relationships
+Rel(habitService, academicSvc, "Uses IGoal (required)")
+
+SHOW_LEGEND()
+@enduml

@@ -1,0 +1,22 @@
+@startuml academic-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Academic Service (FR-02) | Owner: Ahmed Mohamed Ahmed\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "Goal" as Goal {
+  * goalId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  title : VARCHAR(200)
+  description : TEXT
+  targetDate : DATE
+  priority : VARCHAR(20)
+  status : VARCHAR(20)
+  completionDate : DATE
+  createdAt : DATETIME
+  updatedAt : DATETIME
+}
+
+' Note: studentId is a logical reference to Student Service (no cross-service FK)
+@enduml

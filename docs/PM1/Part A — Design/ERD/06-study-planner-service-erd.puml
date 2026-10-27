@@ -1,0 +1,32 @@
+@startuml study-planner-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Study Planner Service (FR-06) | Owner: Yomna Mohamed Fekry\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "StudyPlan" as StudyPlan {
+  * studyPlanId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  status : VARCHAR(20)
+  generatedAt : DATETIME
+  updatedAt : DATETIME
+}
+
+entity "StudyTask" as StudyTask {
+  * studyTaskId : VARCHAR(50) <<PK>>
+  --
+  studyPlanId : VARCHAR(50) <<FK to StudyPlan>>
+  courseId : VARCHAR(50)
+  title : VARCHAR(200)
+  durationHours : INT
+  scheduledDate : DATE
+  scheduledStartTime : TIME
+  scheduledEndTime : TIME
+  priority : VARCHAR(20)
+  status : VARCHAR(20)
+}
+
+StudyPlan ||--o{ StudyTask : "contains"
+' Note: courseId/studentId are logical references (no cross-service FK)
+@enduml

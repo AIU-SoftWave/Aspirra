@@ -1,0 +1,35 @@
+@startuml course-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Course Service (FR-03) | Owner: Ahmed Mohamed Ahmed
+
+Container_Boundary(courseBoundary, "Course Service") {
+  
+  ' Provided interface
+  Component(iCourse, "ICourse", "Provided Interface", "addCourse, updateCourse, removeCourse, getCourses, getCourseProgress")
+  
+  ' Core components
+  Component(courseService, "CourseService", "Component", "Orchestrates course management. Applies SOLID principles.")
+  Component(courseValidator, "CourseValidator", "Component", "Validates course data")
+  
+  ' Persistence
+  Component(courseRepo, "ICourseRepository", "Repository Interface / Component", "Data access for Course (owned)")
+  
+  ' Domain
+  Component(domainModel, "Course, CourseEnrollment", "Domain Model", "Owned entities")
+}
+
+' Required interfaces
+Container_Ext(assessmentSvc, "Assessment Service", "ASP.NET Core API", "Provides IAssessment")
+
+' Internal relationships
+Rel(iCourse, courseService, "Delegates calls")
+Rel(courseService, courseValidator, "Uses")
+Rel(courseService, courseRepo, "Uses (ICourseRepository)")
+Rel(courseRepo, domainModel, "Maps to/from")
+
+' Cross-service relationships
+Rel(courseService, assessmentSvc, "Uses IAssessment (required)")
+
+SHOW_LEGEND()
+@enduml

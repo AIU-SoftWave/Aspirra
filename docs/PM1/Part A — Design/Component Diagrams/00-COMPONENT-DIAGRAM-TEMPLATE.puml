@@ -1,0 +1,35 @@
+@startuml component-diagram-template
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - <SERVICE_NAME> (<FR-XX>) | Owner: <OWNER_NAME>
+
+Container_Boundary(svcBoundary, "<SERVICE_NAME> Service") {
+  
+  ' Provided interface of this service
+  Component(providedApi, "I<SERVICE_INTERFACE>", "Provided Interface", "Exposed to other service containers")
+  
+  ' Core components
+  Component(serviceComp, "<ServiceClassName>", "Component", "Core business logic - orchestrates use cases (SOLID)")
+  Component(validator, "<ServiceValidator>", "Component", "Validation rules")
+  
+  ' Persistence
+  Component(repo, "<IRepo>Repository", "Component", "Data access for owned entities")
+  
+  ' Domain
+  Component(domain, "<DomainEntities>", "Domain Model", "Entities/enums owned by this service")
+}
+
+' Required interfaces to other service containers/external systems
+Container_Ext(extSvc, "<External Service Container>", "<Technology>", "Provides required interface")
+
+' Internal relationships
+Rel(providedApi, serviceComp, "Delegates")
+Rel(serviceComp, validator, "Uses")
+Rel(serviceComp, repo, "Uses")
+Rel(repo, domain, "Maps to/from")
+
+' Cross-service/external relationships
+Rel(serviceComp, extSvc, "Uses <IRequiredInterface> (required)")
+
+SHOW_LEGEND()
+@enduml

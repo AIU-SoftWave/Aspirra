@@ -1,0 +1,39 @@
+@startuml scheduling-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Scheduling Service (FR-07) | Owner: Yomna Mohamed Fekry
+
+Container_Boundary(schedulingBoundary, "Scheduling Service") {
+  
+  ' Provided interface
+  Component(iScheduling, "IScheduling", "Provided Interface", "autoSchedule, resolveConflicts, adjustSchedule, markTaskDone, getSchedule")
+  
+  ' Core components
+  Component(schedulingService, "SchedulingService", "Component", "Smart scheduling with constraints. Applies SOLID principles.")
+  Component(conflictResolver, "ConflictResolver", "Component", "Detects and resolves conflicts")
+  
+  ' Persistence
+  Component(scheduleRepo, "IScheduleRepository", "Repository Interface / Component", "Data access for Schedule, ScheduledTask (owned)")
+  
+  ' Domain
+  Component(domainModel, "Schedule, ScheduledTask, Conflict", "Domain Model", "Owned entities")
+}
+
+' Required interfaces
+Container_Ext(goalPlannerSvc, "Goal Planner Service", "ASP.NET Core API", "Provides IGoalPlanner")
+Container_Ext(assessmentSvc, "Assessment Service", "ASP.NET Core API", "Provides IAssessment")
+Container_Ext(studentSvc, "Student Service", "ASP.NET Core API", "Provides IStudentProfile")
+
+' Internal relationships
+Rel(iScheduling, schedulingService, "Delegates calls")
+Rel(schedulingService, conflictResolver, "Uses")
+Rel(schedulingService, scheduleRepo, "Uses (IScheduleRepository)")
+Rel(scheduleRepo, domainModel, "Maps to/from")
+
+' Cross-service relationships
+Rel(schedulingService, goalPlannerSvc, "Uses IGoalPlanner (required)")
+Rel(schedulingService, assessmentSvc, "Uses IAssessment (required)")
+Rel(schedulingService, studentSvc, "Uses IStudentProfile (required)")
+
+SHOW_LEGEND()
+@enduml

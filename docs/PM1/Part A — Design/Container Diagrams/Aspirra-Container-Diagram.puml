@@ -1,0 +1,128 @@
+@startuml Aspirra-Container-Diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Level 1: Container Diagram - Aspirra (Student Success & Career Planner)
+
+Person(student, "Student", "Uses Aspirra to manage goals, study plans, schedules, habits, career preparation, and track progress.")
+
+System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
+  
+  ' Ahmed Mohamed Ahmed (AbooSalh)
+  Boundary(ahmed, "Owner: Ahmed Mohamed Ahmed") {
+    Container(studentSvc, "Student Service", "ASP.NET Core API", "FR-01 | Provides IStudentProfile. Manages student profiles and availability.")
+    Container(academicSvc, "Academic Service", "ASP.NET Core API", "FR-02 | Provides IGoal. Manages academic goals and their lifecycle.")
+    Container(courseSvc, "Course Service", "ASP.NET Core API", "FR-03 | Provides ICourse. Manages courses, enrollments, and course details.")
+    Container(assessmentSvc, "Assessment Service", "ASP.NET Core API", "FR-04 | Provides IAssessment. Manages assignments, exams, and assessments.")
+  }
+
+  ' Yomna Mohamed Fekry (YomnaElmenawy)
+  Boundary(yomna, "Owner: Yomna Mohamed Fekry") {
+    Container(goalPlannerSvc, "Goal Planner Service", "ASP.NET Core API", "FR-05 | Provides IGoalPlanner. Generates and approves AI-assisted goal plans.")
+    Container(studyPlannerSvc, "Study Planner Service", "ASP.NET Core API", "FR-06 | Provides IStudyPlanner. Generates study plans based on courses and schedule.")
+    Container(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "FR-07 | Provides IScheduling. Manages smart scheduling and time allocation.")
+    Container(adaptationSvc, "Adaptation Service", "ASP.NET Core API", "FR-08 | Provides IAdaptation. Enables adaptive planning based on progress and changes.")
+  }
+
+  ' Arwa Mohey Hamdy (ArwaMohey)
+  Boundary(arwa, "Owner: Arwa Mohey Hamdy") {
+    Container(careerSvc, "Career Service", "ASP.NET Core API", "FR-09 | Provides ICareer. Manages career roadmaps and milestones.")
+    Container(skillSvc, "Skill Service", "ASP.NET Core API", "FR-10 | Provides ISkill. Tracks skills, gaps, and skill development.")
+    Container(portfolioSvc, "Portfolio Service", "ASP.NET Core API", "FR-11 | Provides IPortfolio. Manages projects and portfolio artifacts.")
+    Container(jobPrepSvc, "Job Preparation Service", "ASP.NET Core API", "FR-12 | Provides IJobPrep. Manages internship/job preparation activities.")
+  }
+
+  ' Mostafa Khamis Abozead (Mostafa-abozead)
+  Boundary(mostafa, "Owner: Mostafa Khamis Abozead") {
+    Container(habitSvc, "Habit Service", "ASP.NET Core API", "FR-13 | Provides IHabit. Manages habits, streaks, and reminders.")
+    Container(analyticsSvc, "Analytics Service", "ASP.NET Core API", "FR-14 | Provides IAnalytics. Analyzes study workload and performance.")
+    Container(predictionSvc, "Prediction Service", "ASP.NET Core API", "FR-15 | Provides IPrediction. Predicts risks and issues early warnings.")
+    Container(aiCoachSvc, "AI Coach Service", "ASP.NET Core API", "FR-16 | Provides ICoach. Coaches students with AI guidance.")
+  }
+
+  ' Muhammed Hany Hamdy (muhammedhanii)
+  Boundary(muhammed, "Owner: Muhammed Hany Hamdy") {
+    Container(dashboardSvc, "Dashboard Service", "ASP.NET Core API", "FR-17 | Provides IDashboard. Displays aggregated student dashboard.")
+    Container(notificationSvc, "Notification Service", "ASP.NET Core API", "FR-18 | Provides INotification. Sends notifications across channels.")
+    Container(studyGroupSvc, "Study Group Service", "ASP.NET Core API", "FR-19 | Provides IStudyGroup. Manages study groups and accountability.")
+    Container(adminSvc, "Administration Service", "ASP.NET Core API", "FR-20 | Provides IAdministration. Manages administration and system configuration.")
+  }
+}
+
+' External Systems
+System_Ext(aiProvider, "AI Provider", "External LLM API", "Provides AI capabilities (plan generation, coaching, etc.) via IAIProvider")
+System_Ext(emailGateway, "Email Gateway", "External Email Service", "Sends emails via IEmailGateway")
+
+' Shared Database (each service owns its own data/schema)
+ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared database instance. Each service owns its own schema/tables. No service reads another service's database directly.")
+
+' User interactions (high-level)
+Rel(student, studentSvc, "Uses", "IStudentProfile")
+Rel(student, dashboardSvc, "Views dashboard via", "IDashboard")
+
+' Cross-service dependencies via provided/required interfaces
+Rel(academicSvc, studentSvc, "Uses", "IStudentProfile (required)")
+Rel(courseSvc, assessmentSvc, "Uses", "IAssessment (required)")
+Rel(goalPlannerSvc, academicSvc, "Uses", "IGoal (required)")
+Rel(goalPlannerSvc, aiProvider, "Uses", "IAIProvider (required)")
+Rel(studyPlannerSvc, courseSvc, "Uses", "ICourse (required)")
+Rel(studyPlannerSvc, schedulingSvc, "Uses", "IScheduling (required)")
+Rel(studyPlannerSvc, aiProvider, "Uses", "IAIProvider (required)")
+Rel(schedulingSvc, goalPlannerSvc, "Uses", "IGoalPlanner (required)")
+Rel(schedulingSvc, assessmentSvc, "Uses", "IAssessment (required)")
+Rel(schedulingSvc, studentSvc, "Uses", "IStudentProfile (required)")
+Rel(adaptationSvc, schedulingSvc, "Uses", "IScheduling (required)")
+Rel(careerSvc, studentSvc, "Uses", "IStudentProfile (required)")
+Rel(careerSvc, aiProvider, "Uses", "IAIProvider (required)")
+Rel(skillSvc, careerSvc, "Uses", "ICareer (required)")
+Rel(portfolioSvc, skillSvc, "Uses", "ISkill (required)")
+Rel(habitSvc, academicSvc, "Uses", "IGoal (required)")
+Rel(analyticsSvc, studentSvc, "Uses", "IStudentProfile (required)")
+Rel(analyticsSvc, schedulingSvc, "Uses", "IScheduling (required)")
+Rel(predictionSvc, analyticsSvc, "Uses", "IAnalytics (required)")
+Rel(aiCoachSvc, academicSvc, "Uses", "IGoal (required)")
+Rel(aiCoachSvc, habitSvc, "Uses", "IHabit (required)")
+Rel(aiCoachSvc, analyticsSvc, "Uses", "IAnalytics (required)")
+Rel(aiCoachSvc, aiProvider, "Uses", "IAIProvider (required)")
+Rel(dashboardSvc, academicSvc, "Uses", "IGoal (required)")
+Rel(dashboardSvc, schedulingSvc, "Uses", "IScheduling (required)")
+Rel(dashboardSvc, adaptationSvc, "Uses", "IAdaptation (required)")
+Rel(dashboardSvc, habitSvc, "Uses", "IHabit (required)")
+Rel(dashboardSvc, analyticsSvc, "Uses", "IAnalytics (required)")
+Rel(dashboardSvc, careerSvc, "Uses", "ICareer (required)")
+Rel(notificationSvc, assessmentSvc, "Uses", "IAssessment (required)")
+Rel(notificationSvc, schedulingSvc, "Uses", "IScheduling (required)")
+Rel(notificationSvc, habitSvc, "Uses", "IHabit (required)")
+Rel(notificationSvc, predictionSvc, "Uses", "IPrediction (required)")
+Rel(notificationSvc, emailGateway, "Uses", "IEmailGateway (required)")
+Rel(studyGroupSvc, studentSvc, "Uses", "IStudentProfile (required)")
+Rel(studyGroupSvc, academicSvc, "Uses", "IGoal (required)")
+Rel(studyGroupSvc, analyticsSvc, "Uses", "IAnalytics (required)")
+Rel(adminSvc, studentSvc, "Uses", "IStudentProfile (required)")
+
+' Persistence (shared DB, each service owns its own data)
+Rel(studentSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(academicSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(courseSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(assessmentSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(goalPlannerSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(studyPlannerSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(schedulingSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(adaptationSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(careerSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(skillSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(portfolioSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(jobPrepSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(habitSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(analyticsSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(predictionSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(aiCoachSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(dashboardSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(notificationSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(studyGroupSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(adminSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+
+SHOW_LEGEND()
+
+@enduml

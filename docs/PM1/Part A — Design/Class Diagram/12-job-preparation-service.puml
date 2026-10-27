@@ -1,0 +1,87 @@
+@startuml job-preparation-service-class-diagram
+title Level 3: Code - Class Diagram (job-preparation-service) - FR-12\nOwner: Arwa Mohey Hamdy
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IJobPrep <<provided>> {
+  +addApplication(studentId, data): Application
+  +setStatus(applicationId, status): void
+  +addPrepItem(applicationId, type, text): PrepItem
+  +recordOutcome(applicationId, outcome, feedback): void
+}
+
+class JobPreparationService <<component>> {
+  -repository: IApplicationRepository
+  -applicationValidator: ApplicationValidator
+  --
+  +addApplication(...) / setStatus(...)
+  +addPrepItem(...) / recordOutcome(...)
+}
+
+IJobPrep <|.. JobPreparationService
+class ApplicationValidator <<component>> {
+  +validate(data): ValidationResult
+}
+JobPreparationService --> ApplicationValidator
+
+interface IApplicationRepository <<required - Database>> {
+  +save(item: Application): void
+  +findById(id): Application
+  +findByOwner(ownerId): List<Application>
+}
+
+JobPreparationService --> IApplicationRepository
+class Application {
+  -applicationId: String
+  -company: String
+  -position: String
+  -status: String
+  -deadline: Date
+  -outcome: String
+  -feedback: String
+}
+class PrepItem {
+  -type: String
+  -text: String
+  -done: boolean
+  --
+  +markDone(): void
+}
+IApplicationRepository --> Application
+Application *-- "0..*" PrepItem
+note bottom of JobPreparationService
+SOLID applied:
+S - JobPreparationService only coordinates; ApplicationValidator each do one job.
+O - new behaviour is added by new implementations, not by editing JobPreparationService.
+L - JobPreparationService can replace any other IJobPrep implementation.
+I - IJobPrep has only the operations its clients use.
+D - JobPreparationService depends on interfaces (IApplicationRepository), not on concrete classes.
+end note
+@enduml

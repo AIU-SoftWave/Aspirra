@@ -1,0 +1,35 @@
+@startuml portfolio-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Portfolio Service (FR-11) | Owner: Arwa Mohey Hamdy
+
+Container_Boundary(portfolioBoundary, "Portfolio Service") {
+  
+  ' Provided interface
+  Component(iPortfolio, "IPortfolio", "Provided Interface", "addProject, linkProjectToSkills, viewPortfolio")
+  
+  ' Core components
+  Component(portfolioService, "PortfolioService", "Component", "Manages projects and portfolio. Applies SOLID principles.")
+  Component(portfolioValidator, "PortfolioValidator", "Component", "Validates projects and links")
+  
+  ' Persistence
+  Component(portfolioRepo, "IPortfolioRepository", "Repository Interface / Component", "Data access for Project, PortfolioArtifact (owned)")
+  
+  ' Domain
+  Component(domainModel, "Project, ProjectStatus, PortfolioArtifact", "Domain Model", "Owned entities and enums")
+}
+
+' Required interfaces
+Container_Ext(skillSvc, "Skill Service", "ASP.NET Core API", "Provides ISkill")
+
+' Internal relationships
+Rel(iPortfolio, portfolioService, "Delegates calls")
+Rel(portfolioService, portfolioValidator, "Uses")
+Rel(portfolioService, portfolioRepo, "Uses (IPortfolioRepository)")
+Rel(portfolioRepo, domainModel, "Maps to/from")
+
+' Cross-service relationships
+Rel(portfolioService, skillSvc, "Uses ISkill (required)")
+
+SHOW_LEGEND()
+@enduml

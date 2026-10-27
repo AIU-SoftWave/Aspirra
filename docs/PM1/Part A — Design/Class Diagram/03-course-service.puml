@@ -1,0 +1,97 @@
+@startuml course-service-class-diagram
+title Level 3: Code - Class Diagram (course-service) - FR-03\nOwner: Ahmed Mohamed Ahmed
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface ICourse <<provided>> {
+  +addCourse(studentId, data): Course
+  +updateCourse(courseId, data): Course
+  +removeCourse(courseId): void
+  +getCourseProgress(courseId): CourseProgress
+}
+
+class CourseService <<component>> {
+  -assessment: IAssessment
+  -repository: ICourseRepository
+  -courseCodeChecker: CourseCodeChecker
+  --
+  +addCourse(...) / updateCourse(...)
+  +removeCourse(...) / getCourseProgress(...)
+}
+
+ICourse <|.. CourseService
+class CourseCodeChecker <<component>> {
+  +exists(code, semester): boolean
+}
+CourseService --> CourseCodeChecker
+
+interface IAssessment <<required - Assessment service>> {
+  +addAssignment(data): Assignment
+  +addExam(data): Exam
+  +setStatus(assignmentId, status): void
+  +setExamReminder(examId, daysBefore): void
+  +getDeadlines(studentId, days): List<Deadline>
+}
+
+CourseService --> IAssessment
+interface ICourseRepository <<required - Database>> {
+  +save(item: Course): void
+  +findById(id): Course
+  +findByOwner(ownerId): List<Course>
+}
+
+CourseService --> ICourseRepository
+class Course {
+  -courseId: String
+  -studentId: String
+  -name: String
+  -code: String
+  -instructor: String
+  -semester: String
+  -credits: int
+  -weeklyHours: int
+}
+class CourseProgress {
+  -completed: List<Assignment>
+  -outstanding: List<Assignment>
+  --
+  +percentDone(): int
+}
+ICourseRepository --> Course
+Course ..> CourseProgress
+note bottom of CourseService
+SOLID applied:
+S - CourseService only coordinates; CourseCodeChecker each do one job.
+O - new behaviour is added by new implementations, not by editing CourseService.
+L - CourseService can replace any other ICourse implementation.
+I - ICourse has only the operations its clients use.
+D - CourseService depends on interfaces (IAssessment, ICourseRepository), not on concrete classes.
+end note
+@enduml

@@ -1,0 +1,19 @@
+@startuml ai-coach-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - AI Coach Service (FR-16) | Owner: Mostafa Khamis Abozead\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "CoachingSession" as CoachingSession {
+  * sessionId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  sessionType : VARCHAR(30)
+  advice : TEXT
+  recoveryStrategies : TEXT
+  motivationalMessage : TEXT
+  createdAt : DATETIME
+}
+
+' Note: studentId is a logical reference (no cross-service FK)
+@enduml

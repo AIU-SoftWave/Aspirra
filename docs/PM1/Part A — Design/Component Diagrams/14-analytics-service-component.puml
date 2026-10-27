@@ -1,0 +1,37 @@
+@startuml analytics-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Analytics Service (FR-14) | Owner: Mostafa Khamis Abozead
+
+Container_Boundary(analyticsBoundary, "Analytics Service") {
+  
+  ' Provided interface
+  Component(iAnalytics, "IAnalytics", "Provided Interface", "getGoalWorkload, getOverloadedGoals, getWorkloadSummary")
+  
+  ' Core components
+  Component(analyticsService, "AnalyticsService", "Component", "Analyzes study workload. Applies SOLID principles.")
+  Component(workloadCalculator, "WorkloadCalculator", "Component", "Calculates workload and overload")
+  
+  ' Persistence
+  Component(analyticsRepo, "IAnalyticsRepository", "Repository Interface / Component", "Data access for workload snapshots (owned)")
+  
+  ' Domain
+  Component(domainModel, "WorkloadSummary, OverloadReport", "Domain Model", "Owned value objects")
+}
+
+' Required interfaces
+Container_Ext(studentSvc, "Student Service", "ASP.NET Core API", "Provides IStudentProfile")
+Container_Ext(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "Provides IScheduling")
+
+' Internal relationships
+Rel(iAnalytics, analyticsService, "Delegates calls")
+Rel(analyticsService, workloadCalculator, "Uses")
+Rel(analyticsService, analyticsRepo, "Uses (IAnalyticsRepository)")
+Rel(analyticsRepo, domainModel, "Maps to/from")
+
+' Cross-service relationships
+Rel(analyticsService, studentSvc, "Uses IStudentProfile (required)")
+Rel(analyticsService, schedulingSvc, "Uses IScheduling (required)")
+
+SHOW_LEGEND()
+@enduml

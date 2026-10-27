@@ -1,0 +1,45 @@
+@startuml dashboard-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Dashboard Service (FR-17) | Owner: Muhammed Hany Hamdy
+
+Container_Boundary(dashboardBoundary, "Dashboard Service") {
+  
+  ' Provided interface
+  Component(iDashboard, "IDashboard", "Provided Interface", "getDashboard, getTodayAndDeadlines, getGoalStatus, getHabitStreaks")
+  
+  ' Core components
+  Component(dashboardService, "DashboardService", "Component", "Aggregates data for dashboard. Applies SOLID principles.")
+  Component(dashboardAggregator, "DashboardAggregator", "Component", "Aggregates from multiple services")
+  
+  ' Persistence
+  Component(dashboardRepo, "IDashboardRepository", "Repository Interface / Component", "Data access for dashboard cache (owned)")
+  
+  ' Domain
+  Component(domainModel, "DashboardView, WidgetData", "Domain Model", "Owned view models")
+}
+
+' Required interfaces
+Container_Ext(academicSvc, "Academic Service", "ASP.NET Core API", "Provides IGoal")
+Container_Ext(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "Provides IScheduling")
+Container_Ext(adaptationSvc, "Adaptation Service", "ASP.NET Core API", "Provides IAdaptation")
+Container_Ext(habitSvc, "Habit Service", "ASP.NET Core API", "Provides IHabit")
+Container_Ext(analyticsSvc, "Analytics Service", "ASP.NET Core API", "Provides IAnalytics")
+Container_Ext(careerSvc, "Career Service", "ASP.NET Core API", "Provides ICareer")
+
+' Internal relationships
+Rel(iDashboard, dashboardService, "Delegates calls")
+Rel(dashboardService, dashboardAggregator, "Uses")
+Rel(dashboardService, dashboardRepo, "Uses (IDashboardRepository)")
+Rel(dashboardRepo, domainModel, "Maps to/from")
+
+' Cross-service relationships
+Rel(dashboardService, academicSvc, "Uses IGoal (required)")
+Rel(dashboardService, schedulingSvc, "Uses IScheduling (required)")
+Rel(dashboardService, adaptationSvc, "Uses IAdaptation (required)")
+Rel(dashboardService, habitSvc, "Uses IHabit (required)")
+Rel(dashboardService, analyticsSvc, "Uses IAnalytics (required)")
+Rel(dashboardService, careerSvc, "Uses ICareer (required)")
+
+SHOW_LEGEND()
+@enduml

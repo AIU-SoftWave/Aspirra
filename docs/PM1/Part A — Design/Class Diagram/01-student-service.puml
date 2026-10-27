@@ -1,0 +1,86 @@
+@startuml student-service-class-diagram
+title Level 3: Code - Class Diagram (student-service) - FR-01\nOwner: Ahmed Mohamed Ahmed
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IStudentProfile <<provided>> {
+  +createProfile(studentId, data): Profile
+  +updateProfile(studentId, data): Profile
+  +getProfile(studentId): Profile
+  +getAvailability(studentId): List<TimeSlot>
+}
+
+class StudentProfileService <<component>> {
+  -repository: IProfileRepository
+  -profileValidator: ProfileValidator
+  --
+  +createProfile(...) / updateProfile(...)
+  +getProfile(...) / getAvailability(...)
+}
+
+IStudentProfile <|.. StudentProfileService
+class ProfileValidator <<component>> {
+  +validate(data): ValidationResult
+  +isValidSlot(slot): boolean
+}
+StudentProfileService --> ProfileValidator
+
+interface IProfileRepository <<required - Database>> {
+  +save(item: Profile): void
+  +findById(id): Profile
+  +findByOwner(ownerId): List<Profile>
+}
+
+StudentProfileService --> IProfileRepository
+class Profile {
+  -studentId: String
+  -academicLevel: String
+  -major: String
+  -interests: List<String>
+  -careerInterests: List<String>
+  --
+  +isComplete(): boolean
+}
+class TimeSlot {
+  -day: String
+  -start: Time
+  -end: Time
+}
+IProfileRepository --> Profile
+Profile *-- "1..*" TimeSlot : availability
+note bottom of StudentProfileService
+SOLID applied:
+S - StudentProfileService only coordinates; ProfileValidator each do one job.
+O - new behaviour is added by new implementations, not by editing StudentProfileService.
+L - StudentProfileService can replace any other IStudentProfile implementation.
+I - IStudentProfile has only the operations its clients use.
+D - StudentProfileService depends on interfaces (IProfileRepository), not on concrete classes.
+end note
+@enduml

@@ -1,0 +1,95 @@
+@startuml habit-service-class-diagram
+title Level 3: Code - Class Diagram (habit-service) - FR-13\nOwner: Mostafa Khamis Abozead
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IHabit <<provided>> {
+  +createHabit(studentId, data): Habit
+  +markDone(habitId, date): void
+  +getStreak(habitId): int
+  +linkToGoal(habitId, goalId): void
+  +getHabits(studentId): List<Habit>
+}
+
+class HabitService <<component>> {
+  -goal: IGoal
+  -repository: IHabitRepository
+  -streakCalculator: StreakCalculator
+  --
+  +createHabit(...) / markDone(...)
+  +getStreak(...) / linkToGoal(...)
+  +getHabits(...)
+}
+
+IHabit <|.. HabitService
+class StreakCalculator <<component>> {
+  +calculate(completions, frequency): int
+}
+HabitService --> StreakCalculator
+
+interface IGoal <<required - Academic service>> {
+  +createGoal(studentId, data): Goal
+  +updateGoal(goalId, data): Goal
+  +completeGoal(goalId): void
+  +archiveGoal(goalId): void
+  +restoreGoal(goalId): void
+  +deleteGoal(goalId): void
+  +getGoals(studentId, status): List<Goal>
+}
+
+HabitService --> IGoal
+interface IHabitRepository <<required - Database>> {
+  +save(item: Habit): void
+  +findById(id): Habit
+  +findByOwner(ownerId): List<Habit>
+}
+
+HabitService --> IHabitRepository
+class Habit {
+  -habitId: String
+  -name: String
+  -frequency: String
+  -reminderTime: Time
+  -goalId: String
+}
+class HabitCompletion {
+  -date: Date
+}
+IHabitRepository --> Habit
+Habit *-- "0..*" HabitCompletion
+note bottom of HabitService
+SOLID applied:
+S - HabitService only coordinates; StreakCalculator each do one job.
+O - new behaviour is added by new implementations, not by editing HabitService.
+L - HabitService can replace any other IHabit implementation.
+I - IHabit has only the operations its clients use.
+D - HabitService depends on interfaces (IGoal, IHabitRepository), not on concrete classes.
+end note
+@enduml

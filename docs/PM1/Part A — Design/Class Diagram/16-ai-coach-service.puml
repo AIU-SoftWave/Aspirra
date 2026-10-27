@@ -1,0 +1,115 @@
+@startuml ai-coach-service-class-diagram
+title Level 3: Code - Class Diagram (ai-coach-service) - FR-16\nOwner: Mostafa Khamis Abozead
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface ICoach <<provided>> {
+  +getAdvice(studentId): Advice
+  +getRecoveryStrategies(goalId): List<Strategy>
+  +getMotivation(studentId): String
+}
+
+class AICoachService <<component>> {
+  -goal: IGoal
+  -habit: IHabit
+  -analytics: IAnalytics
+  -aiProvider: IAIProvider
+  -repository: IAdviceRepository
+  -coachContextBuilder: CoachContextBuilder
+  --
+  +getAdvice(...) / getRecoveryStrategies(...)
+  +getMotivation(...)
+}
+
+ICoach <|.. AICoachService
+class CoachContextBuilder <<component>> {
+  +build(studentId): String
+}
+AICoachService --> CoachContextBuilder
+
+interface IGoal <<required - Academic service>> {
+  +createGoal(studentId, data): Goal
+  +updateGoal(goalId, data): Goal
+  +completeGoal(goalId): void
+  +archiveGoal(goalId): void
+  +restoreGoal(goalId): void
+  +deleteGoal(goalId): void
+  +getGoals(studentId, status): List<Goal>
+}
+
+AICoachService --> IGoal
+interface IHabit <<required - Habit service>> {
+  +createHabit(studentId, data): Habit
+  +markDone(habitId, date): void
+  +getStreak(habitId): int
+  +linkToGoal(habitId, goalId): void
+  +getHabits(studentId): List<Habit>
+}
+
+AICoachService --> IHabit
+interface IAnalytics <<required - Analytics service>> {
+  +getGoalWorkload(goalId): Workload
+  +isOverloaded(goalId): boolean
+  +getStudentWorkloads(studentId): List<Workload>
+}
+
+AICoachService --> IAnalytics
+interface IAIProvider <<required - AI provider>> {
+  +generate(prompt): AIResponse
+}
+
+AICoachService --> IAIProvider
+interface IAdviceRepository <<required - Database>> {
+  +save(item: Advice): void
+  +findById(id): Advice
+  +findByOwner(ownerId): List<Advice>
+}
+
+AICoachService --> IAdviceRepository
+class Advice {
+  -adviceId: String
+  -studentId: String
+  -text: String
+  -createdAt: Date
+}
+class Strategy {
+  -goalId: String
+  -text: String
+}
+IAdviceRepository --> Advice
+note bottom of AICoachService
+SOLID applied:
+S - AICoachService only coordinates; CoachContextBuilder each do one job.
+O - new behaviour is added by new implementations, not by editing AICoachService.
+L - AICoachService can replace any other ICoach implementation.
+I - ICoach has only the operations its clients use.
+D - AICoachService depends on interfaces (IGoal, IHabit, IAnalytics, IAIProvider, IAdviceRepository), not on concrete classes.
+end note
+@enduml

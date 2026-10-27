@@ -1,0 +1,32 @@
+@startuml student-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Student Service (FR-01) | Owner: Ahmed Mohamed Ahmed
+
+Container_Boundary(studentBoundary, "Student Service") {
+  
+  ' Provided interface
+  Component(iStudentProfile, "IStudentProfile", "Provided Interface", "createProfile, updateProfile, getProfile, getAvailability")
+  
+  ' Core components
+  Component(studentProfileService, "StudentProfileService", "Component", "Orchestrates profile management. Applies SOLID principles.")
+  Component(profileValidator, "ProfileValidator", "Component", "Validates profile data and time slots")
+  
+  ' Persistence
+  Component(profileRepo, "IProfileRepository", "Repository Interface / Component", "Data access for Profile and TimeSlot (owned)")
+  
+  ' Domain
+  Component(domainModel, "Profile, TimeSlot", "Domain Model", "Owned entities and value objects")
+}
+
+' No cross-service required interfaces for Student Service (foundation service)
+' Persistence to shared DB is shown at container level
+
+' Internal relationships
+Rel(iStudentProfile, studentProfileService, "Delegates calls")
+Rel(studentProfileService, profileValidator, "Uses")
+Rel(studentProfileService, profileRepo, "Uses (IProfileRepository)")
+Rel(profileRepo, domainModel, "Maps to/from")
+
+SHOW_LEGEND()
+@enduml

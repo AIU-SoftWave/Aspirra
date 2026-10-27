@@ -1,0 +1,36 @@
+@startuml assessment-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Assessment Service (FR-04) | Owner: Ahmed Mohamed Ahmed\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "Assignment" as Assignment {
+  * assignmentId : VARCHAR(50) <<PK>>
+  --
+  courseId : VARCHAR(50)
+  studentId : VARCHAR(50)
+  title : VARCHAR(200)
+  description : TEXT
+  dueDate : DATE
+  priority : VARCHAR(20)
+  status : VARCHAR(20)
+  createdAt : DATETIME
+  updatedAt : DATETIME
+}
+
+entity "Exam" as Exam {
+  * examId : VARCHAR(50) <<PK>>
+  --
+  courseId : VARCHAR(50)
+  studentId : VARCHAR(50)
+  title : VARCHAR(200)
+  examDate : DATE
+  examTime : TIME
+  location : VARCHAR(150)
+  preparationReminderDays : INT
+  createdAt : DATETIME
+  updatedAt : DATETIME
+}
+
+' Note: courseId/studentId are logical references (no cross-service FK)
+@enduml

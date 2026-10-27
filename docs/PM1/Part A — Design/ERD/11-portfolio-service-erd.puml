@@ -1,0 +1,42 @@
+@startuml portfolio-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Portfolio Service (FR-11) | Owner: Arwa Mohey Hamdy\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "Project" as Project {
+  * projectId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  title : VARCHAR(200)
+  description : TEXT
+  technologies : TEXT
+  status : VARCHAR(20)
+  projectUrl : VARCHAR(500)
+  repoUrl : VARCHAR(500)
+  createdAt : DATETIME
+  updatedAt : DATETIME
+}
+
+entity "PortfolioArtifact" as PortfolioArtifact {
+  * artifactId : VARCHAR(50) <<PK>>
+  --
+  projectId : VARCHAR(50) <<FK to Project>>
+  artifactType : VARCHAR(50)
+  fileName : VARCHAR(200)
+  fileUrl : VARCHAR(500)
+  uploadedAt : DATETIME
+}
+
+entity "ProjectSkill" as ProjectSkill {
+  * projectSkillId : VARCHAR(50) <<PK>>
+  --
+  projectId : VARCHAR(50) <<FK to Project>>
+  skillId : VARCHAR(50)
+  linkedAt : DATETIME
+}
+
+Project ||--o{ PortfolioArtifact : "has artifacts"
+Project ||--o{ ProjectSkill : "demonstrates skills"
+' Note: skillId/studentId are logical references (no cross-service FK)
+@enduml

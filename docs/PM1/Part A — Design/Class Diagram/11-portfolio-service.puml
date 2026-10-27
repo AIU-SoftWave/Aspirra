@@ -1,0 +1,94 @@
+@startuml portfolio-service-class-diagram
+title Level 3: Code - Class Diagram (portfolio-service) - FR-11\nOwner: Arwa Mohey Hamdy
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IPortfolio <<provided>> {
+  +addProject(studentId, data): Project
+  +linkSkills(projectId, skillIds): void
+  +attachDocument(projectId, doc): void
+  +getPortfolio(studentId): List<Project>
+}
+
+class PortfolioService <<component>> {
+  -skill: ISkill
+  -repository: IProjectRepository
+  -urlValidator: UrlValidator
+  --
+  +addProject(...) / linkSkills(...)
+  +attachDocument(...) / getPortfolio(...)
+}
+
+IPortfolio <|.. PortfolioService
+class UrlValidator <<component>> {
+  +isValid(url): boolean
+}
+PortfolioService --> UrlValidator
+
+interface ISkill <<required - Skill service>> {
+  +addSkill(studentId, skill): Skill
+  +updateLevel(skillId, level): void
+  +getSkills(studentId): List<Skill>
+  +getSkillGaps(studentId): List<SkillGap>
+}
+
+PortfolioService --> ISkill
+interface IProjectRepository <<required - Database>> {
+  +save(item: Project): void
+  +findById(id): Project
+  +findByOwner(ownerId): List<Project>
+}
+
+PortfolioService --> IProjectRepository
+class Project {
+  -projectId: String
+  -title: String
+  -description: String
+  -technologies: List<String>
+  -status: String
+  -links: List<String>
+  --
+  +isCompleted(): boolean
+}
+class ProjectDocument {
+  -name: String
+  -fileRef: String
+}
+IProjectRepository --> Project
+Project *-- "0..*" ProjectDocument
+note bottom of PortfolioService
+SOLID applied:
+S - PortfolioService only coordinates; UrlValidator each do one job.
+O - new behaviour is added by new implementations, not by editing PortfolioService.
+L - PortfolioService can replace any other IPortfolio implementation.
+I - IPortfolio has only the operations its clients use.
+D - PortfolioService depends on interfaces (ISkill, IProjectRepository), not on concrete classes.
+end note
+@enduml

@@ -1,0 +1,131 @@
+@startuml study-group-service-class-diagram
+title Level 3: Code - Class Diagram (study-group-service) - FR-19\nOwner: Muhammed Hany Hamdy
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IStudyGroup <<provided>> {
+  +createGroup(studentId, name): StudyGroup
+  +joinGroup(studentId, code): void
+  +shareGoal(groupId, goalId): void
+  +postUpdate(groupId, text): void
+  +getGroupProgress(groupId): GroupProgress
+  +sendMessage(groupId, text): void
+  +requestPartner(studentId, partnerId): void
+  +respondPartner(requestId, accept): void
+}
+
+class StudyGroupService <<component>> {
+  -studentProfile: IStudentProfile
+  -goal: IGoal
+  -analytics: IAnalytics
+  -repository: IStudyGroupRepository
+  -partnerMatcher: PartnerMatcher
+  --
+  +createGroup(...) / joinGroup(...)
+  +shareGoal(...) / postUpdate(...)
+  +getGroupProgress(...) / sendMessage(...)
+  +requestPartner(...) / respondPartner(...)
+}
+
+IStudyGroup <|.. StudyGroupService
+class PartnerMatcher <<component>> {
+  +findMatches(studentId): List<String>
+}
+StudyGroupService --> PartnerMatcher
+
+interface IStudentProfile <<required - Student service>> {
+  +createProfile(studentId, data): Profile
+  +updateProfile(studentId, data): Profile
+  +getProfile(studentId): Profile
+  +getAvailability(studentId): List<TimeSlot>
+}
+
+StudyGroupService --> IStudentProfile
+interface IGoal <<required - Academic service>> {
+  +createGoal(studentId, data): Goal
+  +updateGoal(goalId, data): Goal
+  +completeGoal(goalId): void
+  +archiveGoal(goalId): void
+  +restoreGoal(goalId): void
+  +deleteGoal(goalId): void
+  +getGoals(studentId, status): List<Goal>
+}
+
+StudyGroupService --> IGoal
+interface IAnalytics <<required - Analytics service>> {
+  +getGoalWorkload(goalId): Workload
+  +isOverloaded(goalId): boolean
+  +getStudentWorkloads(studentId): List<Workload>
+}
+
+StudyGroupService --> IAnalytics
+interface IStudyGroupRepository <<required - Database>> {
+  +save(item: StudyGroup): void
+  +findById(id): StudyGroup
+  +findByOwner(ownerId): List<StudyGroup>
+}
+
+StudyGroupService --> IStudyGroupRepository
+class StudyGroup {
+  -groupId: String
+  -name: String
+  -inviteCode: String
+  -adminId: String
+}
+class GroupMember {
+  -studentId: String
+}
+class SharedGoal {
+  -goalId: String
+}
+class GroupMessage {
+  -senderId: String
+  -text: String
+  -sentAt: Date
+}
+class PartnerRequest {
+  -requestId: String
+  -fromId: String
+  -toId: String
+  -status: String
+}
+IStudyGroupRepository --> StudyGroup
+StudyGroup *-- "1..*" GroupMember
+StudyGroup *-- "0..*" SharedGoal
+StudyGroup *-- "0..*" GroupMessage
+note bottom of StudyGroupService
+SOLID applied:
+S - StudyGroupService only coordinates; PartnerMatcher each do one job.
+O - new behaviour is added by new implementations, not by editing StudyGroupService.
+L - StudyGroupService can replace any other IStudyGroup implementation.
+I - IStudyGroup has only the operations its clients use.
+D - StudyGroupService depends on interfaces (IStudentProfile, IGoal, IAnalytics, IStudyGroupRepository), not on concrete classes.
+end note
+@enduml

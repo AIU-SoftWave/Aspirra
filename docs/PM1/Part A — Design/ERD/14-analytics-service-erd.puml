@@ -1,0 +1,22 @@
+@startuml analytics-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Analytics Service (FR-14) | Owner: Mostafa Khamis Abozead\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "WorkloadSummary" as WorkloadSummary {
+  * summaryId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  goalId : VARCHAR(50)
+  totalPlannedHours : INT
+  completedHours : INT
+  remainingHours : INT
+  remainingAvailableHours : INT
+  completionPercent : DECIMAL(5,2)
+  isOverloaded : BOOLEAN
+  calculatedAt : DATETIME
+}
+
+' Note: goalId/studentId are logical references (no cross-service FK)
+@enduml

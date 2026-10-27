@@ -1,0 +1,32 @@
+@startuml adaptation-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Adaptation Service (FR-08) | Owner: Yomna Mohamed Fekry\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "AdaptationState" as AdaptationState {
+  * adaptationStateId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  goalId : VARCHAR(50)
+  state : VARCHAR(20)
+  detectedAt : DATETIME
+  lastCheckedAt : DATETIME
+}
+
+entity "Recommendation" as Recommendation {
+  * recommendationId : VARCHAR(50) <<PK>>
+  --
+  adaptationStateId : VARCHAR(50) <<FK to AdaptationState>>
+  goalId : VARCHAR(50)
+  recommendationType : VARCHAR(50)
+  description : TEXT
+  suggestedChanges : TEXT
+  status : VARCHAR(20)
+  createdAt : DATETIME
+  respondedAt : DATETIME
+}
+
+AdaptationState ||--o{ Recommendation : "has recommendations"
+' Note: goalId/studentId are logical references (no cross-service FK)
+@enduml

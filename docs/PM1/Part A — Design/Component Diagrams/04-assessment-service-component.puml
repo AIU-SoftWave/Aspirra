@@ -1,0 +1,30 @@
+@startuml assessment-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Assessment Service (FR-04) | Owner: Ahmed Mohamed Ahmed
+
+Container_Boundary(assessmentBoundary, "Assessment Service") {
+  
+  ' Provided interface
+  Component(iAssessment, "IAssessment", "Provided Interface", "addAssignment, addExam, setAssignmentStatus, setExamReminder, getAssessments")
+  
+  ' Core components
+  Component(assessmentService, "AssessmentService", "Component", "Orchestrates assignments/exams. Applies SOLID principles.")
+  Component(assessmentValidator, "AssessmentValidator", "Component", "Validates assessment data and dates")
+  
+  ' Persistence
+  Component(assessmentRepo, "IAssessmentRepository", "Repository Interface / Component", "Data access for Assignment, Exam (owned)")
+  
+  ' Domain
+  Component(domainModel, "Assignment, Exam, AssignmentStatus", "Domain Model", "Owned entities and enums")
+}
+
+' No direct required interfaces from other services shown (foundation)
+' Internal relationships
+Rel(iAssessment, assessmentService, "Delegates calls")
+Rel(assessmentService, assessmentValidator, "Uses")
+Rel(assessmentService, assessmentRepo, "Uses (IAssessmentRepository)")
+Rel(assessmentRepo, domainModel, "Maps to/from")
+
+SHOW_LEGEND()
+@enduml

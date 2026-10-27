@@ -1,0 +1,42 @@
+@startuml administration-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Administration Service (FR-20) | Owner: Muhammed Hany Hamdy\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "AdminAction" as AdminAction {
+  * actionId : VARCHAR(50) <<PK>>
+  --
+  adminId : VARCHAR(50)
+  targetStudentId : VARCHAR(50)
+  actionType : VARCHAR(50)
+  details : TEXT
+  performedAt : DATETIME
+}
+
+entity "AccountIssue" as AccountIssue {
+  * issueId : VARCHAR(50) <<PK>>
+  --
+  targetStudentId : VARCHAR(50)
+  reportedBy : VARCHAR(50)
+  issueType : VARCHAR(50)
+  description : TEXT
+  status : VARCHAR(20)
+  resolvedBy : VARCHAR(50)
+  resolvedAt : DATETIME
+  resolutionNotes : TEXT
+  createdAt : DATETIME
+}
+
+entity "UsageStats" as UsageStats {
+  * statsId : VARCHAR(50) <<PK>>
+  --
+  statDate : DATE
+  registeredCount : INT
+  activeLast30Days : INT
+  featureUsage : TEXT
+  retentionPercent : DECIMAL(5,2)
+}
+
+' Note: studentId/adminId references are logical (no cross-service FK)
+@enduml

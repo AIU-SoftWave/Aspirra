@@ -1,0 +1,41 @@
+@startuml ai-coach-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - AI Coach Service (FR-16) | Owner: Mostafa Khamis Abozead
+
+Container_Boundary(aiCoachBoundary, "AI Coach Service") {
+  
+  ' Provided interface
+  Component(iCoach, "ICoach", "Provided Interface", "getPersonalizedAdvice, getRecoveryStrategy, getMotivationalGuidance")
+  
+  ' Core components
+  Component(aiCoachService, "AICoachService", "Component", "AI coaching logic. Applies SOLID principles.")
+  Component(coachPromptBuilder, "CoachPromptBuilder", "Component", "Builds coaching prompts")
+  
+  ' Persistence
+  Component(coachRepo, "ICoachRepository", "Repository Interface / Component", "Data access for CoachingSession (owned)")
+  
+  ' Domain
+  Component(domainModel, "CoachingAdvice, CoachingSession", "Domain Model", "Owned entities")
+}
+
+' Required interfaces
+Container_Ext(academicSvc, "Academic Service", "ASP.NET Core API", "Provides IGoal")
+Container_Ext(habitSvc, "Habit Service", "ASP.NET Core API", "Provides IHabit")
+Container_Ext(analyticsSvc, "Analytics Service", "ASP.NET Core API", "Provides IAnalytics")
+System_Ext(aiProvider, "AI Provider", "External LLM API", "Provides IAIProvider")
+
+' Internal relationships
+Rel(iCoach, aiCoachService, "Delegates calls")
+Rel(aiCoachService, coachPromptBuilder, "Uses")
+Rel(aiCoachService, coachRepo, "Uses (ICoachRepository)")
+Rel(coachRepo, domainModel, "Maps to/from")
+
+' Cross-service/external relationships
+Rel(aiCoachService, academicSvc, "Uses IGoal (required)")
+Rel(aiCoachService, habitSvc, "Uses IHabit (required)")
+Rel(aiCoachService, analyticsSvc, "Uses IAnalytics (required)")
+Rel(aiCoachService, aiProvider, "Uses IAIProvider (required)")
+
+SHOW_LEGEND()
+@enduml

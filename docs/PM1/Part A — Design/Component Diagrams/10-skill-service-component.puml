@@ -1,0 +1,35 @@
+@startuml skill-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Skill Service (FR-10) | Owner: Arwa Mohey Hamdy
+
+Container_Boundary(skillBoundary, "Skill Service") {
+  
+  ' Provided interface
+  Component(iSkill, "ISkill", "Provided Interface", "addSkill, viewSkillGaps, updateSkillLevel")
+  
+  ' Core components
+  Component(skillService, "SkillService", "Component", "Tracks skills and gaps. Applies SOLID principles.")
+  Component(gapAnalyzer, "GapAnalyzer", "Component", "Compares skills with career requirements")
+  
+  ' Persistence
+  Component(skillRepo, "ISkillRepository", "Repository Interface / Component", "Data access for Skill, SkillGap (owned)")
+  
+  ' Domain
+  Component(domainModel, "Skill, SkillLevel, SkillGap", "Domain Model", "Owned entities and enums")
+}
+
+' Required interfaces
+Container_Ext(careerSvc, "Career Service", "ASP.NET Core API", "Provides ICareer")
+
+' Internal relationships
+Rel(iSkill, skillService, "Delegates calls")
+Rel(skillService, gapAnalyzer, "Uses")
+Rel(skillService, skillRepo, "Uses (ISkillRepository)")
+Rel(skillRepo, domainModel, "Maps to/from")
+
+' Cross-service relationships
+Rel(skillService, careerSvc, "Uses ICareer (required)")
+
+SHOW_LEGEND()
+@enduml

@@ -1,0 +1,35 @@
+@startuml adaptation-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Adaptation Service (FR-08) | Owner: Yomna Mohamed Fekry
+
+Container_Boundary(adaptationBoundary, "Adaptation Service") {
+  
+  ' Provided interface
+  Component(iAdaptation, "IAdaptation", "Provided Interface", "detectFallingBehind, getRecommendations, respondToRecommendation")
+  
+  ' Core components
+  Component(adaptationService, "AdaptationService", "Component", "Adaptive planning logic. Applies SOLID principles.")
+  Component(recommendationEngine, "RecommendationEngine", "Component", "Generates re-planning recommendations")
+  
+  ' Persistence
+  Component(adaptationRepo, "IAdaptationRepository", "Repository Interface / Component", "Data access for Recommendation (owned)")
+  
+  ' Domain
+  Component(domainModel, "Recommendation, AdaptationState", "Domain Model", "Owned entities")
+}
+
+' Required interfaces
+Container_Ext(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "Provides IScheduling")
+
+' Internal relationships
+Rel(iAdaptation, adaptationService, "Delegates calls")
+Rel(adaptationService, recommendationEngine, "Uses")
+Rel(adaptationService, adaptationRepo, "Uses (IAdaptationRepository)")
+Rel(adaptationRepo, domainModel, "Maps to/from")
+
+' Cross-service relationships
+Rel(adaptationService, schedulingSvc, "Uses IScheduling (required)")
+
+SHOW_LEGEND()
+@enduml

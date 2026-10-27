@@ -1,0 +1,35 @@
+@startuml administration-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Administration Service (FR-20) | Owner: Muhammed Hany Hamdy
+
+Container_Boundary(adminBoundary, "Administration Service") {
+  
+  ' Provided interface
+  Component(iAdministration, "IAdministration", "Provided Interface", "viewAccounts, createAccount, updateAccount, suspendAccount, getUsageStats, resolveIssue")
+  
+  ' Core components
+  Component(adminService, "AdministrationService", "Component", "Manages administration. Applies SOLID principles.")
+  Component(statsAggregator, "StatsAggregator", "Component", "Aggregates usage statistics")
+  
+  ' Persistence
+  Component(adminRepo, "IAdministrationRepository", "Repository Interface / Component", "Data access for AdminAction, AccountIssue (owned)")
+  
+  ' Domain
+  Component(domainModel, "AccountIssue, AdminAction, UsageStats", "Domain Model", "Owned entities")
+}
+
+' Required interfaces
+Container_Ext(studentSvc, "Student Service", "ASP.NET Core API", "Provides IStudentProfile")
+
+' Internal relationships
+Rel(iAdministration, adminService, "Delegates calls")
+Rel(adminService, statsAggregator, "Uses")
+Rel(adminService, adminRepo, "Uses (IAdministrationRepository)")
+Rel(adminRepo, domainModel, "Maps to/from")
+
+' Cross-service relationships
+Rel(adminService, studentSvc, "Uses IStudentProfile (required)")
+
+SHOW_LEGEND()
+@enduml

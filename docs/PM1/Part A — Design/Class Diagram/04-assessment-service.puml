@@ -1,0 +1,99 @@
+@startuml assessment-service-class-diagram
+title Level 3: Code - Class Diagram (assessment-service) - FR-04\nOwner: Ahmed Mohamed Ahmed
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IAssessment <<provided>> {
+  +addAssignment(data): Assignment
+  +addExam(data): Exam
+  +setStatus(assignmentId, status): void
+  +setExamReminder(examId, daysBefore): void
+  +getDeadlines(studentId, days): List<Deadline>
+}
+
+class AssessmentService <<component>> {
+  -repository: IAssignmentRepository
+  -assessmentValidator: AssessmentValidator
+  --
+  +addAssignment(...) / addExam(...)
+  +setStatus(...) / setExamReminder(...)
+  +getDeadlines(...)
+}
+
+IAssessment <|.. AssessmentService
+class AssessmentValidator <<component>> {
+  +validate(data): ValidationResult
+}
+AssessmentService --> AssessmentValidator
+
+interface IAssignmentRepository <<required - Database>> {
+  +save(item: Assignment): void
+  +findById(id): Assignment
+  +findByOwner(ownerId): List<Assignment>
+}
+
+AssessmentService --> IAssignmentRepository
+class Assignment {
+  -assignmentId: String
+  -courseId: String
+  -title: String
+  -dueDate: Date
+  -priority: String
+  -status: String
+  --
+  +isOverdue(): boolean
+}
+class Exam {
+  -examId: String
+  -courseId: String
+  -title: String
+  -date: Date
+  -time: Time
+  -location: String
+  -reminderDays: int
+}
+class Deadline {
+  -itemId: String
+  -title: String
+  -due: Date
+  -type: String
+}
+IAssignmentRepository --> Assignment
+Assignment ..> Deadline
+Exam ..> Deadline
+note bottom of AssessmentService
+SOLID applied:
+S - AssessmentService only coordinates; AssessmentValidator each do one job.
+O - new behaviour is added by new implementations, not by editing AssessmentService.
+L - AssessmentService can replace any other IAssessment implementation.
+I - IAssessment has only the operations its clients use.
+D - AssessmentService depends on interfaces (IAssignmentRepository), not on concrete classes.
+end note
+@enduml

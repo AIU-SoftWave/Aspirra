@@ -1,0 +1,40 @@
+@startuml goal-planner-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Goal Planner Service (FR-05) | Owner: Yomna Mohamed Fekry\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "PlanDraft" as PlanDraft {
+  * draftId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  goalId : VARCHAR(50)
+  status : VARCHAR(20)
+  createdAt : DATETIME
+  updatedAt : DATETIME
+}
+
+entity "Milestone" as Milestone {
+  * milestoneId : VARCHAR(50) <<PK>>
+  --
+  draftId : VARCHAR(50) <<FK to PlanDraft>>
+  title : VARCHAR(200)
+  deadline : DATE
+  orderIndex : INT
+}
+
+entity "PlanTask" as PlanTask {
+  * taskId : VARCHAR(50) <<PK>>
+  --
+  milestoneId : VARCHAR(50) <<FK to Milestone>>
+  title : VARCHAR(200)
+  durationHours : INT
+  deadline : DATE
+  dependsOnTaskId : VARCHAR(50)
+  orderIndex : INT
+}
+
+PlanDraft ||--o{ Milestone : "contains"
+Milestone ||--o{ PlanTask : "contains"
+' Note: goalId/studentId are logical references (no cross-service FK)
+@enduml

@@ -1,0 +1,160 @@
+@startuml dashboard-service-class-diagram
+title Level 3: Code - Class Diagram (dashboard-service) - FR-17\nOwner: Muhammed Hany Hamdy
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IDashboard <<provided>> {
+  +getDashboard(studentId): DashboardView
+}
+
+class DashboardService <<component>> {
+  -goal: IGoal
+  -scheduling: IScheduling
+  -adaptation: IAdaptation
+  -habit: IHabit
+  -analytics: IAnalytics
+  -career: ICareer
+  -repository: IDashboardViewRepository
+  -widgets: List<IDashboardWidget>
+  --
+  +getDashboard(...)
+}
+
+IDashboard <|.. DashboardService
+class TodayWidget <<component>> {
+  +build(studentId): Widget
+}
+class GoalStatusWidget <<component>> {
+  +build(studentId): Widget
+}
+class HabitWidget <<component>> {
+  +build(studentId): Widget
+}
+class WorkloadWidget <<component>> {
+  +build(studentId): Widget
+}
+class CareerWidget <<component>> {
+  +build(studentId): Widget
+}
+
+interface IGoal <<required - Academic service>> {
+  +createGoal(studentId, data): Goal
+  +updateGoal(goalId, data): Goal
+  +completeGoal(goalId): void
+  +archiveGoal(goalId): void
+  +restoreGoal(goalId): void
+  +deleteGoal(goalId): void
+  +getGoals(studentId, status): List<Goal>
+}
+
+DashboardService --> IGoal
+interface IScheduling <<required - Scheduling service>> {
+  +scheduleTasks(studentId): Schedule
+  +getConflicts(studentId): List<Conflict>
+  +suggestSlots(taskId): List<TimeSlot>
+  +moveTask(taskId, slot): void
+  +markDone(taskId, done): void
+  +getScheduledTasks(studentId, range): List<ScheduledTask>
+}
+
+DashboardService --> IScheduling
+interface IAdaptation <<required - Adaptation service>> {
+  +checkProgress(goalId): ProgressStatus
+  +getRecommendations(goalId): List<Recommendation>
+  +respond(recId, decision, edits): void
+}
+
+DashboardService --> IAdaptation
+interface IHabit <<required - Habit service>> {
+  +createHabit(studentId, data): Habit
+  +markDone(habitId, date): void
+  +getStreak(habitId): int
+  +linkToGoal(habitId, goalId): void
+  +getHabits(studentId): List<Habit>
+}
+
+DashboardService --> IHabit
+interface IAnalytics <<required - Analytics service>> {
+  +getGoalWorkload(goalId): Workload
+  +isOverloaded(goalId): boolean
+  +getStudentWorkloads(studentId): List<Workload>
+}
+
+DashboardService --> IAnalytics
+interface ICareer <<required - Career service>> {
+  +setTargetCareer(studentId, career): void
+  +getRoadmap(studentId): Roadmap
+  +completeMilestone(milestoneId): void
+  +getProgress(studentId): int
+  +getRequiredSkills(studentId): List<RequiredSkill>
+}
+
+DashboardService --> ICareer
+interface IDashboardViewRepository <<required - Database>> {
+  +save(item: DashboardView): void
+  +findById(id): DashboardView
+  +findByOwner(ownerId): List<DashboardView>
+}
+
+DashboardService --> IDashboardViewRepository
+class DashboardView {
+  -widgets: List<Widget>
+}
+class Widget {
+  -title: String
+  -data: Object
+}
+IDashboardViewRepository --> DashboardView
+DashboardView *-- "1..*" Widget
+TodayWidget --> IScheduling
+GoalStatusWidget --> IGoal
+GoalStatusWidget --> IAdaptation
+HabitWidget --> IHabit
+WorkloadWidget --> IAnalytics
+CareerWidget --> ICareer
+interface IDashboardWidget <<provided>> {
+  +build(studentId): Widget
+}
+IDashboardWidget <|.. TodayWidget
+IDashboardWidget <|.. GoalStatusWidget
+IDashboardWidget <|.. HabitWidget
+IDashboardWidget <|.. WorkloadWidget
+IDashboardWidget <|.. CareerWidget
+DashboardService --> IDashboardWidget : widgets
+
+note bottom of DashboardService
+SOLID applied:
+S - DashboardService only coordinates; TodayWidget, GoalStatusWidget, HabitWidget, WorkloadWidget, CareerWidget each do one job.
+O - A new widget is a new IDashboardWidget class; DashboardService is not changed (OCP).
+L - DashboardService can replace any other IDashboard implementation.
+I - IDashboard has only the operations its clients use.
+D - DashboardService depends on interfaces (IGoal, IScheduling, IAdaptation, IHabit, IAnalytics, ICareer, IDashboardViewRepository), not on concrete classes.
+end note
+@enduml

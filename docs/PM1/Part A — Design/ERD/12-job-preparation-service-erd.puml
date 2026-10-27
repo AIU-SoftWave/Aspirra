@@ -1,0 +1,46 @@
+@startuml job-preparation-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Job Preparation Service (FR-12) | Owner: Arwa Mohey Hamdy\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "JobApplication" as JobApplication {
+  * applicationId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  company : VARCHAR(150)
+  position : VARCHAR(150)
+  applicationDeadline : DATE
+  status : VARCHAR(30)
+  outcome : VARCHAR(30)
+  feedback : TEXT
+  createdAt : DATETIME
+  updatedAt : DATETIME
+}
+
+entity "InterviewPrepTask" as InterviewPrepTask {
+  * prepTaskId : VARCHAR(50) <<PK>>
+  --
+  applicationId : VARCHAR(50) <<FK to JobApplication>>
+  taskDescription : TEXT
+  taskType : VARCHAR(50)
+  isCompleted : BOOLEAN
+  dueDate : DATE
+  completedAt : DATETIME
+}
+
+entity "ApplicationUpdate" as ApplicationUpdate {
+  * updateId : VARCHAR(50) <<PK>>
+  --
+  applicationId : VARCHAR(50) <<FK to JobApplication>>
+  updateType : VARCHAR(50)
+  description : TEXT
+  isCompleted : BOOLEAN
+  createdAt : DATETIME
+  completedAt : DATETIME
+}
+
+JobApplication ||--o{ InterviewPrepTask : "has prep tasks"
+JobApplication ||--o{ ApplicationUpdate : "has updates"
+' Note: studentId is a logical reference (no cross-service FK)
+@enduml

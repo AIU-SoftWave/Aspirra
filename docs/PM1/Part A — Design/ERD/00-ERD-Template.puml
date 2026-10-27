@@ -1,0 +1,20 @@
+@startuml erd-template
+' ERD Template for Aspirra Services
+' Note: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+hide circle
+skinparam linetype ortho
+
+title ERD - <SERVICE_NAME> (<FR-XX>) | Owner: <OWNER_NAME>
+
+entity "<EntityName>" as EntityName {
+  * <pk_field> : <type> <<PK>>
+  --
+  <field> : <type>
+  <field> : <type>
+}
+
+' Add relationships between entities owned by this service only
+' EntityA ||--o{ EntityB : "relationship description"
+
+@enduml

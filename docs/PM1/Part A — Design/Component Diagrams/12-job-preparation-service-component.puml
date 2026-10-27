@@ -1,0 +1,30 @@
+@startuml job-preparation-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Job Preparation Service (FR-12) | Owner: Arwa Mohey Hamdy
+
+Container_Boundary(jobPrepBoundary, "Job Preparation Service") {
+  
+  ' Provided interface
+  Component(iJobPrep, "IJobPrep", "Provided Interface", "trackApplication, interviewPrep, trackUpdates, recordOutcome")
+  
+  ' Core components
+  Component(jobPrepService, "JobPreparationService", "Component", "Manages job/internship preparation. Applies SOLID principles.")
+  Component(applicationTracker, "ApplicationTracker", "Component", "Tracks applications and outcomes")
+  
+  ' Persistence
+  Component(jobPrepRepo, "IJobPrepRepository", "Repository Interface / Component", "Data access for JobApplication, InterviewPrep (owned)")
+  
+  ' Domain
+  Component(domainModel, "JobApplication, ApplicationStatus, InterviewPrepTask", "Domain Model", "Owned entities and enums")
+}
+
+' No required interfaces to other services shown
+' Internal relationships
+Rel(iJobPrep, jobPrepService, "Delegates calls")
+Rel(jobPrepService, applicationTracker, "Uses")
+Rel(jobPrepService, jobPrepRepo, "Uses (IJobPrepRepository)")
+Rel(jobPrepRepo, domainModel, "Maps to/from")
+
+SHOW_LEGEND()
+@enduml

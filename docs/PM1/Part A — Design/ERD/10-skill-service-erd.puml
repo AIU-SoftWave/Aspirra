@@ -1,0 +1,31 @@
+@startuml skill-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Skill Service (FR-10) | Owner: Arwa Mohey Hamdy\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "Skill" as Skill {
+  * skillId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  name : VARCHAR(100)
+  type : VARCHAR(20)
+  currentLevel : VARCHAR(20)
+  createdAt : DATETIME
+  updatedAt : DATETIME
+}
+
+entity "SkillGap" as SkillGap {
+  * skillGapId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  skillId : VARCHAR(50) <<FK to Skill>>
+  targetCareer : VARCHAR(150)
+  requiredLevel : VARCHAR(20)
+  gapStatus : VARCHAR(20)
+  detectedAt : DATETIME
+}
+
+Skill ||--o{ SkillGap : "has gaps"
+' Note: studentId/targetCareer are logical references (no cross-service FK)
+@enduml

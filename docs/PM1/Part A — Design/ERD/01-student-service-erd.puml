@@ -1,0 +1,29 @@
+@startuml student-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Student Service (FR-01) | Owner: Ahmed Mohamed Ahmed\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "Profile" as Profile {
+  * studentId : VARCHAR(50) <<PK>>
+  --
+  academicLevel : VARCHAR(50)
+  major : VARCHAR(100)
+  interests : TEXT
+  careerInterests : TEXT
+  skills : TEXT
+  createdAt : DATETIME
+  updatedAt : DATETIME
+}
+
+entity "TimeSlot" as TimeSlot {
+  * timeSlotId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50) <<FK to Profile>>
+  dayOfWeek : VARCHAR(20)
+  startTime : TIME
+  endTime : TIME
+}
+
+Profile ||--o{ TimeSlot : "has availability"
+@enduml

@@ -1,0 +1,39 @@
+@startuml study-planner-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Study Planner Service (FR-06) | Owner: Yomna Mohamed Fekry
+
+Container_Boundary(studyPlannerBoundary, "Study Planner Service") {
+  
+  ' Provided interface
+  Component(iStudyPlanner, "IStudyPlanner", "Provided Interface", "generateStudyPlan, regenerateStudyPlan")
+  
+  ' Core components
+  Component(studyPlannerService, "StudyPlannerService", "Component", "Generates personalized study plans. Applies SOLID principles.")
+  Component(studyPlanValidator, "StudyPlanValidator", "Component", "Validates study plan structure")
+  
+  ' Persistence
+  Component(studyPlanRepo, "IStudyPlanRepository", "Repository Interface / Component", "Data access for StudyPlan, StudyTask (owned)")
+  
+  ' Domain
+  Component(domainModel, "StudyPlan, StudyTask", "Domain Model", "Owned entities")
+}
+
+' Required interfaces
+Container_Ext(courseSvc, "Course Service", "ASP.NET Core API", "Provides ICourse")
+Container_Ext(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "Provides IScheduling")
+System_Ext(aiProvider, "AI Provider", "External LLM API", "Provides IAIProvider")
+
+' Internal relationships
+Rel(iStudyPlanner, studyPlannerService, "Delegates calls")
+Rel(studyPlannerService, studyPlanValidator, "Uses")
+Rel(studyPlannerService, studyPlanRepo, "Uses (IStudyPlanRepository)")
+Rel(studyPlanRepo, domainModel, "Maps to/from")
+
+' Cross-service/external relationships
+Rel(studyPlannerService, courseSvc, "Uses ICourse (required)")
+Rel(studyPlannerService, schedulingSvc, "Uses IScheduling (required)")
+Rel(studyPlannerService, aiProvider, "Uses IAIProvider (required)")
+
+SHOW_LEGEND()
+@enduml

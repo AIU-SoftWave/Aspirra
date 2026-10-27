@@ -1,0 +1,33 @@
+@startuml career-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Career Service (FR-09) | Owner: Arwa Mohey Hamdy\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "CareerRoadmap" as CareerRoadmap {
+  * roadmapId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  targetCareer : VARCHAR(150)
+  isCustomCareer : BOOLEAN
+  progressPercent : INT
+  generatedAt : DATETIME
+  updatedAt : DATETIME
+}
+
+entity "RoadmapMilestone" as RoadmapMilestone {
+  * milestoneId : VARCHAR(50) <<PK>>
+  --
+  roadmapId : VARCHAR(50) <<FK to CareerRoadmap>>
+  title : VARCHAR(200)
+  description : TEXT
+  requiredSkills : TEXT
+  learningSteps : TEXT
+  isCompleted : BOOLEAN
+  completedAt : DATETIME
+  orderIndex : INT
+}
+
+CareerRoadmap ||--o{ RoadmapMilestone : "contains"
+' Note: studentId is a logical reference (no cross-service FK)
+@enduml

@@ -1,0 +1,45 @@
+@startuml scheduling-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Scheduling Service (FR-07) | Owner: Yomna Mohamed Fekry\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "Schedule" as Schedule {
+  * scheduleId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  weekStartDate : DATE
+  createdAt : DATETIME
+  updatedAt : DATETIME
+}
+
+entity "ScheduledTask" as ScheduledTask {
+  * scheduledTaskId : VARCHAR(50) <<PK>>
+  --
+  scheduleId : VARCHAR(50) <<FK to Schedule>>
+  taskId : VARCHAR(50)
+  sourceService : VARCHAR(50)
+  title : VARCHAR(200)
+  scheduledDate : DATE
+  scheduledStartTime : TIME
+  scheduledEndTime : TIME
+  deadline : DATE
+  priority : VARCHAR(20)
+  dependsOnTaskId : VARCHAR(50)
+  status : VARCHAR(20)
+}
+
+entity "ScheduleConflict" as ScheduleConflict {
+  * conflictId : VARCHAR(50) <<PK>>
+  --
+  scheduleId : VARCHAR(50) <<FK to Schedule>>
+  scheduledTaskId1 : VARCHAR(50)
+  scheduledTaskId2 : VARCHAR(50)
+  conflictReason : TEXT
+  resolved : BOOLEAN
+}
+
+Schedule ||--o{ ScheduledTask : "contains"
+Schedule ||--o{ ScheduleConflict : "has conflicts"
+' Note: taskId/source references are logical (no cross-service FK)
+@enduml

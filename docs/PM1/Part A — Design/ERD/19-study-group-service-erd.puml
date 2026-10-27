@@ -1,0 +1,50 @@
+@startuml study-group-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Study Group Service (FR-19) | Owner: Muhammed Hany Hamdy\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "StudyGroup" as StudyGroup {
+  * groupId : VARCHAR(50) <<PK>>
+  --
+  name : VARCHAR(150)
+  description : TEXT
+  inviteCode : VARCHAR(50)
+  adminStudentId : VARCHAR(50)
+  createdAt : DATETIME
+}
+
+entity "GroupMember" as GroupMember {
+  * memberId : VARCHAR(50) <<PK>>
+  --
+  groupId : VARCHAR(50) <<FK to StudyGroup>>
+  studentId : VARCHAR(50)
+  role : VARCHAR(20)
+  joinedAt : DATETIME
+}
+
+entity "GroupPost" as GroupPost {
+  * postId : VARCHAR(50) <<PK>>
+  --
+  groupId : VARCHAR(50) <<FK to StudyGroup>>
+  studentId : VARCHAR(50)
+  postType : VARCHAR(30)
+  content : TEXT
+  sharedGoalId : VARCHAR(50)
+  createdAt : DATETIME
+}
+
+entity "PartnerRequest" as PartnerRequest {
+  * requestId : VARCHAR(50) <<PK>>
+  --
+  requesterStudentId : VARCHAR(50)
+  partnerStudentId : VARCHAR(50)
+  status : VARCHAR(20)
+  createdAt : DATETIME
+  respondedAt : DATETIME
+}
+
+StudyGroup ||--o{ GroupMember : "has members"
+StudyGroup ||--o{ GroupPost : "has posts"
+' Note: all studentId references are logical (no cross-service FK)
+@enduml

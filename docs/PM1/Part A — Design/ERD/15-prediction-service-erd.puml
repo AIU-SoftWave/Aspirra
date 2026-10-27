@@ -1,0 +1,33 @@
+@startuml prediction-service-erd
+hide circle
+skinparam linetype ortho
+
+title ERD - Prediction Service (FR-15) | Owner: Mostafa Khamis Abozead\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+
+entity "Prediction" as Prediction {
+  * predictionId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  goalId : VARCHAR(50)
+  likelihood : VARCHAR(20)
+  riskLevel : VARCHAR(20)
+  reason : TEXT
+  predictedAt : DATETIME
+}
+
+entity "EarlyWarning" as EarlyWarning {
+  * warningId : VARCHAR(50) <<PK>>
+  --
+  studentId : VARCHAR(50)
+  goalId : VARCHAR(50)
+  predictionId : VARCHAR(50) <<FK to Prediction>>
+  warningMessage : TEXT
+  causingTasks : TEXT
+  status : VARCHAR(20)
+  createdAt : DATETIME
+  closedAt : DATETIME
+}
+
+Prediction ||--o{ EarlyWarning : "triggers"
+' Note: goalId/studentId are logical references (no cross-service FK)
+@enduml

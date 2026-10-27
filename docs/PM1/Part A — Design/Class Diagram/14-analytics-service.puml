@@ -1,0 +1,103 @@
+@startuml analytics-service-class-diagram
+title Level 3: Code - Class Diagram (analytics-service) - FR-14\nOwner: Mostafa Khamis Abozead
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IAnalytics <<provided>> {
+  +getGoalWorkload(goalId): Workload
+  +isOverloaded(goalId): boolean
+  +getStudentWorkloads(studentId): List<Workload>
+}
+
+class AnalyticsService <<component>> {
+  -studentProfile: IStudentProfile
+  -scheduling: IScheduling
+  -repository: IWorkloadRepository
+  -workloadCalculator: WorkloadCalculator
+  -availabilityCalculator: AvailabilityCalculator
+  --
+  +getGoalWorkload(...) / isOverloaded(...)
+  +getStudentWorkloads(...)
+}
+
+IAnalytics <|.. AnalyticsService
+class WorkloadCalculator <<component>> {
+  +remaining(tasks): int
+  +percentCompleted(tasks): int
+}
+AnalyticsService --> WorkloadCalculator
+class AvailabilityCalculator <<component>> {
+  +remainingTime(slots, targetDate): int
+}
+AnalyticsService --> AvailabilityCalculator
+
+interface IStudentProfile <<required - Student service>> {
+  +createProfile(studentId, data): Profile
+  +updateProfile(studentId, data): Profile
+  +getProfile(studentId): Profile
+  +getAvailability(studentId): List<TimeSlot>
+}
+
+AnalyticsService --> IStudentProfile
+interface IScheduling <<required - Scheduling service>> {
+  +scheduleTasks(studentId): Schedule
+  +getConflicts(studentId): List<Conflict>
+  +suggestSlots(taskId): List<TimeSlot>
+  +moveTask(taskId, slot): void
+  +markDone(taskId, done): void
+  +getScheduledTasks(studentId, range): List<ScheduledTask>
+}
+
+AnalyticsService --> IScheduling
+interface IWorkloadRepository <<required - Database>> {
+  +save(item: Workload): void
+  +findById(id): Workload
+  +findByOwner(ownerId): List<Workload>
+}
+
+AnalyticsService --> IWorkloadRepository
+class Workload {
+  -goalId: String
+  -remainingWorkload: int
+  -remainingStudyTime: int
+  -percentCompleted: int
+  --
+  +isOverloaded(): boolean
+}
+IWorkloadRepository --> Workload
+note bottom of AnalyticsService
+SOLID applied:
+S - AnalyticsService only coordinates; WorkloadCalculator, AvailabilityCalculator each do one job.
+O - new behaviour is added by new implementations, not by editing AnalyticsService.
+L - AnalyticsService can replace any other IAnalytics implementation.
+I - IAnalytics has only the operations its clients use.
+D - AnalyticsService depends on interfaces (IStudentProfile, IScheduling, IWorkloadRepository), not on concrete classes.
+end note
+@enduml

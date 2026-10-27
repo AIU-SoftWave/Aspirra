@@ -1,0 +1,37 @@
+@startuml career-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Career Service (FR-09) | Owner: Arwa Mohey Hamdy
+
+Container_Boundary(careerBoundary, "Career Service") {
+  
+  ' Provided interface
+  Component(iCareer, "ICareer", "Provided Interface", "chooseTargetCareer, generateRoadmap, trackProgress, changeTargetCareer")
+  
+  ' Core components
+  Component(careerService, "CareerService", "Component", "Manages career roadmaps. Applies SOLID principles.")
+  Component(careerPromptBuilder, "CareerPromptBuilder", "Component", "Builds AI prompts for roadmaps")
+  
+  ' Persistence
+  Component(careerRepo, "ICareerRepository", "Repository Interface / Component", "Data access for CareerRoadmap, Milestone (owned)")
+  
+  ' Domain
+  Component(domainModel, "CareerRoadmap, RoadmapMilestone", "Domain Model", "Owned entities")
+}
+
+' Required interfaces
+Container_Ext(studentSvc, "Student Service", "ASP.NET Core API", "Provides IStudentProfile")
+System_Ext(aiProvider, "AI Provider", "External LLM API", "Provides IAIProvider")
+
+' Internal relationships
+Rel(iCareer, careerService, "Delegates calls")
+Rel(careerService, careerPromptBuilder, "Uses")
+Rel(careerService, careerRepo, "Uses (ICareerRepository)")
+Rel(careerRepo, domainModel, "Maps to/from")
+
+' Cross-service/external relationships
+Rel(careerService, studentSvc, "Uses IStudentProfile (required)")
+Rel(careerService, aiProvider, "Uses IAIProvider (required)")
+
+SHOW_LEGEND()
+@enduml

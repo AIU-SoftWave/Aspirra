@@ -1,0 +1,35 @@
+@startuml prediction-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Prediction Service (FR-15) | Owner: Mostafa Khamis Abozead
+
+Container_Boundary(predictionBoundary, "Prediction Service") {
+  
+  ' Provided interface
+  Component(iPrediction, "IPrediction", "Provided Interface", "getCompletionLikelihood, getEarlyWarnings, suggestRecoveryActions")
+  
+  ' Core components
+  Component(predictionService, "PredictionService", "Component", "Predicts risks and early warnings. Applies SOLID principles.")
+  Component(riskEvaluator, "RiskEvaluator", "Component", "Evaluates risk based on workload/progress")
+  
+  ' Persistence
+  Component(predictionRepo, "IPredictionRepository", "Repository Interface / Component", "Data access for Prediction, EarlyWarning (owned)")
+  
+  ' Domain
+  Component(domainModel, "Prediction, EarlyWarning, RiskLevel", "Domain Model", "Owned entities and enums")
+}
+
+' Required interfaces
+Container_Ext(analyticsSvc, "Analytics Service", "ASP.NET Core API", "Provides IAnalytics")
+
+' Internal relationships
+Rel(iPrediction, predictionService, "Delegates calls")
+Rel(predictionService, riskEvaluator, "Uses")
+Rel(predictionService, predictionRepo, "Uses (IPredictionRepository)")
+Rel(predictionRepo, domainModel, "Maps to/from")
+
+' Cross-service relationships
+Rel(predictionService, analyticsSvc, "Uses IAnalytics (required)")
+
+SHOW_LEGEND()
+@enduml

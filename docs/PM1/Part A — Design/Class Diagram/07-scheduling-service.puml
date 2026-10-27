@@ -1,0 +1,127 @@
+@startuml scheduling-service-class-diagram
+title Level 3: Code - Class Diagram (scheduling-service) - FR-07\nOwner: Yomna Mohamed Fekry
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IScheduling <<provided>> {
+  +scheduleTasks(studentId): Schedule
+  +getConflicts(studentId): List<Conflict>
+  +suggestSlots(taskId): List<TimeSlot>
+  +moveTask(taskId, slot): void
+  +markDone(taskId, done): void
+  +getScheduledTasks(studentId, range): List<ScheduledTask>
+}
+
+class SchedulingService <<component>> {
+  -goalPlanner: IGoalPlanner
+  -assessment: IAssessment
+  -studentProfile: IStudentProfile
+  -repository: IScheduledTaskRepository
+  -dependencyOrderer: DependencyOrderer
+  -conflictDetector: ConflictDetector
+  -slotFinder: SlotFinder
+  --
+  +scheduleTasks(...) / getConflicts(...)
+  +suggestSlots(...) / moveTask(...)
+  +markDone(...) / getScheduledTasks(...)
+}
+
+IScheduling <|.. SchedulingService
+class DependencyOrderer <<component>> {
+  +order(tasks): List<Task>
+}
+SchedulingService --> DependencyOrderer
+class ConflictDetector <<component>> {
+  +detect(tasks): List<Conflict>
+}
+SchedulingService --> ConflictDetector
+class SlotFinder <<component>> {
+  +findFree(task, slots): List<TimeSlot>
+}
+SchedulingService --> SlotFinder
+
+interface IGoalPlanner <<required - Goal planner service>> {
+  +generatePlan(studentId, goalText): PlanDraft
+  +updateDraft(draftId, edits): PlanDraft
+  +approve(draftId): Plan
+  +discard(draftId): void
+  +getTasks(goalId): List<PlanTask>
+}
+
+SchedulingService --> IGoalPlanner
+interface IAssessment <<required - Assessment service>> {
+  +addAssignment(data): Assignment
+  +addExam(data): Exam
+  +setStatus(assignmentId, status): void
+  +setExamReminder(examId, daysBefore): void
+  +getDeadlines(studentId, days): List<Deadline>
+}
+
+SchedulingService --> IAssessment
+interface IStudentProfile <<required - Student service>> {
+  +createProfile(studentId, data): Profile
+  +updateProfile(studentId, data): Profile
+  +getProfile(studentId): Profile
+  +getAvailability(studentId): List<TimeSlot>
+}
+
+SchedulingService --> IStudentProfile
+interface IScheduledTaskRepository <<required - Database>> {
+  +save(item: ScheduledTask): void
+  +findById(id): ScheduledTask
+  +findByOwner(ownerId): List<ScheduledTask>
+}
+
+SchedulingService --> IScheduledTaskRepository
+class ScheduledTask {
+  -taskId: String
+  -goalId: String
+  -slot: TimeSlot
+  -durationHours: int
+  -done: boolean
+  -status: String
+  --
+  +isLate(): boolean
+}
+class Conflict {
+  -taskA: String
+  -taskB: String
+}
+IScheduledTaskRepository --> ScheduledTask
+ScheduledTask ..> Conflict
+note bottom of SchedulingService
+SOLID applied:
+S - SchedulingService only coordinates; DependencyOrderer, ConflictDetector, SlotFinder each do one job.
+O - new behaviour is added by new implementations, not by editing SchedulingService.
+L - SchedulingService can replace any other IScheduling implementation.
+I - IScheduling has only the operations its clients use.
+D - SchedulingService depends on interfaces (IGoalPlanner, IAssessment, IStudentProfile, IScheduledTaskRepository), not on concrete classes.
+end note
+@enduml

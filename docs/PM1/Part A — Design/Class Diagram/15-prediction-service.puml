@@ -1,0 +1,96 @@
+@startuml prediction-service-class-diagram
+title Level 3: Code - Class Diagram (prediction-service) - FR-15\nOwner: Mostafa Khamis Abozead
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IPrediction <<provided>> {
+  +getLikelihood(goalId): Likelihood
+  +runCheck(studentId): void
+  +getWarnings(studentId): List<EarlyWarning>
+  +getRecoveryActions(warningId): List<RecoveryAction>
+}
+
+class PredictionService <<component>> {
+  -analytics: IAnalytics
+  -repository: IEarlyWarningRepository
+  -likelihoodRule: LikelihoodRule
+  -overloadTaskFinder: OverloadTaskFinder
+  --
+  +getLikelihood(...) / runCheck(...)
+  +getWarnings(...) / getRecoveryActions(...)
+}
+
+IPrediction <|.. PredictionService
+class LikelihoodRule <<component>> {
+  +evaluate(workload): Likelihood
+}
+PredictionService --> LikelihoodRule
+class OverloadTaskFinder <<component>> {
+  +findCauses(goalId): List<Task>
+}
+PredictionService --> OverloadTaskFinder
+
+interface IAnalytics <<required - Analytics service>> {
+  +getGoalWorkload(goalId): Workload
+  +isOverloaded(goalId): boolean
+  +getStudentWorkloads(studentId): List<Workload>
+}
+
+PredictionService --> IAnalytics
+interface IEarlyWarningRepository <<required - Database>> {
+  +save(item: EarlyWarning): void
+  +findById(id): EarlyWarning
+  +findByOwner(ownerId): List<EarlyWarning>
+}
+
+PredictionService --> IEarlyWarningRepository
+class EarlyWarning {
+  -warningId: String
+  -goalId: String
+  -status: String
+  -causes: List<String>
+  --
+  +close(): void
+}
+class RecoveryAction {
+  -type: String
+  -description: String
+}
+IEarlyWarningRepository --> EarlyWarning
+EarlyWarning *-- "1..*" RecoveryAction
+note bottom of PredictionService
+SOLID applied:
+S - PredictionService only coordinates; LikelihoodRule, OverloadTaskFinder each do one job.
+O - Likelihood rules can be replaced or extended without changing PredictionService (OCP).
+L - PredictionService can replace any other IPrediction implementation.
+I - IPrediction has only the operations its clients use.
+D - PredictionService depends on interfaces (IAnalytics, IEarlyWarningRepository), not on concrete classes.
+end note
+@enduml

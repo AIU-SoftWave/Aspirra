@@ -1,0 +1,157 @@
+@startuml system-class-diagram
+title Level 3: Code - System Class Diagram after SOLID (all services)
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+skinparam ranksep 80
+skinparam nodesep 25
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+package "Ahmed Mohamed Ahmed" {
+  interface IStudentProfile <<provided>>
+  class StudentProfileService <<component>>
+  interface IGoal <<provided>>
+  class GoalService <<component>>
+  interface ICourse <<provided>>
+  class CourseService <<component>>
+  interface IAssessment <<provided>>
+  class AssessmentService <<component>>
+}
+package "Yomna Mohamed Fekry" {
+  interface IGoalPlanner <<provided>>
+  class GoalPlannerService <<component>>
+  interface IStudyPlanner <<provided>>
+  class StudyPlannerService <<component>>
+  interface IScheduling <<provided>>
+  class SchedulingService <<component>>
+  interface IAdaptation <<provided>>
+  class AdaptationService <<component>>
+}
+package "Arwa Mohey Hamdy" {
+  interface ICareer <<provided>>
+  class CareerService <<component>>
+  interface ISkill <<provided>>
+  class SkillService <<component>>
+  interface IPortfolio <<provided>>
+  class PortfolioService <<component>>
+  interface IJobPrep <<provided>>
+  class JobPreparationService <<component>>
+}
+package "Mostafa Khamis Abozead" {
+  interface IHabit <<provided>>
+  class HabitService <<component>>
+  interface IAnalytics <<provided>>
+  class AnalyticsService <<component>>
+  interface IPrediction <<provided>>
+  class PredictionService <<component>>
+  interface ICoach <<provided>>
+  class AICoachService <<component>>
+}
+package "Muhammed Hany Hamdy" {
+  interface IDashboard <<provided>>
+  class DashboardService <<component>>
+  interface INotification <<provided>>
+  class NotificationService <<component>>
+  interface IStudyGroup <<provided>>
+  class StudyGroupService <<component>>
+  interface IAdministration <<provided>>
+  class AdministrationService <<component>>
+}
+interface IAIProvider <<required - AI provider>> {
+  +generate(prompt): AIResponse
+}
+interface IEmailGateway <<required - Email service>> {
+  +send(to, subject, body): void
+}
+IStudentProfile <|.. StudentProfileService
+IGoal <|.. GoalService
+ICourse <|.. CourseService
+IAssessment <|.. AssessmentService
+IGoalPlanner <|.. GoalPlannerService
+IStudyPlanner <|.. StudyPlannerService
+IScheduling <|.. SchedulingService
+IAdaptation <|.. AdaptationService
+ICareer <|.. CareerService
+ISkill <|.. SkillService
+IPortfolio <|.. PortfolioService
+IJobPrep <|.. JobPreparationService
+IHabit <|.. HabitService
+IAnalytics <|.. AnalyticsService
+IPrediction <|.. PredictionService
+ICoach <|.. AICoachService
+IDashboard <|.. DashboardService
+INotification <|.. NotificationService
+IStudyGroup <|.. StudyGroupService
+IAdministration <|.. AdministrationService
+GoalService --> IStudentProfile
+CourseService --> IAssessment
+GoalPlannerService --> IGoal
+GoalPlannerService --> IAIProvider
+StudyPlannerService --> ICourse
+StudyPlannerService --> IScheduling
+StudyPlannerService --> IAIProvider
+SchedulingService --> IGoalPlanner
+SchedulingService --> IAssessment
+SchedulingService --> IStudentProfile
+AdaptationService --> IScheduling
+CareerService --> IStudentProfile
+CareerService --> IAIProvider
+SkillService --> ICareer
+PortfolioService --> ISkill
+HabitService --> IGoal
+AnalyticsService --> IStudentProfile
+AnalyticsService --> IScheduling
+PredictionService --> IAnalytics
+AICoachService --> IGoal
+AICoachService --> IHabit
+AICoachService --> IAnalytics
+AICoachService --> IAIProvider
+DashboardService --> IGoal
+DashboardService --> IScheduling
+DashboardService --> IAdaptation
+DashboardService --> IHabit
+DashboardService --> IAnalytics
+DashboardService --> ICareer
+NotificationService --> IAssessment
+NotificationService --> IScheduling
+NotificationService --> IHabit
+NotificationService --> IPrediction
+NotificationService --> IEmailGateway
+StudyGroupService --> IStudentProfile
+StudyGroupService --> IGoal
+StudyGroupService --> IAnalytics
+AdministrationService --> IStudentProfile
+note as SOLID_NOTE
+SOLID applied in every service:
+S - one component class per service, helpers for single jobs.
+O - behaviour extended through new implementations (AI model, widgets, channels, rules).
+L - every component honours its provided interface.
+I - small interfaces, one per service.
+D - components depend only on interfaces; repositories, AI provider and email are abstractions.
+end note
+@enduml

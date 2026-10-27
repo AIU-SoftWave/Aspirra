@@ -1,0 +1,104 @@
+@startuml administration-service-class-diagram
+title Level 3: Code - Class Diagram (administration-service) - FR-20\nOwner: Muhammed Hany Hamdy
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IAdministration <<provided>> {
+  +searchStudents(query): List<Account>
+  +createAccount(data): Account
+  +updateAccount(id, data): Account
+  +suspendAccount(id): void
+  +getStatistics(): UsageStats
+  +getRetention(): List<RetentionPoint>
+  +resolveIssue(issueId): void
+}
+
+class AdministrationService <<component>> {
+  -studentProfile: IStudentProfile
+  -repository: IAccountRepository
+  -statisticsCalculator: StatisticsCalculator
+  --
+  +searchStudents(...) / createAccount(...)
+  +updateAccount(...) / suspendAccount(...)
+  +getStatistics(...) / getRetention(...)
+  +resolveIssue(...)
+}
+
+IAdministration <|.. AdministrationService
+class StatisticsCalculator <<component>> {
+  +usage(): UsageStats
+  +retention(): List<RetentionPoint>
+}
+AdministrationService --> StatisticsCalculator
+
+interface IStudentProfile <<required - Student service>> {
+  +createProfile(studentId, data): Profile
+  +updateProfile(studentId, data): Profile
+  +getProfile(studentId): Profile
+  +getAvailability(studentId): List<TimeSlot>
+}
+
+AdministrationService --> IStudentProfile
+interface IAccountRepository <<required - Database>> {
+  +save(item: Account): void
+  +findById(id): Account
+  +findByOwner(ownerId): List<Account>
+}
+
+AdministrationService --> IAccountRepository
+class Account {
+  -accountId: String
+  -name: String
+  -email: String
+  -status: String
+  --
+  +suspend(): void
+}
+class AccountIssue {
+  -issueId: String
+  -accountId: String
+  -status: String
+}
+class UsageStats {
+  -registered: int
+  -active30d: int
+  -featureUsage: Map
+}
+IAccountRepository --> Account
+Account "1" -- "0..*" AccountIssue
+note bottom of AdministrationService
+SOLID applied:
+S - AdministrationService only coordinates; StatisticsCalculator each do one job.
+O - new behaviour is added by new implementations, not by editing AdministrationService.
+L - AdministrationService can replace any other IAdministration implementation.
+I - IAdministration has only the operations its clients use.
+D - AdministrationService depends on interfaces (IStudentProfile, IAccountRepository), not on concrete classes.
+end note
+@enduml

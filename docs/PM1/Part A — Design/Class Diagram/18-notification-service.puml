@@ -1,0 +1,136 @@
+@startuml notification-service-class-diagram
+title Level 3: Code - Class Diagram (notification-service) - FR-18\nOwner: Muhammed Hany Hamdy
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface INotification <<provided>> {
+  +sendDeadlineReminders(): void
+  +sendTaskReminders(): void
+  +sendWarning(warning): void
+  +notifyStreakMilestone(habitId, days): void
+  +getNotifications(studentId): List<Notification>
+}
+
+class NotificationService <<component>> {
+  -assessment: IAssessment
+  -scheduling: IScheduling
+  -habit: IHabit
+  -prediction: IPrediction
+  -emailGateway: IEmailGateway
+  -repository: INotificationRepository
+  -reminderScheduler: ReminderScheduler
+  -channels: List<INotificationChannel>
+  --
+  +sendDeadlineReminders(...) / sendTaskReminders(...)
+  +sendWarning(...) / notifyStreakMilestone(...)
+  +getNotifications(...)
+}
+
+INotification <|.. NotificationService
+class ReminderScheduler <<component>> {
+  +dueReminders(now): List<Reminder>
+}
+NotificationService --> ReminderScheduler
+class EmailChannel <<component>> {
+  +send(notification): void
+}
+
+interface IAssessment <<required - Assessment service>> {
+  +addAssignment(data): Assignment
+  +addExam(data): Exam
+  +setStatus(assignmentId, status): void
+  +setExamReminder(examId, daysBefore): void
+  +getDeadlines(studentId, days): List<Deadline>
+}
+
+NotificationService --> IAssessment
+interface IScheduling <<required - Scheduling service>> {
+  +scheduleTasks(studentId): Schedule
+  +getConflicts(studentId): List<Conflict>
+  +suggestSlots(taskId): List<TimeSlot>
+  +moveTask(taskId, slot): void
+  +markDone(taskId, done): void
+  +getScheduledTasks(studentId, range): List<ScheduledTask>
+}
+
+NotificationService --> IScheduling
+interface IHabit <<required - Habit service>> {
+  +createHabit(studentId, data): Habit
+  +markDone(habitId, date): void
+  +getStreak(habitId): int
+  +linkToGoal(habitId, goalId): void
+  +getHabits(studentId): List<Habit>
+}
+
+NotificationService --> IHabit
+interface IPrediction <<required - Prediction service>> {
+  +getLikelihood(goalId): Likelihood
+  +runCheck(studentId): void
+  +getWarnings(studentId): List<EarlyWarning>
+  +getRecoveryActions(warningId): List<RecoveryAction>
+}
+
+NotificationService --> IPrediction
+interface IEmailGateway <<required - Email service>> {
+  +send(to, subject, body): void
+}
+
+NotificationService --> IEmailGateway
+interface INotificationRepository <<required - Database>> {
+  +save(item: Notification): void
+  +findById(id): Notification
+  +findByOwner(ownerId): List<Notification>
+}
+
+NotificationService --> INotificationRepository
+class Notification {
+  -notificationId: String
+  -studentId: String
+  -type: String
+  -message: String
+  -sentAt: Date
+}
+INotificationRepository --> Notification
+interface INotificationChannel <<provided>> {
+  +send(notification): void
+}
+INotificationChannel <|.. EmailChannel
+NotificationService --> INotificationChannel : channels
+EmailChannel --> IEmailGateway
+
+note bottom of NotificationService
+SOLID applied:
+S - NotificationService only coordinates; ReminderScheduler, EmailChannel each do one job.
+O - A new channel (push, SMS) is a new INotificationChannel class (OCP).
+L - NotificationService can replace any other INotification implementation.
+I - INotification has only the operations its clients use.
+D - NotificationService depends on interfaces (IAssessment, IScheduling, IHabit, IPrediction, IEmailGateway, INotificationRepository), not on concrete classes.
+end note
+@enduml

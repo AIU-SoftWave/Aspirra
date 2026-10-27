@@ -1,0 +1,43 @@
+@startuml notification-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Notification Service (FR-18) | Owner: Muhammed Hany Hamdy
+
+Container_Boundary(notificationBoundary, "Notification Service") {
+  
+  ' Provided interface
+  Component(iNotification, "INotification", "Provided Interface", "sendReminder, sendEarlyWarning, sendStreakMilestone, getNotifications")
+  
+  ' Core components
+  Component(notificationService, "NotificationService", "Component", "Sends notifications across channels. Applies SOLID principles.")
+  Component(notificationDispatcher, "NotificationDispatcher", "Component", "Dispatches to channels")
+  
+  ' Persistence
+  Component(notificationRepo, "INotificationRepository", "Repository Interface / Component", "Data access for Notification (owned)")
+  
+  ' Domain
+  Component(domainModel, "Notification, NotificationType, NotificationChannel", "Domain Model", "Owned entities and enums")
+}
+
+' Required interfaces
+Container_Ext(assessmentSvc, "Assessment Service", "ASP.NET Core API", "Provides IAssessment")
+Container_Ext(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "Provides IScheduling")
+Container_Ext(habitSvc, "Habit Service", "ASP.NET Core API", "Provides IHabit")
+Container_Ext(predictionSvc, "Prediction Service", "ASP.NET Core API", "Provides IPrediction")
+System_Ext(emailGateway, "Email Gateway", "External Email Service", "Provides IEmailGateway")
+
+' Internal relationships
+Rel(iNotification, notificationService, "Delegates calls")
+Rel(notificationService, notificationDispatcher, "Uses")
+Rel(notificationService, notificationRepo, "Uses (INotificationRepository)")
+Rel(notificationRepo, domainModel, "Maps to/from")
+
+' Cross-service/external relationships
+Rel(notificationService, assessmentSvc, "Uses IAssessment (required)")
+Rel(notificationService, schedulingSvc, "Uses IScheduling (required)")
+Rel(notificationService, habitSvc, "Uses IHabit (required)")
+Rel(notificationService, predictionSvc, "Uses IPrediction (required)")
+Rel(notificationService, emailGateway, "Uses IEmailGateway (required)")
+
+SHOW_LEGEND()
+@enduml

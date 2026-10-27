@@ -1,0 +1,114 @@
+@startuml goal-planner-service-class-diagram
+title Level 3: Code - Class Diagram (goal-planner-service) - FR-05\nOwner: Yomna Mohamed Fekry
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IGoalPlanner <<provided>> {
+  +generatePlan(studentId, goalText): PlanDraft
+  +updateDraft(draftId, edits): PlanDraft
+  +approve(draftId): Plan
+  +discard(draftId): void
+  +getTasks(goalId): List<PlanTask>
+}
+
+class GoalPlannerService <<component>> {
+  -goal: IGoal
+  -aiProvider: IAIProvider
+  -repository: IPlanDraftRepository
+  -planPromptBuilder: PlanPromptBuilder
+  -planSchemaValidator: PlanSchemaValidator
+  --
+  +generatePlan(...) / updateDraft(...)
+  +approve(...) / discard(...)
+  +getTasks(...)
+}
+
+IGoalPlanner <|.. GoalPlannerService
+class PlanPromptBuilder <<component>> {
+  +build(goalText): String
+}
+GoalPlannerService --> PlanPromptBuilder
+class PlanSchemaValidator <<component>> {
+  +isValid(response): boolean
+}
+GoalPlannerService --> PlanSchemaValidator
+
+interface IGoal <<required - Academic service>> {
+  +createGoal(studentId, data): Goal
+  +updateGoal(goalId, data): Goal
+  +completeGoal(goalId): void
+  +archiveGoal(goalId): void
+  +restoreGoal(goalId): void
+  +deleteGoal(goalId): void
+  +getGoals(studentId, status): List<Goal>
+}
+
+GoalPlannerService --> IGoal
+interface IAIProvider <<required - AI provider>> {
+  +generate(prompt): AIResponse
+}
+
+GoalPlannerService --> IAIProvider
+interface IPlanDraftRepository <<required - Database>> {
+  +save(item: PlanDraft): void
+  +findById(id): PlanDraft
+  +findByOwner(ownerId): List<PlanDraft>
+}
+
+GoalPlannerService --> IPlanDraftRepository
+class PlanDraft {
+  -draftId: String
+  -goalId: String
+  -status: String
+  --
+  +approve(): void
+}
+class Milestone {
+  -title: String
+  -deadline: Date
+}
+class PlanTask {
+  -title: String
+  -durationHours: int
+  -deadline: Date
+  -dependsOn: String
+}
+IPlanDraftRepository --> PlanDraft
+PlanDraft *-- "1..*" Milestone
+Milestone *-- "1..*" PlanTask
+note bottom of GoalPlannerService
+SOLID applied:
+S - GoalPlannerService only coordinates; PlanPromptBuilder, PlanSchemaValidator each do one job.
+O - A new AI model is added by a new IAIProvider implementation; the planner is not changed.
+L - GoalPlannerService can replace any other IGoalPlanner implementation.
+I - IGoalPlanner has only the operations its clients use.
+D - GoalPlannerService depends on interfaces (IGoal, IAIProvider, IPlanDraftRepository), not on concrete classes.
+end note
+@enduml

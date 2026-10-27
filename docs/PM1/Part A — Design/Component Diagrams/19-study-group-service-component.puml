@@ -1,0 +1,39 @@
+@startuml study-group-service-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Level 2: Component Diagram - Study Group Service (FR-19) | Owner: Muhammed Hany Hamdy
+
+Container_Boundary(studyGroupBoundary, "Study Group Service") {
+  
+  ' Provided interface
+  Component(iStudyGroup, "IStudyGroup", "Provided Interface", "createGroup, joinGroup, shareGoal, postUpdate, findPartner")
+  
+  ' Core components
+  Component(studyGroupService, "StudyGroupService", "Component", "Manages groups and accountability. Applies SOLID principles.")
+  Component(accountabilityMatcher, "AccountabilityMatcher", "Component", "Matches accountability partners")
+  
+  ' Persistence
+  Component(studyGroupRepo, "IStudyGroupRepository", "Repository Interface / Component", "Data access for StudyGroup, GroupMember, Post (owned)")
+  
+  ' Domain
+  Component(domainModel, "StudyGroup, GroupMember, GroupPost, PartnerRequest", "Domain Model", "Owned entities")
+}
+
+' Required interfaces
+Container_Ext(studentSvc, "Student Service", "ASP.NET Core API", "Provides IStudentProfile")
+Container_Ext(academicSvc, "Academic Service", "ASP.NET Core API", "Provides IGoal")
+Container_Ext(analyticsSvc, "Analytics Service", "ASP.NET Core API", "Provides IAnalytics")
+
+' Internal relationships
+Rel(iStudyGroup, studyGroupService, "Delegates calls")
+Rel(studyGroupService, accountabilityMatcher, "Uses")
+Rel(studyGroupService, studyGroupRepo, "Uses (IStudyGroupRepository)")
+Rel(studyGroupRepo, domainModel, "Maps to/from")
+
+' Cross-service relationships
+Rel(studyGroupService, studentSvc, "Uses IStudentProfile (required)")
+Rel(studyGroupService, academicSvc, "Uses IGoal (required)")
+Rel(studyGroupService, analyticsSvc, "Uses IAnalytics (required)")
+
+SHOW_LEGEND()
+@enduml
