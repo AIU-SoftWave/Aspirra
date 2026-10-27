@@ -1,0 +1,197 @@
+version: '3.8'
+
+services:
+  aspirra-db:
+    image: postgres:16
+    container_name: aspirra-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-aspirra_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aspirra_password}
+      POSTGRES_DB: ${POSTGRES_DB:-aspirra}
+    ports:
+      - "5432:5432"
+    volumes:
+      - aspirra_db_data:/var/lib/postgresql/data
+    networks:
+      - aspirra-network
+
+  api-gateway:
+    build:
+      context: ./src/ApiGateway
+      dockerfile: Dockerfile
+    container_name: aspirra-api-gateway
+    ports:
+      - "5000:8080"
+    depends_on:
+      - aspirra-db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
+    networks:
+      - aspirra-network
+
+  student-service:
+    build: { context: ./src/Services/StudentService, dockerfile: Dockerfile }
+    container_name: aspirra-student-service
+    ports: ["5011:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  academic-service:
+    build: { context: ./src/Services/AcademicService, dockerfile: Dockerfile }
+    container_name: aspirra-academic-service
+    ports: ["5012:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  course-service:
+    build: { context: ./src/Services/CourseService, dockerfile: Dockerfile }
+    container_name: aspirra-course-service
+    ports: ["5013:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  assessment-service:
+    build: { context: ./src/Services/AssessmentService, dockerfile: Dockerfile }
+    container_name: aspirra-assessment-service
+    ports: ["5014:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  goal-planner-service:
+    build: { context: ./src/Services/GoalPlannerService, dockerfile: Dockerfile }
+    container_name: aspirra-goal-planner-service
+    ports: ["5015:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  study-planner-service:
+    build: { context: ./src/Services/StudyPlannerService, dockerfile: Dockerfile }
+    container_name: aspirra-study-planner-service
+    ports: ["5016:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  scheduling-service:
+    build: { context: ./src/Services/SchedulingService, dockerfile: Dockerfile }
+    container_name: aspirra-scheduling-service
+    ports: ["5017:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  adaptation-service:
+    build: { context: ./src/Services/AdaptationService, dockerfile: Dockerfile }
+    container_name: aspirra-adaptation-service
+    ports: ["5018:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  career-service:
+    build: { context: ./src/Services/CareerService, dockerfile: Dockerfile }
+    container_name: aspirra-career-service
+    ports: ["5019:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  skill-service:
+    build: { context: ./src/Services/SkillService, dockerfile: Dockerfile }
+    container_name: aspirra-skill-service
+    ports: ["5020:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  portfolio-service:
+    build: { context: ./src/Services/PortfolioService, dockerfile: Dockerfile }
+    container_name: aspirra-portfolio-service
+    ports: ["5021:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  job-preparation-service:
+    build: { context: ./src/Services/JobPreparationService, dockerfile: Dockerfile }
+    container_name: aspirra-job-preparation-service
+    ports: ["5022:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  habit-service:
+    build: { context: ./src/Services/HabitService, dockerfile: Dockerfile }
+    container_name: aspirra-habit-service
+    ports: ["5023:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  analytics-service:
+    build: { context: ./src/Services/AnalyticsService, dockerfile: Dockerfile }
+    container_name: aspirra-analytics-service
+    ports: ["5024:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  prediction-service:
+    build: { context: ./src/Services/PredictionService, dockerfile: Dockerfile }
+    container_name: aspirra-prediction-service
+    ports: ["5025:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  ai-coach-service:
+    build: { context: ./src/Services/AICoachService, dockerfile: Dockerfile }
+    container_name: aspirra-ai-coach-service
+    ports: ["5026:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  dashboard-service:
+    build: { context: ./src/Services/DashboardService, dockerfile: Dockerfile }
+    container_name: aspirra-dashboard-service
+    ports: ["5027:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  notification-service:
+    build: { context: ./src/Services/NotificationService, dockerfile: Dockerfile }
+    container_name: aspirra-notification-service
+    ports: ["5028:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  study-group-service:
+    build: { context: ./src/Services/StudyGroupService, dockerfile: Dockerfile }
+    container_name: aspirra-study-group-service
+    ports: ["5029:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+  administration-service:
+    build: { context: ./src/Services/AdministrationService, dockerfile: Dockerfile }
+    container_name: aspirra-administration-service
+    ports: ["5030:8080"]
+    depends_on: [aspirra-db]
+    environment: [ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}]
+    networks: [aspirra-network]
+
+volumes:
+  aspirra_db_data:
+
+networks:
+  aspirra-network:
+    driver: bridge

@@ -1,0 +1,68 @@
+name: CI - Build and Push to GHCR
+
+on:
+  push:
+    branches: [ develop, main ]
+  pull_request:
+    branches: [ develop, main ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/aiu-softwave/aspirra
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      matrix:
+        service:
+          - api-gateway
+          - student-service
+          - academic-service
+          - course-service
+          - assessment-service
+          - goal-planner-service
+          - study-planner-service
+          - scheduling-service
+          - adaptation-service
+          - career-service
+          - skill-service
+          - portfolio-service
+          - job-preparation-service
+          - habit-service
+          - analytics-service
+          - prediction-service
+          - ai-coach-service
+          - dashboard-service
+          - notification-service
+          - study-group-service
+          - administration-service
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.service == 'api-gateway' && './src/ApiGateway' || format('./src/Services/{0}', matrix.service == 'goal-planner-service' && 'GoalPlannerService' || matrix.service == 'study-planner-service' && 'StudyPlannerService' || matrix.service == 'scheduling-service' && 'SchedulingService' || matrix.service == 'adaptation-service' && 'AdaptationService' || matrix.service == 'career-service' && 'CareerService' || matrix.service == 'skill-service' && 'SkillService' || matrix.service == 'portfolio-service' && 'PortfolioService' || matrix.service == 'job-preparation-service' && 'JobPreparationService' || matrix.service == 'habit-service' && 'HabitService' || matrix.service == 'analytics-service' && 'AnalyticsService' || matrix.service == 'prediction-service' && 'PredictionService' || matrix.service == 'ai-coach-service' && 'AICoachService' || matrix.service == 'dashboard-service' && 'DashboardService' || matrix.service == 'notification-service' && 'NotificationService' || matrix.service == 'study-group-service' && 'StudyGroupService' || matrix.service == 'administration-service' && 'AdministrationService' || matrix.service == 'student-service' && 'StudentService' || matrix.service == 'academic-service' && 'AcademicService' || matrix.service == 'course-service' && 'CourseService' || matrix.service == 'assessment-service' && 'AssessmentService') }}
+          file: ${{ matrix.service == 'api-gateway' && './src/ApiGateway/Dockerfile' || format('./src/Services/{0}/Dockerfile', matrix.service == 'goal-planner-service' && 'GoalPlannerService' || matrix.service == 'study-planner-service' && 'StudyPlannerService' || matrix.service == 'scheduling-service' && 'SchedulingService' || matrix.service == 'adaptation-service' && 'AdaptationService' || matrix.service == 'career-service' && 'CareerService' || matrix.service == 'skill-service' && 'SkillService' || matrix.service == 'portfolio-service' && 'PortfolioService' || matrix.service == 'job-preparation-service' && 'JobPreparationService' || matrix.service == 'habit-service' && 'HabitService' || matrix.service == 'analytics-service' && 'AnalyticsService' || matrix.service == 'prediction-service' && 'PredictionService' || matrix.service == 'ai-coach-service' && 'AICoachService' || matrix.service == 'dashboard-service' && 'DashboardService' || matrix.service == 'notification-service' && 'NotificationService' || matrix.service == 'study-group-service' && 'StudyGroupService' || matrix.service == 'administration-service' && 'AdministrationService' || matrix.service == 'student-service' && 'StudentService' || matrix.service == 'academic-service' && 'AcademicService' || matrix.service == 'course-service' && 'CourseService' || matrix.service == 'assessment-service' && 'AssessmentService') }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ env.IMAGE_PREFIX }}/${{ matrix.service }}:latest
+            ${{ env.IMAGE_PREFIX }}/${{ matrix.service }}:${{ github.sha }}
