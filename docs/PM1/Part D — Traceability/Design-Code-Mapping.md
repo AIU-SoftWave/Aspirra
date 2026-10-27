@@ -39,3 +39,14 @@ Every diagram maps to a real artifact (code, configuration, Jira, or the databas
 | --- | --- | --- |
 | Jira | https://aspirra.atlassian.net (Project SCRUM, Board 1) | Epics per FR-01–FR-20, stories labeled `story`, Sprint 1 active, traceable to backlog |
 | Backlog/Estimation | `docs/proposal/08-C8-product-backlog.md`, `docs/proposal/09-C9-estimation-and-sprint-plan.md` | User stories US-XX.Y, story points, sprint plan |
+
+## Sprint 1 Code Artifacts (Traceability)
+
+| User Story (Jira) | Service | Code Artifacts | Maps To |
+| --- | --- | --- | --- |
+| US-01.1/01.2/01.3 (SCRUM-104/103/102) | StudentService | `src/Services/StudentService/Interfaces/IStudentProfile.cs`, `Services/StudentProfileService.cs`, `Models/Profile.cs`, `Models/TimeSlot.cs` | Component: `docs/PM1/Part A — Design/Component Diagrams/01-student-service-component.puml`, Class: `docs/PM1/Part A — Design/Class Diagram/01-student-service.puml`, ERD: `docs/PM1/Part A — Design/ERD/01-student-service-erd.puml` |
+| US-02.1/02.2/02.3 (SCRUM-101/105/106) | AcademicService | `src/Services/AcademicService/Interfaces/IGoal.cs`, `Services/GoalService.cs`, `Models/Goal.cs`, `Models/GoalStatus.cs` | Component: `02-academic-service-component.puml`, Class: `02-academic-service.puml`, ERD: `02-academic-service-erd.puml` |
+| US-03.1/03.2 (SCRUM-108/109) | CourseService | `src/Services/CourseService/Interfaces/ICourse.cs`, `Services/CourseService.cs`, `Models/Course.cs`, `Models/CourseEnrollment.cs` | Component: `03-course-service-component.puml`, Class: `03-course-service.puml`, ERD: `03-course-service-erd.puml` |
+| US-04.1/04.2/04.3 (SCRUM-113/114/115) | AssessmentService | `src/Services/AssessmentService/Interfaces/IAssessment.cs`, `Services/AssessmentService.cs`, `Models/Assignment.cs`, `Models/Exam.cs`, `Models/AssignmentStatus.cs` | Component: `04-assessment-service-component.puml`, Class: `04-assessment-service.puml`, ERD: `04-assessment-service-erd.puml` |
+| US-05.1/05.2/05.3 (SCRUM-117/118/119) | GoalPlannerService | `src/Services/GoalPlannerService/Interfaces/IGoalPlanner.cs`, `Services/GoalPlannerService.cs`, `Models/PlanDraft.cs`, `Models/Milestone.cs`, `Models/PlanTask.cs` | Component: `05-goal-planner-service-component.puml`, Class: `05-goal-planner-service.puml`, ERD: `05-goal-planner-service-erd.puml` |
+| US-13.1/13.2 (SCRUM-143/144) | HabitService | `src/Services/HabitService/Interfaces/IHabit.cs`, `Services/HabitService.cs`, `Models/Habit.cs`, `Models/HabitLog.cs` | Component: `13-habit-service-component.puml`, Class: `13-habit-service.puml`, ERD: `13-habit-service-erd.puml` |
