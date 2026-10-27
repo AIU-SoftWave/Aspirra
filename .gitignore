@@ -2,3 +2,6 @@
 .DS_Store
 Thumbs.db
 .obsidian
+node_modules/
+.next/
+out/

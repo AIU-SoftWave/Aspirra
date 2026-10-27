@@ -1,0 +1,32 @@
+services:
+  sprint1-api:
+    build:
+      context: .
+      dockerfile: src/Sprint1/Aspirra.Sprint1.Api/Dockerfile
+    container_name: aspirra-sprint1-api
+    ports:
+      - "5000:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      AI_PROVIDER_API_KEY: ${AI_PROVIDER_API_KEY:-}
+    networks:
+      - aspirra-sprint1-network
+
+  sprint1-web:
+    build:
+      context: ./src/WebFrontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5000}
+    container_name: aspirra-sprint1-web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - sprint1-api
+    networks:
+      - aspirra-sprint1-network
+
+networks:
+  aspirra-sprint1-network:
+    driver: bridge
