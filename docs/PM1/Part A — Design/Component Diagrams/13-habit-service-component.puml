@@ -4,32 +4,22 @@
 title Level 2: Component Diagram - Habit Service (FR-13) | Owner: Mostafa Khamis Abozead
 
 Container_Boundary(habitBoundary, "Habit Service") {
-  
-  ' Provided interface
-  Component(iHabit, "IHabit", "Provided Interface", "createHabit, completeHabit, getStreaks, linkToGoal")
-  
-  ' Core components
-  Component(habitService, "HabitService", "Component", "Manages habits and streaks. Applies SOLID principles.")
-  Component(streakCalculator, "StreakCalculator", "Component", "Calculates habit streaks")
-  
-  ' Persistence
-  Component(habitRepo, "IHabitRepository", "Repository Interface / Component", "Data access for Habit, HabitLog (owned)")
-  
-  ' Domain
-  Component(domainModel, "Habit, HabitLog, HabitFrequency", "Domain Model", "Owned entities and enums")
+
+  Component(iHabit, "IHabit", "Provided Interface", "createHabit, completeHabit, getHabits, getStreaks, linkHabitToGoal")
+  Component(habitsController, "HabitsController", "API Controller", "Exposes /api/habits endpoints")
+  Component(habitService, "HabitService", "Component", "Implements habit creation, completion, streak calculation, and goal linking")
+  Component(iHabitRepo, "IHabitRepository", "Repository Interface", "Persistence abstraction for Habit and HabitLog")
+  Component(habitRepo, "HabitRepository", "Repository", "EF Core implementation of IHabitRepository")
+  Component(habitDb, "HabitDbContext", "EF Core DbContext", "Owns the habit schema (Habits, HabitLogs)")
+  Component(domainModel, "Habit, HabitLog, HabitFrequency", "Domain Model", "Owned entities and enum")
 }
 
-' Required interfaces
-Container_Ext(academicSvc, "Academic Service", "ASP.NET Core API", "Provides IGoal")
-
-' Internal relationships
-Rel(iHabit, habitService, "Delegates calls")
-Rel(habitService, streakCalculator, "Uses")
-Rel(habitService, habitRepo, "Uses (IHabitRepository)")
-Rel(habitRepo, domainModel, "Maps to/from")
-
-' Cross-service relationships
-Rel(habitService, academicSvc, "Uses IGoal (required)")
+Rel(habitsController, iHabit, "Exposes")
+Rel(habitsController, habitService, "Calls")
+Rel(habitService, iHabitRepo, "Depends on")
+Rel(habitRepo, iHabitRepo, "Implements")
+Rel(habitRepo, habitDb, "Uses")
+Rel(habitDb, domainModel, "Maps to/from")
 
 SHOW_LEGEND()
 @enduml

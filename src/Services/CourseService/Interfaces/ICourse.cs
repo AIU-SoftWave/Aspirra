@@ -1,13 +1,13 @@
 using Aspirra.CourseService.Models;
 
-namespace Aspirra.CourseService.Interfaces
+namespace Aspirra.CourseService.Interfaces;
+
+public interface ICourse
 {
-    public interface ICourse
-    {
-        Course AddCourse(Course course);
-        Course UpdateCourse(string courseId, Course course);
-        void RemoveCourse(string courseId);
-        List<Course> GetCourses(string studentId);
-        object GetCourseProgress(string courseId);
-    }
+    Task<ServiceResult<Course>> AddCourseAsync(Course course);
+    Task<ServiceResult<Course>> GetCourseAsync(string courseId);
+    Task<ServiceResult<Course>> UpdateCourseAsync(string courseId, Course course);
+    Task<ServiceResult<bool>> RemoveCourseAsync(string courseId);
+    Task<List<Course>> GetCoursesAsync(string? studentId);
+    Task<ServiceResult<CourseProgress>> GetCourseProgressAsync(string courseId);
 }

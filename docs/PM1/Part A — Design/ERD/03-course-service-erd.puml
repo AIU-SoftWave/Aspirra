@@ -2,31 +2,34 @@
 hide circle
 skinparam linetype ortho
 
-title ERD - Course Service (FR-03) | Owner: Ahmed Mohamed Ahmed\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+title ERD - Course Service (FR-03) | Owner: Ahmed Mohamed Ahmed\nSchema: course | Note: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
 
 entity "Course" as Course {
-  * courseId : VARCHAR(50) <<PK>>
+  * courseId : VARCHAR(64) <<PK>>
   --
-  studentId : VARCHAR(50)
-  name : VARCHAR(150)
-  code : VARCHAR(50)
-  instructor : VARCHAR(100)
-  semester : VARCHAR(50)
+  studentId : VARCHAR(64)
+  name : VARCHAR(200)
+  code : VARCHAR(64)
+  instructor : VARCHAR(200)
+  semester : VARCHAR(64)
   credits : INT
   weeklyWorkloadHours : INT
-  createdAt : DATETIME
-  updatedAt : DATETIME
+  createdAt : TIMESTAMPTZ
+  updatedAt : TIMESTAMPTZ
 }
 
 entity "CourseEnrollment" as CourseEnrollment {
-  * enrollmentId : VARCHAR(50) <<PK>>
+  * enrollmentId : VARCHAR(64) <<PK>>
   --
-  courseId : VARCHAR(50) <<FK to Course>>
-  studentId : VARCHAR(50)
+  courseId : VARCHAR(64) <<FK to Course>>
+  studentId : VARCHAR(64)
   enrollmentDate : DATE
-  status : VARCHAR(20)
+  status : VARCHAR(64)
 }
 
 Course ||--o{ CourseEnrollment : "has enrollments"
+note bottom of Course
+  Non-unique lookup index: (code, semester)
+end note
 ' Note: studentId references are logical only (no cross-service FK)
 @enduml

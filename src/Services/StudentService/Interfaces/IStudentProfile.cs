@@ -4,9 +4,9 @@ namespace Aspirra.StudentService.Interfaces
 {
     public interface IStudentProfile
     {
-        Profile CreateProfile(string studentId, Profile data);
-        Profile UpdateProfile(string studentId, Profile data);
-        Profile GetProfile(string studentId);
-        List<TimeSlot> GetAvailability(string studentId);
+        Task<ServiceResult<Profile>> CreateProfileAsync(string studentId, Profile data, CancellationToken cancellationToken = default);
+        Task<ServiceResult<Profile>> UpdateProfileAsync(string studentId, Profile data, CancellationToken cancellationToken = default);
+        Task<ServiceResult<Profile>> GetProfileAsync(string studentId, CancellationToken cancellationToken = default);
+        Task<ServiceResult<List<TimeSlot>>> GetAvailabilityAsync(string studentId, CancellationToken cancellationToken = default);
     }
 }

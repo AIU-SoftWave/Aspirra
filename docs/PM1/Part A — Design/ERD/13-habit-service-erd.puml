@@ -2,32 +2,35 @@
 hide circle
 skinparam linetype ortho
 
-title ERD - Habit Service (FR-13) | Owner: Mostafa Khamis Abozead\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+title ERD - Habit Service (FR-13) | Owner: Mostafa Khamis Abozead\nSchema: habit | Note: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
 
 entity "Habit" as Habit {
-  * habitId : VARCHAR(50) <<PK>>
+  * habitId : VARCHAR(64) <<PK>>
   --
-  studentId : VARCHAR(50)
-  goalId : VARCHAR(50)
-  name : VARCHAR(150)
-  frequency : VARCHAR(30)
-  goalTarget : VARCHAR(150)
-  reminderTime : TIME
+  studentId : VARCHAR(64)
+  goalId : VARCHAR(64) <<NULL>>
+  name : VARCHAR(200)
+  frequency : VARCHAR(20)
+  goalTarget : VARCHAR(500) <<NULL>>
+  reminderTime : TIME <<NULL>>
   currentStreak : INT
   isActive : BOOLEAN
-  createdAt : DATETIME
-  updatedAt : DATETIME
+  createdAt : TIMESTAMPTZ
+  updatedAt : TIMESTAMPTZ
 }
 
 entity "HabitLog" as HabitLog {
-  * logId : VARCHAR(50) <<PK>>
+  * logId : VARCHAR(64) <<PK>>
   --
-  habitId : VARCHAR(50) <<FK to Habit>>
+  habitId : VARCHAR(64) <<FK to Habit>>
   logDate : DATE
   completed : BOOLEAN
-  completedAt : DATETIME
+  completedAt : TIMESTAMPTZ <<NULL>>
 }
 
 Habit ||--o{ HabitLog : "has logs"
+note bottom of HabitLog
+  Unique index: (habitId, logDate)
+end note
 ' Note: goalId/studentId are logical references (no cross-service FK)
 @enduml

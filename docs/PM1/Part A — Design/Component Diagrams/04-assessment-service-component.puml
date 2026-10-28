@@ -4,27 +4,22 @@
 title Level 2: Component Diagram - Assessment Service (FR-04) | Owner: Ahmed Mohamed Ahmed
 
 Container_Boundary(assessmentBoundary, "Assessment Service") {
-  
-  ' Provided interface
-  Component(iAssessment, "IAssessment", "Provided Interface", "addAssignment, addExam, setAssignmentStatus, setExamReminder, getAssessments")
-  
-  ' Core components
-  Component(assessmentService, "AssessmentService", "Component", "Orchestrates assignments/exams. Applies SOLID principles.")
-  Component(assessmentValidator, "AssessmentValidator", "Component", "Validates assessment data and dates")
-  
-  ' Persistence
-  Component(assessmentRepo, "IAssessmentRepository", "Repository Interface / Component", "Data access for Assignment, Exam (owned)")
-  
-  ' Domain
-  Component(domainModel, "Assignment, Exam, AssignmentStatus", "Domain Model", "Owned entities and enums")
+
+  Component(iAssessment, "IAssessment", "Provided Interface", "addAssignment, addExam, setAssignmentStatus, setExamReminder, getAssessments, getCourseAssignments, getUpcomingExams")
+  Component(controllers, "AssignmentsController, ExamsController, AssessmentsController, CoursesController", "API Controllers", "Expose /api/assignments, /api/exams, /api/assessments, /api/courses/{courseId}/assignments")
+  Component(assessmentService, "AssessmentService", "Component", "Implements assignment and exam use cases and validates dates")
+  Component(iAssessmentRepo, "IAssessmentRepository", "Repository Interface", "Persistence abstraction for Assignment and Exam")
+  Component(assessmentRepo, "EfAssessmentRepository", "Repository", "EF Core implementation of IAssessmentRepository")
+  Component(assessmentDb, "AssessmentDbContext", "EF Core DbContext", "Owns the assessment schema (Assignments, Exams)")
+  Component(domainModel, "Assignment, Exam, AssignmentStatus", "Domain Model", "Owned entities and enum")
 }
 
-' No direct required interfaces from other services shown (foundation)
-' Internal relationships
-Rel(iAssessment, assessmentService, "Delegates calls")
-Rel(assessmentService, assessmentValidator, "Uses")
-Rel(assessmentService, assessmentRepo, "Uses (IAssessmentRepository)")
-Rel(assessmentRepo, domainModel, "Maps to/from")
+Rel(controllers, iAssessment, "Exposes")
+Rel(controllers, assessmentService, "Calls")
+Rel(assessmentService, iAssessmentRepo, "Depends on")
+Rel(assessmentRepo, iAssessmentRepo, "Implements")
+Rel(assessmentRepo, assessmentDb, "Uses")
+Rel(assessmentDb, domainModel, "Maps to/from")
 
 SHOW_LEGEND()
 @enduml

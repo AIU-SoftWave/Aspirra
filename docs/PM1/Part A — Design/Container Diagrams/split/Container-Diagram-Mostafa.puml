@@ -24,7 +24,6 @@ System_Ext(aiProvider, "AI Provider", "External LLM API", "AI capabilities")
 System_Ext(emailGateway, "Email Gateway", "External Email Service", "Email delivery")
 ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared DB - each service owns schema/tables")
 
-Rel(habitSvc, academicSvc, "Uses", "IGoal (required)")
 Rel(analyticsSvc, studentSvc, "Uses", "IStudentProfile (required)")
 Rel(analyticsSvc, schedulingSvc, "Uses", "IScheduling (required)")
 Rel(predictionSvc, analyticsSvc, "Uses", "IAnalytics (required)")

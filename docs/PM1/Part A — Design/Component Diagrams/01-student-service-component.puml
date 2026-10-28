@@ -4,29 +4,22 @@
 title Level 2: Component Diagram - Student Service (FR-01) | Owner: Ahmed Mohamed Ahmed
 
 Container_Boundary(studentBoundary, "Student Service") {
-  
-  ' Provided interface
+
   Component(iStudentProfile, "IStudentProfile", "Provided Interface", "createProfile, updateProfile, getProfile, getAvailability")
-  
-  ' Core components
-  Component(studentProfileService, "StudentProfileService", "Component", "Orchestrates profile management. Applies SOLID principles.")
-  Component(profileValidator, "ProfileValidator", "Component", "Validates profile data and time slots")
-  
-  ' Persistence
-  Component(profileRepo, "IProfileRepository", "Repository Interface / Component", "Data access for Profile and TimeSlot (owned)")
-  
-  ' Domain
-  Component(domainModel, "Profile, TimeSlot", "Domain Model", "Owned entities and value objects")
+  Component(profilesController, "ProfilesController", "API Controller", "Exposes /api/profiles endpoints")
+  Component(studentProfileService, "StudentProfileService", "Component", "Implements profile use cases and validates required fields and time slots")
+  Component(iProfileRepo, "IProfileRepository", "Repository Interface", "Persistence abstraction for Profile and TimeSlot")
+  Component(profileRepo, "ProfileRepository", "Repository", "EF Core implementation of IProfileRepository")
+  Component(studentDb, "StudentDbContext", "EF Core DbContext", "Owns the student schema (Profiles, TimeSlots)")
+  Component(domainModel, "Profile, TimeSlot", "Domain Model", "Owned entities")
 }
 
-' No cross-service required interfaces for Student Service (foundation service)
-' Persistence to shared DB is shown at container level
-
-' Internal relationships
-Rel(iStudentProfile, studentProfileService, "Delegates calls")
-Rel(studentProfileService, profileValidator, "Uses")
-Rel(studentProfileService, profileRepo, "Uses (IProfileRepository)")
-Rel(profileRepo, domainModel, "Maps to/from")
+Rel(profilesController, iStudentProfile, "Exposes")
+Rel(profilesController, studentProfileService, "Calls")
+Rel(studentProfileService, iProfileRepo, "Depends on")
+Rel(profileRepo, iProfileRepo, "Implements")
+Rel(profileRepo, studentDb, "Uses")
+Rel(studentDb, domainModel, "Maps to/from")
 
 SHOW_LEGEND()
 @enduml

@@ -31,43 +31,55 @@ legend right
 endlegend
 
 interface ICourse <<provided>> {
-  +addCourse(studentId, data): Course
-  +updateCourse(courseId, data): Course
-  +removeCourse(courseId): void
-  +getCourseProgress(courseId): CourseProgress
+  +AddCourseAsync(course): ServiceResult<Course>
+  +GetCourseAsync(courseId): ServiceResult<Course>
+  +UpdateCourseAsync(courseId, course): ServiceResult<Course>
+  +RemoveCourseAsync(courseId): ServiceResult<bool>
+  +GetCoursesAsync(studentId): List<Course>
+  +GetCourseProgressAsync(courseId): ServiceResult<CourseProgress>
 }
 
 class CourseService <<component>> {
-  -assessment: IAssessment
   -repository: ICourseRepository
-  -courseCodeChecker: CourseCodeChecker
+  -assessmentClient: IAssessmentClient
   --
-  +addCourse(...) / updateCourse(...)
-  +removeCourse(...) / getCourseProgress(...)
+  +AddCourseAsync(...) / GetCourseAsync(...)
+  +UpdateCourseAsync(...) / RemoveCourseAsync(...)
+  +GetCoursesAsync(...) / GetCourseProgressAsync(...)
 }
 
-ICourse <|.. CourseService
-class CourseCodeChecker <<component>> {
-  +exists(code, semester): boolean
-}
-CourseService --> CourseCodeChecker
-
-interface IAssessment <<required - Assessment service>> {
-  +addAssignment(data): Assignment
-  +addExam(data): Exam
-  +setStatus(assignmentId, status): void
-  +setExamReminder(examId, daysBefore): void
-  +getDeadlines(studentId, days): List<Deadline>
+interface IAssessmentClient <<required - Assessment service>> {
+  +GetAssignmentsAsync(courseId): Task<IReadOnlyList<AssessmentItem>>
 }
 
-CourseService --> IAssessment
+class HttpAssessmentClient <<component>> {
+  -httpClient: HttpClient
+  --
+  +GetAssignmentsAsync(courseId)
+}
+
 interface ICourseRepository <<required - Database>> {
-  +save(item: Course): void
-  +findById(id): Course
-  +findByOwner(ownerId): List<Course>
+  +GetByIdAsync(courseId): Task<Course?>
+  +GetByStudentAsync(studentId): Task<List<Course>>
+  +ExistsAsync(code, semester, excludeCourseId): Task<bool>
+  +AddAsync(course): Task
+  +UpdateAsync(course): Task
+  +RemoveAsync(course): Task
 }
 
-CourseService --> ICourseRepository
+class CourseRepository <<component>> {
+  -context: CourseDbContext
+  --
+  +GetByIdAsync(...) / GetByStudentAsync(...)
+  +ExistsAsync(...) / AddAsync(...)
+  +UpdateAsync(...) / RemoveAsync(...)
+}
+
+class CourseDbContext {
+  +Courses: DbSet<Course>
+  +Enrollments: DbSet<CourseEnrollment>
+}
+
 class Course {
   -courseId: String
   -studentId: String
@@ -76,22 +88,40 @@ class Course {
   -instructor: String
   -semester: String
   -credits: int
-  -weeklyHours: int
+  -weeklyWorkloadHours: int
+}
+class CourseEnrollment {
+  -enrollmentId: String
+  -courseId: String
+  -studentId: String
 }
 class CourseProgress {
-  -completed: List<Assignment>
-  -outstanding: List<Assignment>
-  --
-  +percentDone(): int
+  -message: String?
+  -completed: List<AssessmentItem>
+  -outstanding: List<AssessmentItem>
 }
-ICourseRepository --> Course
+class AssessmentItem {
+  -assignmentId: String
+  -title: String
+  -status: String
+}
+
+ICourse <|.. CourseService
+CourseService --> ICourseRepository
+CourseService --> IAssessmentClient
+HttpAssessmentClient ..|> IAssessmentClient
+CourseRepository ..|> ICourseRepository
+CourseRepository --> CourseDbContext
+CourseDbContext --> Course
+CourseDbContext --> CourseEnrollment
 Course ..> CourseProgress
+CourseProgress --> AssessmentItem
 note bottom of CourseService
 SOLID applied:
-S - CourseService only coordinates; CourseCodeChecker each do one job.
+S - CourseService coordinates; CourseRepository persists; HttpAssessmentClient isolates HTTP.
 O - new behaviour is added by new implementations, not by editing CourseService.
 L - CourseService can replace any other ICourse implementation.
-I - ICourse has only the operations its clients use.
-D - CourseService depends on interfaces (IAssessment, ICourseRepository), not on concrete classes.
+I - ICourse and IAssessmentClient expose only the operations their clients use.
+D - CourseService depends on ICourseRepository and IAssessmentClient, not concrete classes.
 end note
 @enduml

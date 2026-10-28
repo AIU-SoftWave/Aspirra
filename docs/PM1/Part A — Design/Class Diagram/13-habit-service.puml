@@ -31,65 +31,80 @@ legend right
 endlegend
 
 interface IHabit <<provided>> {
-  +createHabit(studentId, data): Habit
-  +markDone(habitId, date): void
-  +getStreak(habitId): int
-  +linkToGoal(habitId, goalId): void
-  +getHabits(studentId): List<Habit>
+  +CreateHabitAsync(studentId, request): ServiceResult<Habit>
+  +CompleteHabitAsync(habitId, date): ServiceResult<Habit>
+  +GetHabitsAsync(studentId): List<Habit>
+  +GetStreaksAsync(studentId, today): List<HabitStreakResponse>
+  +LinkToGoalAsync(habitId, goalId): ServiceResult<Habit>
 }
 
 class HabitService <<component>> {
-  -goal: IGoal
   -repository: IHabitRepository
-  -streakCalculator: StreakCalculator
   --
-  +createHabit(...) / markDone(...)
-  +getStreak(...) / linkToGoal(...)
-  +getHabits(...)
+  +CreateHabitAsync(...)
+  +CompleteHabitAsync(...) / GetHabitsAsync(...)
+  +GetStreaksAsync(...) / LinkToGoalAsync(...)
+}
+
+interface IHabitRepository <<required - Database>> {
+  +GetHabitAsync(habitId): Task<Habit?>
+  +GetHabitsByStudentAsync(studentId): Task<List<Habit>>
+  +GetLogAsync(habitId, date): Task<HabitLog?>
+  +GetLogsAsync(habitId): Task<List<HabitLog>>
+  +AddHabitAsync(habit): Task
+  +AddLogAsync(log): Task
+  +SaveChangesAsync(): Task
+}
+
+class HabitRepository <<component>> {
+  -context: HabitDbContext
+  --
+  +GetHabitAsync(...) / GetHabitsByStudentAsync(...)
+  +GetLogAsync(...) / GetLogsAsync(...)
+  +AddHabitAsync(...) / AddLogAsync(...)
+  +SaveChangesAsync()
+}
+
+class HabitDbContext {
+  +Habits: DbSet<Habit>
+  +HabitLogs: DbSet<HabitLog>
+}
+
+class Habit {
+  -habitId: String
+  -studentId: String
+  -goalId: String?
+  -name: String
+  -frequency: HabitFrequency
+  -reminderTime: TimeOnly?
+  -currentStreak: int
+  -isActive: bool
+}
+class HabitLog {
+  -logId: String
+  -habitId: String
+  -logDate: DateOnly
+  -completed: bool
+}
+enum HabitFrequency {
+  Daily
+  Weekly
 }
 
 IHabit <|.. HabitService
-class StreakCalculator <<component>> {
-  +calculate(completions, frequency): int
-}
-HabitService --> StreakCalculator
-
-interface IGoal <<required - Academic service>> {
-  +createGoal(studentId, data): Goal
-  +updateGoal(goalId, data): Goal
-  +completeGoal(goalId): void
-  +archiveGoal(goalId): void
-  +restoreGoal(goalId): void
-  +deleteGoal(goalId): void
-  +getGoals(studentId, status): List<Goal>
-}
-
-HabitService --> IGoal
-interface IHabitRepository <<required - Database>> {
-  +save(item: Habit): void
-  +findById(id): Habit
-  +findByOwner(ownerId): List<Habit>
-}
-
 HabitService --> IHabitRepository
-class Habit {
-  -habitId: String
-  -name: String
-  -frequency: String
-  -reminderTime: Time
-  -goalId: String
-}
-class HabitCompletion {
-  -date: Date
-}
-IHabitRepository --> Habit
-Habit *-- "0..*" HabitCompletion
+HabitRepository ..|> IHabitRepository
+HabitRepository --> HabitDbContext
+HabitDbContext --> Habit
+HabitDbContext --> HabitLog
+Habit *-- "0..*" HabitLog
+Habit --> HabitFrequency
 note bottom of HabitService
 SOLID applied:
-S - HabitService only coordinates; StreakCalculator each do one job.
+S - HabitService owns streak rules; HabitRepository persists; HabitDbContext maps.
 O - new behaviour is added by new implementations, not by editing HabitService.
 L - HabitService can replace any other IHabit implementation.
-I - IHabit has only the operations its clients use.
-D - HabitService depends on interfaces (IGoal, IHabitRepository), not on concrete classes.
+I - IHabit exposes only the operations its clients use.
+D - HabitService depends on IHabitRepository, not on HabitRepository.
 end note
 @enduml

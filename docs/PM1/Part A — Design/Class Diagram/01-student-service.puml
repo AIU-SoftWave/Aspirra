@@ -31,56 +31,71 @@ legend right
 endlegend
 
 interface IStudentProfile <<provided>> {
-  +createProfile(studentId, data): Profile
-  +updateProfile(studentId, data): Profile
-  +getProfile(studentId): Profile
-  +getAvailability(studentId): List<TimeSlot>
+  +CreateProfileAsync(studentId, data): ServiceResult<Profile>
+  +UpdateProfileAsync(studentId, data): ServiceResult<Profile>
+  +GetProfileAsync(studentId): ServiceResult<Profile>
+  +GetAvailabilityAsync(studentId): ServiceResult<List<TimeSlot>>
 }
 
 class StudentProfileService <<component>> {
   -repository: IProfileRepository
-  -profileValidator: ProfileValidator
   --
-  +createProfile(...) / updateProfile(...)
-  +getProfile(...) / getAvailability(...)
+  +CreateProfileAsync(...)
+  +UpdateProfileAsync(...)
+  +GetProfileAsync(...)
+  +GetAvailabilityAsync(...)
 }
-
-IStudentProfile <|.. StudentProfileService
-class ProfileValidator <<component>> {
-  +validate(data): ValidationResult
-  +isValidSlot(slot): boolean
-}
-StudentProfileService --> ProfileValidator
 
 interface IProfileRepository <<required - Database>> {
-  +save(item: Profile): void
-  +findById(id): Profile
-  +findByOwner(ownerId): List<Profile>
+  +AddAsync(profile): Task
+  +GetByIdAsync(studentId): Task<Profile?>
+  +Update(profile): void
+  +SaveChangesAsync(): Task<int>
 }
 
-StudentProfileService --> IProfileRepository
+class ProfileRepository <<component>> {
+  -context: StudentDbContext
+  --
+  +AddAsync(...) / GetByIdAsync(...)
+  +Update(...) / SaveChangesAsync(...)
+}
+
+class StudentDbContext {
+  +Profiles: DbSet<Profile>
+  +TimeSlots: DbSet<TimeSlot>
+}
+
 class Profile {
   -studentId: String
   -academicLevel: String
   -major: String
   -interests: List<String>
+  -skills: List<String>
   -careerInterests: List<String>
+  -availability: List<TimeSlot>
   --
   +isComplete(): boolean
 }
 class TimeSlot {
-  -day: String
-  -start: Time
-  -end: Time
+  -timeSlotId: String
+  -studentId: String
+  -dayOfWeek: String
+  -startTime: TimeOnly
+  -endTime: TimeOnly
 }
-IProfileRepository --> Profile
+
+IStudentProfile <|.. StudentProfileService
+StudentProfileService --> IProfileRepository
+ProfileRepository ..|> IProfileRepository
+ProfileRepository --> StudentDbContext
+StudentDbContext --> Profile
 Profile *-- "1..*" TimeSlot : availability
 note bottom of StudentProfileService
 SOLID applied:
-S - StudentProfileService only coordinates; ProfileValidator each do one job.
+S - StudentProfileService coordinates; ProfileRepository persists; StudentDbContext maps.
 O - new behaviour is added by new implementations, not by editing StudentProfileService.
 L - StudentProfileService can replace any other IStudentProfile implementation.
 I - IStudentProfile has only the operations its clients use.
-D - StudentProfileService depends on interfaces (IProfileRepository), not on concrete classes.
+D - StudentProfileService depends on IProfileRepository, not on ProfileRepository.
 end note
 @enduml

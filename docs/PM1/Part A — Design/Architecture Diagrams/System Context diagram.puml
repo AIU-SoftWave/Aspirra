@@ -8,15 +8,15 @@ title Level 0: System Context Diagram - Aspirra (Student Success & Career Planne
 Person(student, "Student", "Uses Aspirra to manage goals, study plans, schedules, habits, career preparation, and track progress.")
 Person(admin, "Administrator", "Manages student accounts, usage statistics, and resolves account issues via the Administration Service.")
 
-System(aspirra, "Aspirra", "A student success and career planner that turns goals into editable plans, schedules, habits, progress tracking, and career preparation. Provides interfaces IStudentProfile, IGoal, ICourse, IAssessment, IGoalPlanner, IStudyPlanner, IScheduling, IAdaptation, ICareer, ISkill, IPortfolio, IJobPrep, IHabit, IAnalytics, IPrediction, ICoach, IDashboard, INotification, IStudyGroup, IAdministration.")
+System(aspirra, "Aspirra", "A student success and career planner that turns goals into editable plans, schedules, habits, progress tracking, and career preparation.\nProvides IStudentProfile, IGoal, ICourse, IAssessment, IGoalPlanner, IStudyPlanner, IScheduling, IAdaptation, ICareer, ISkill, IPortfolio, IJobPrep, IHabit, IAnalytics, IPrediction, ICoach, IDashboard, INotification, IStudyGroup, IAdministration.")
 
 System_Ext(aiProvider, "AI Provider", "External LLM API that provides AI capabilities for plan generation, career roadmaps, coaching, and adaptive planning via IAIProvider.")
 System_Ext(emailGateway, "Email Gateway", "External Email Service used to send reminders, warnings, and notifications via IEmailGateway.")
 
-Rel(student, aspirra, "Uses")
-Rel(admin, aspirra, "Manages system via")
-Rel(aspirra, aiProvider, "Uses AI capabilities via IAIProvider (required)")
-Rel(aspirra, emailGateway, "Sends notifications via IEmailGateway (required)")
+Rel(student, aspirra, "Uses provided interfaces", "IStudentProfile, IGoal, ICourse, IAssessment, IGoalPlanner, IStudyPlanner, IScheduling, IAdaptation, ICareer, ISkill, IPortfolio, IJobPrep, IHabit, IAnalytics, IPrediction, ICoach, IDashboard")
+Rel(admin, aspirra, "Manages accounts and statistics via", "IAdministration (provided)")
+Rel(aspirra, aiProvider, "Uses AI capabilities via", "IAIProvider (required)")
+Rel(aspirra, emailGateway, "Sends notifications via", "IEmailGateway (required)")
 
 SHOW_LEGEND()
 @enduml

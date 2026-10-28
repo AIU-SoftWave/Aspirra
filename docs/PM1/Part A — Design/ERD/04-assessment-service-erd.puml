@@ -2,34 +2,34 @@
 hide circle
 skinparam linetype ortho
 
-title ERD - Assessment Service (FR-04) | Owner: Ahmed Mohamed Ahmed\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+title ERD - Assessment Service (FR-04) | Owner: Ahmed Mohamed Ahmed\nSchema: assessment | Note: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
 
 entity "Assignment" as Assignment {
-  * assignmentId : VARCHAR(50) <<PK>>
+  * assignmentId : VARCHAR(64) <<PK>>
   --
-  courseId : VARCHAR(50)
-  studentId : VARCHAR(50)
+  courseId : VARCHAR(64)
+  studentId : VARCHAR(64)
   title : VARCHAR(200)
-  description : TEXT
+  description : VARCHAR(2000)
   dueDate : DATE
-  priority : VARCHAR(20)
+  priority : VARCHAR(50)
   status : VARCHAR(20)
-  createdAt : DATETIME
-  updatedAt : DATETIME
+  createdAt : TIMESTAMPTZ
+  updatedAt : TIMESTAMPTZ
 }
 
 entity "Exam" as Exam {
-  * examId : VARCHAR(50) <<PK>>
+  * examId : VARCHAR(64) <<PK>>
   --
-  courseId : VARCHAR(50)
-  studentId : VARCHAR(50)
+  courseId : VARCHAR(64)
+  studentId : VARCHAR(64)
   title : VARCHAR(200)
   examDate : DATE
   examTime : TIME
-  location : VARCHAR(150)
+  location : VARCHAR(200)
   preparationReminderDays : INT
-  createdAt : DATETIME
-  updatedAt : DATETIME
+  createdAt : TIMESTAMPTZ
+  updatedAt : TIMESTAMPTZ
 }
 
 ' Note: courseId/studentId are logical references (no cross-service FK)

@@ -21,7 +21,6 @@ System_Ext(emailGateway, "Email Gateway", "External Email Service", "Email deliv
 ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared DB - each service owns schema/tables")
 
 Rel(student, studentSvc, "Uses", "IStudentProfile")
-Rel(academicSvc, studentSvc, "Uses", "IStudentProfile (required)")
 Rel(courseSvc, assessmentSvc, "Uses", "IAssessment (required)")
 
 Rel(studentSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")

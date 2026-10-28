@@ -2,39 +2,41 @@
 hide circle
 skinparam linetype ortho
 
-title ERD - Goal Planner Service (FR-05) | Owner: Yomna Mohamed Fekry\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+title ERD - Goal Planner Service (FR-05) | Owner: Yomna Mohamed Fekry\nSchema: goal_planner | Note: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
 
 entity "PlanDraft" as PlanDraft {
-  * draftId : VARCHAR(50) <<PK>>
+  * draftId : VARCHAR(64) <<PK>>
   --
-  studentId : VARCHAR(50)
-  goalId : VARCHAR(50)
+  studentId : VARCHAR(64)
+  goalId : VARCHAR(64) <<NULL>>
+  goalText : TEXT
   status : VARCHAR(20)
-  createdAt : DATETIME
-  updatedAt : DATETIME
+  createdAt : TIMESTAMPTZ
+  updatedAt : TIMESTAMPTZ
 }
 
 entity "Milestone" as Milestone {
-  * milestoneId : VARCHAR(50) <<PK>>
+  * milestoneId : VARCHAR(64) <<PK>>
   --
-  draftId : VARCHAR(50) <<FK to PlanDraft>>
-  title : VARCHAR(200)
+  draftId : VARCHAR(64) <<FK to PlanDraft>>
+  title : TEXT
   deadline : DATE
   orderIndex : INT
 }
 
 entity "PlanTask" as PlanTask {
-  * taskId : VARCHAR(50) <<PK>>
+  * taskId : VARCHAR(64) <<PK>>
   --
-  milestoneId : VARCHAR(50) <<FK to Milestone>>
-  title : VARCHAR(200)
+  milestoneId : VARCHAR(64) <<FK to Milestone>>
+  title : TEXT
   durationHours : INT
   deadline : DATE
-  dependsOnTaskId : VARCHAR(50)
+  dependsOnTaskId : VARCHAR(64) <<NULL, logical FK to PlanTask>>
   orderIndex : INT
 }
 
 PlanDraft ||--o{ Milestone : "contains"
 Milestone ||--o{ PlanTask : "contains"
+PlanTask }o--o| PlanTask : "depends on"
 ' Note: goalId/studentId are logical references (no cross-service FK)
 @enduml

@@ -31,69 +31,92 @@ legend right
 endlegend
 
 interface IAssessment <<provided>> {
-  +addAssignment(data): Assignment
-  +addExam(data): Exam
-  +setStatus(assignmentId, status): void
-  +setExamReminder(examId, daysBefore): void
-  +getDeadlines(studentId, days): List<Deadline>
+  +AddAssignmentAsync(request): AssessmentResult<Assignment>
+  +AddExamAsync(request): AssessmentResult<Exam>
+  +SetAssignmentStatusAsync(assignmentId, status): AssessmentResult<Assignment>
+  +SetExamReminderAsync(examId, daysBefore): AssessmentResult<Exam>
+  +GetAssessmentsAsync(studentId, courseId): AssessmentSummary
+  +GetAssignmentsByCourseAsync(courseId): IReadOnlyList<CourseAssignmentItem>
+  +GetUpcomingExamsAsync(studentId): IReadOnlyList<Exam>
 }
 
 class AssessmentService <<component>> {
-  -repository: IAssignmentRepository
-  -assessmentValidator: AssessmentValidator
+  -repository: IAssessmentRepository
   --
-  +addAssignment(...) / addExam(...)
-  +setStatus(...) / setExamReminder(...)
-  +getDeadlines(...)
+  +AddAssignmentAsync(...) / AddExamAsync(...)
+  +SetAssignmentStatusAsync(...) / SetExamReminderAsync(...)
+  +GetAssessmentsAsync(...) / GetAssignmentsByCourseAsync(...)
+  +GetUpcomingExamsAsync(...)
 }
 
-IAssessment <|.. AssessmentService
-class AssessmentValidator <<component>> {
-  +validate(data): ValidationResult
+interface IAssessmentRepository <<required - Database>> {
+  +AddAssignmentAsync(assignment): Task
+  +AddExamAsync(exam): Task
+  +GetAssignmentAsync(assignmentId): Task<Assignment?>
+  +GetExamAsync(examId): Task<Exam?>
+  +GetAssignmentsAsync(studentId, courseId): Task<IReadOnlyList<Assignment>>
+  +GetAssignmentsByCourseAsync(courseId): Task<IReadOnlyList<Assignment>>
+  +GetExamsAsync(studentId, courseId): Task<IReadOnlyList<Exam>>
+  +GetUpcomingExamsAsync(studentId, fromDate): Task<IReadOnlyList<Exam>>
+  +SaveChangesAsync(): Task
 }
-AssessmentService --> AssessmentValidator
 
-interface IAssignmentRepository <<required - Database>> {
-  +save(item: Assignment): void
-  +findById(id): Assignment
-  +findByOwner(ownerId): List<Assignment>
+class EfAssessmentRepository <<component>> {
+  -context: AssessmentDbContext
+  --
+  +AddAssignmentAsync(...) / AddExamAsync(...)
+  +GetAssignmentAsync(...) / GetExamAsync(...)
+  +GetAssignmentsAsync(...) / GetAssignmentsByCourseAsync(...)
+  +GetExamsAsync(...) / GetUpcomingExamsAsync(...)
+  +SaveChangesAsync()
 }
 
-AssessmentService --> IAssignmentRepository
+class AssessmentDbContext {
+  +Assignments: DbSet<Assignment>
+  +Exams: DbSet<Exam>
+}
+
 class Assignment {
   -assignmentId: String
   -courseId: String
+  -studentId: String
   -title: String
-  -dueDate: Date
+  -description: String
+  -dueDate: DateOnly
   -priority: String
-  -status: String
+  -status: AssignmentStatus
   --
   +isOverdue(): boolean
 }
 class Exam {
   -examId: String
   -courseId: String
+  -studentId: String
   -title: String
-  -date: Date
-  -time: Time
+  -examDate: DateOnly
+  -examTime: TimeOnly
   -location: String
-  -reminderDays: int
+  -preparationReminderDays: int?
 }
-class Deadline {
-  -itemId: String
-  -title: String
-  -due: Date
-  -type: String
+enum AssignmentStatus {
+  NotStarted
+  InProgress
+  Completed
 }
-IAssignmentRepository --> Assignment
-Assignment ..> Deadline
-Exam ..> Deadline
+
+IAssessment <|.. AssessmentService
+AssessmentService --> IAssessmentRepository
+EfAssessmentRepository ..|> IAssessmentRepository
+EfAssessmentRepository --> AssessmentDbContext
+AssessmentDbContext --> Assignment
+AssessmentDbContext --> Exam
+Assignment --> AssignmentStatus
 note bottom of AssessmentService
 SOLID applied:
-S - AssessmentService only coordinates; AssessmentValidator each do one job.
+S - AssessmentService owns assignment/exam rules; EfAssessmentRepository persists.
 O - new behaviour is added by new implementations, not by editing AssessmentService.
 L - AssessmentService can replace any other IAssessment implementation.
-I - IAssessment has only the operations its clients use.
-D - AssessmentService depends on interfaces (IAssignmentRepository), not on concrete classes.
+I - IAssessment exposes only the operations its clients use.
+D - AssessmentService depends on IAssessmentRepository, not on EfAssessmentRepository.
 end note
 @enduml

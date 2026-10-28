@@ -1,13 +1,15 @@
+using Aspirra.GoalPlannerService.Contracts;
 using Aspirra.GoalPlannerService.Models;
 
 namespace Aspirra.GoalPlannerService.Interfaces
 {
     public interface IGoalPlanner
     {
-        PlanDraft GeneratePlan(string studentId, string goalText);
-        PlanDraft UpdateDraft(string draftId, PlanDraft edits);
-        object Approve(string draftId);
-        void Discard(string draftId);
-        List<PlanTask> GetTasks(string goalId);
+        Task<ServiceResult<PlanDraft>> GeneratePlanAsync(GeneratePlanRequest request);
+        Task<ServiceResult<PlanDraft>> UpdateDraftAsync(string draftId, PlanDraftInput input);
+        Task<ServiceResult<PlanDraft>> ApproveAsync(string draftId);
+        Task<ServiceResult<bool>> DiscardAsync(string draftId);
+        Task<PlanDraft?> GetDraftAsync(string draftId);
+        Task<List<PlanTask>> GetTasksAsync(string goalId);
     }
 }

@@ -9,5 +9,8 @@ namespace Aspirra.AssessmentService.Models
         public DateOnly ExamDate { get; set; }
         public TimeOnly ExamTime { get; set; }
         public string Location { get; set; } = string.Empty;
+        public int? PreparationReminderDays { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

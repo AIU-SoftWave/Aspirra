@@ -4,32 +4,29 @@
 title Level 2: Component Diagram - Course Service (FR-03) | Owner: Ahmed Mohamed Ahmed
 
 Container_Boundary(courseBoundary, "Course Service") {
-  
-  ' Provided interface
-  Component(iCourse, "ICourse", "Provided Interface", "addCourse, updateCourse, removeCourse, getCourses, getCourseProgress")
-  
-  ' Core components
-  Component(courseService, "CourseService", "Component", "Orchestrates course management. Applies SOLID principles.")
-  Component(courseValidator, "CourseValidator", "Component", "Validates course data")
-  
-  ' Persistence
-  Component(courseRepo, "ICourseRepository", "Repository Interface / Component", "Data access for Course (owned)")
-  
-  ' Domain
-  Component(domainModel, "Course, CourseEnrollment", "Domain Model", "Owned entities")
+
+  Component(iCourse, "ICourse", "Provided Interface", "addCourse, updateCourse, removeCourse, getCourse, getCourses, getCourseProgress")
+  Component(coursesController, "CoursesController", "API Controller", "Exposes /api/courses endpoints")
+  Component(courseService, "CourseService", "Component", "Implements course management and course progress")
+  Component(iCourseRepo, "ICourseRepository", "Repository Interface", "Persistence abstraction for Course and CourseEnrollment")
+  Component(courseRepo, "CourseRepository", "Repository", "EF Core implementation of ICourseRepository")
+  Component(iAssessmentClient, "IAssessmentClient", "Required Interface", "Fetches course assignments from the Assessment Service")
+  Component(httpAssessmentClient, "HttpAssessmentClient", "Client Adapter", "HTTP implementation of IAssessmentClient")
+  Component(courseDb, "CourseDbContext", "EF Core DbContext", "Owns the course schema (Courses, CourseEnrollments)")
+  Component(domainModel, "Course, CourseEnrollment, CourseProgress", "Domain Model", "Owned entities and read model")
 }
 
-' Required interfaces
+Rel(coursesController, iCourse, "Exposes")
+Rel(coursesController, courseService, "Calls")
+Rel(courseService, iCourseRepo, "Depends on")
+Rel(courseService, iAssessmentClient, "Depends on")
+Rel(courseRepo, iCourseRepo, "Implements")
+Rel(httpAssessmentClient, iAssessmentClient, "Implements")
+Rel(courseRepo, courseDb, "Uses")
+Rel(courseDb, domainModel, "Maps to/from")
+
 Container_Ext(assessmentSvc, "Assessment Service", "ASP.NET Core API", "Provides IAssessment")
-
-' Internal relationships
-Rel(iCourse, courseService, "Delegates calls")
-Rel(courseService, courseValidator, "Uses")
-Rel(courseService, courseRepo, "Uses (ICourseRepository)")
-Rel(courseRepo, domainModel, "Maps to/from")
-
-' Cross-service relationships
-Rel(courseService, assessmentSvc, "Uses IAssessment (required)")
+Rel(httpAssessmentClient, assessmentSvc, "Uses IAssessment (required)")
 
 SHOW_LEGEND()
 @enduml

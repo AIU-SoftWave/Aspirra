@@ -2,18 +2,18 @@
 hide circle
 skinparam linetype ortho
 
-title ERD - Student Service (FR-01) | Owner: Ahmed Mohamed Ahmed\nNote: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
+title ERD - Student Service (FR-01) | Owner: Ahmed Mohamed Ahmed\nSchema: student | Note: Shared DB instance, each service owns its own schema/tables. No service reads another service's database directly.
 
 entity "Profile" as Profile {
   * studentId : VARCHAR(50) <<PK>>
   --
   academicLevel : VARCHAR(50)
   major : VARCHAR(100)
-  interests : TEXT
-  careerInterests : TEXT
-  skills : TEXT
-  createdAt : DATETIME
-  updatedAt : DATETIME
+  interests : TEXT <<semicolon-separated list>>
+  skills : TEXT <<semicolon-separated list>>
+  careerInterests : TEXT <<semicolon-separated list>>
+  createdAt : TIMESTAMPTZ
+  updatedAt : TIMESTAMPTZ
 }
 
 entity "TimeSlot" as TimeSlot {

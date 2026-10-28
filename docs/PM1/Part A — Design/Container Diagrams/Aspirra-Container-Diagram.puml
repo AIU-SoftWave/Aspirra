@@ -6,6 +6,7 @@ LAYOUT_WITH_LEGEND()
 title Level 1: Container Diagram - Aspirra (Student Success & Career Planner)
 
 Person(student, "Student", "Uses Aspirra to manage goals, study plans, schedules, habits, career preparation, and track progress.")
+Person(admin, "Administrator", "Manages student accounts, usage statistics, and resolves account issues through the Administration Service.")
 
 System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
   
@@ -55,14 +56,14 @@ System_Ext(aiProvider, "AI Provider", "External LLM API", "Provides AI capabilit
 System_Ext(emailGateway, "Email Gateway", "External Email Service", "Sends emails via IEmailGateway")
 
 ' Shared Database (each service owns its own data/schema)
-ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared database instance. Each service owns its own schema/tables. No service reads another service's database directly.")
+ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL 16", "Shared database instance. Each service owns its own schema/tables. No service reads another service's database directly.")
 
 ' User interactions (high-level)
 Rel(student, studentSvc, "Uses", "IStudentProfile")
 Rel(student, dashboardSvc, "Views dashboard via", "IDashboard")
+Rel(admin, adminSvc, "Manages accounts and statistics via", "IAdministration")
 
 ' Cross-service dependencies via provided/required interfaces
-Rel(academicSvc, studentSvc, "Uses", "IStudentProfile (required)")
 Rel(courseSvc, assessmentSvc, "Uses", "IAssessment (required)")
 Rel(goalPlannerSvc, academicSvc, "Uses", "IGoal (required)")
 Rel(goalPlannerSvc, aiProvider, "Uses", "IAIProvider (required)")
@@ -77,7 +78,6 @@ Rel(careerSvc, studentSvc, "Uses", "IStudentProfile (required)")
 Rel(careerSvc, aiProvider, "Uses", "IAIProvider (required)")
 Rel(skillSvc, careerSvc, "Uses", "ICareer (required)")
 Rel(portfolioSvc, skillSvc, "Uses", "ISkill (required)")
-Rel(habitSvc, academicSvc, "Uses", "IGoal (required)")
 Rel(analyticsSvc, studentSvc, "Uses", "IStudentProfile (required)")
 Rel(analyticsSvc, schedulingSvc, "Uses", "IScheduling (required)")
 Rel(predictionSvc, analyticsSvc, "Uses", "IAnalytics (required)")

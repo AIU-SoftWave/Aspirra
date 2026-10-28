@@ -2,8 +2,10 @@ namespace Aspirra.StudentService.Models
 {
     public class TimeSlot
     {
-        public string Day { get; set; } = string.Empty;
-        public TimeOnly Start { get; set; }
-        public TimeOnly End { get; set; }
+        public string TimeSlotId { get; set; } = string.Empty;
+        public string StudentId { get; set; } = string.Empty;
+        public string DayOfWeek { get; set; } = string.Empty;
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
     }
 }

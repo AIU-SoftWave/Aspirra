@@ -323,7 +323,7 @@ Never commit secrets, generated build artifacts, or unrelated changes. Pull requ
 - One story per user story, linked to its epic.
 - Each story has its acceptance criteria, story points, assignee, and service-name label.
 - A prioritized product backlog.
-- Sprint 1 created and started from the backlog.
+- Sprint 1 created from the backlog and completed (closed 2026-10-28).
 - Sprint 1 burndown chart available for submission.
 - Both teaching assistants added to the Jira board.
 
@@ -362,25 +362,44 @@ This roadmap is indicative. The detailed sprint plan must use story estimates, t
 
 ## Getting Started
 
-Development commands will be added after the team finalizes the technology stack and repository structure.
+The backend uses ASP.NET Core (.NET 10), EF Core 10 and PostgreSQL. Six Sprint 1 services are implemented end to end (Student, Academic, Course, Assessment, Goal Planner, Habit); the remaining services are placeholder containers for later sprints. The frontend is not implemented yet.
 
-Expected tools, depending on the final stack:
+Prerequisites: .NET SDK 10 and Docker with Compose.
 
-- Git
-- .NET SDK compatible with the chosen ASP.NET Core version
-- Node.js and the chosen package manager
-- Database server or Docker environment, if selected
-- An AI-provider API key for AI features, if required
+Run the backend stack:
 
-Initial setup:
+```bash
+cp .env.example .env
+docker compose up --build
+```
 
-1. Clone the repository.
-2. Review the requirements and architecture documents in `docs/`.
-3. Configure local environment variables according to the team's setup instructions.
-4. Start the required development services.
-5. Run the frontend, backend, and tests using instructions to be added when the stack is confirmed.
+| Service | Port |
+| --- | --- |
+| student-service | 5011 |
+| academic-service | 5012 |
+| course-service | 5013 |
+| assessment-service | 5014 |
+| goal-planner-service | 5015 |
+| habit-service | 5016 |
 
-Never commit real credentials. Add local environment files to `.gitignore` and use an example environment file with placeholder values when needed.
+Every service exposes `GET /health`. Each service owns its PostgreSQL schema (`student`, `academic`, `course`, `assessment`, `goal_planner`, `habit`) and applies EF Core migrations at startup.
+
+Run the tests (74 tests across 6 xUnit projects):
+
+```bash
+dotnet test Aspirra.slnx
+```
+
+Add a migration for a service:
+
+```bash
+dotnet ef migrations add <Name> \
+  --project src/Services/<Service>/<Service>.csproj \
+  --startup-project src/Services/<Service>/<Service>.csproj \
+  --output-dir Data/Migrations
+```
+
+Never commit real credentials. Add local environment files to `.gitignore` and use the example environment file with placeholder values when needed.
 
 ## Team Members
 

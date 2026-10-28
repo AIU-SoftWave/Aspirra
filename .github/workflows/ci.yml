@@ -1,4 +1,4 @@
-name: CI - Build and Push to GHCR
+name: CI - Build, Test and Push to GHCR
 
 on:
   push:
@@ -11,7 +11,29 @@ env:
   IMAGE_PREFIX: ghcr.io/aiu-softwave/aspirra
 
 jobs:
-  build:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore Aspirra.slnx
+
+      - name: Build
+        run: dotnet build Aspirra.slnx --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test Aspirra.slnx --no-build --configuration Release --logger "console;verbosity=normal"
+
+  docker:
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -19,28 +41,19 @@ jobs:
 
     strategy:
       matrix:
-        service:
-          - api-gateway
-          - student-service
-          - academic-service
-          - course-service
-          - assessment-service
-          - goal-planner-service
-          - study-planner-service
-          - scheduling-service
-          - adaptation-service
-          - career-service
-          - skill-service
-          - portfolio-service
-          - job-preparation-service
-          - habit-service
-          - analytics-service
-          - prediction-service
-          - ai-coach-service
-          - dashboard-service
-          - notification-service
-          - study-group-service
-          - administration-service
+        include:
+          - service: student-service
+            context: ./src/Services/StudentService
+          - service: academic-service
+            context: ./src/Services/AcademicService
+          - service: course-service
+            context: ./src/Services/CourseService
+          - service: assessment-service
+            context: ./src/Services/AssessmentService
+          - service: goal-planner-service
+            context: ./src/Services/GoalPlannerService
+          - service: habit-service
+            context: ./src/Services/HabitService
 
     steps:
       - name: Checkout repository
@@ -60,8 +73,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ${{ matrix.service == 'api-gateway' && './src/ApiGateway' || format('./src/Services/{0}', matrix.service == 'goal-planner-service' && 'GoalPlannerService' || matrix.service == 'study-planner-service' && 'StudyPlannerService' || matrix.service == 'scheduling-service' && 'SchedulingService' || matrix.service == 'adaptation-service' && 'AdaptationService' || matrix.service == 'career-service' && 'CareerService' || matrix.service == 'skill-service' && 'SkillService' || matrix.service == 'portfolio-service' && 'PortfolioService' || matrix.service == 'job-preparation-service' && 'JobPreparationService' || matrix.service == 'habit-service' && 'HabitService' || matrix.service == 'analytics-service' && 'AnalyticsService' || matrix.service == 'prediction-service' && 'PredictionService' || matrix.service == 'ai-coach-service' && 'AICoachService' || matrix.service == 'dashboard-service' && 'DashboardService' || matrix.service == 'notification-service' && 'NotificationService' || matrix.service == 'study-group-service' && 'StudyGroupService' || matrix.service == 'administration-service' && 'AdministrationService' || matrix.service == 'student-service' && 'StudentService' || matrix.service == 'academic-service' && 'AcademicService' || matrix.service == 'course-service' && 'CourseService' || matrix.service == 'assessment-service' && 'AssessmentService') }}
-          file: ${{ matrix.service == 'api-gateway' && './src/ApiGateway/Dockerfile' || format('./src/Services/{0}/Dockerfile', matrix.service == 'goal-planner-service' && 'GoalPlannerService' || matrix.service == 'study-planner-service' && 'StudyPlannerService' || matrix.service == 'scheduling-service' && 'SchedulingService' || matrix.service == 'adaptation-service' && 'AdaptationService' || matrix.service == 'career-service' && 'CareerService' || matrix.service == 'skill-service' && 'SkillService' || matrix.service == 'portfolio-service' && 'PortfolioService' || matrix.service == 'job-preparation-service' && 'JobPreparationService' || matrix.service == 'habit-service' && 'HabitService' || matrix.service == 'analytics-service' && 'AnalyticsService' || matrix.service == 'prediction-service' && 'PredictionService' || matrix.service == 'ai-coach-service' && 'AICoachService' || matrix.service == 'dashboard-service' && 'DashboardService' || matrix.service == 'notification-service' && 'NotificationService' || matrix.service == 'study-group-service' && 'StudyGroupService' || matrix.service == 'administration-service' && 'AdministrationService' || matrix.service == 'student-service' && 'StudentService' || matrix.service == 'academic-service' && 'AcademicService' || matrix.service == 'course-service' && 'CourseService' || matrix.service == 'assessment-service' && 'AssessmentService') }}
+          context: ${{ matrix.context }}
+          file: ${{ matrix.context }}/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
             ${{ env.IMAGE_PREFIX }}/${{ matrix.service }}:latest

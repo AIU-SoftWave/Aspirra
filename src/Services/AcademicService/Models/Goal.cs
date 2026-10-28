@@ -9,7 +9,17 @@ namespace Aspirra.AcademicService.Models
         public DateOnly TargetDate { get; set; }
         public string Priority { get; set; } = string.Empty;
         public GoalStatus Status { get; set; } = GoalStatus.Active;
-        public void Complete() => Status = GoalStatus.Completed;
+        public DateOnly? CompletionDate { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+
+        public void Complete()
+        {
+            Status = GoalStatus.Completed;
+            CompletionDate ??= DateOnly.FromDateTime(DateTime.UtcNow);
+        }
+
         public void Archive() => Status = GoalStatus.Archived;
+        public void Restore() => Status = GoalStatus.Active;
     }
 }

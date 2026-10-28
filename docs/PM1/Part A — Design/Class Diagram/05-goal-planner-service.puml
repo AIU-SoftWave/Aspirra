@@ -31,84 +31,110 @@ legend right
 endlegend
 
 interface IGoalPlanner <<provided>> {
-  +generatePlan(studentId, goalText): PlanDraft
-  +updateDraft(draftId, edits): PlanDraft
-  +approve(draftId): Plan
-  +discard(draftId): void
-  +getTasks(goalId): List<PlanTask>
+  +GeneratePlanAsync(request): ServiceResult<PlanDraft>
+  +UpdateDraftAsync(draftId, input): ServiceResult<PlanDraft>
+  +ApproveAsync(draftId): ServiceResult<PlanDraft>
+  +DiscardAsync(draftId): ServiceResult<bool>
+  +GetDraftAsync(draftId): Task<PlanDraft?>
+  +GetTasksAsync(goalId): List<PlanTask>
 }
 
 class GoalPlannerService <<component>> {
-  -goal: IGoal
+  -goalClient: IGoalClient
   -aiProvider: IAIProvider
   -repository: IPlanDraftRepository
-  -planPromptBuilder: PlanPromptBuilder
-  -planSchemaValidator: PlanSchemaValidator
   --
-  +generatePlan(...) / updateDraft(...)
-  +approve(...) / discard(...)
-  +getTasks(...)
+  +GeneratePlanAsync(...) / UpdateDraftAsync(...)
+  +ApproveAsync(...) / DiscardAsync(...)
+  +GetDraftAsync(...) / GetTasksAsync(...)
 }
 
-IGoalPlanner <|.. GoalPlannerService
-class PlanPromptBuilder <<component>> {
-  +build(goalText): String
-}
-GoalPlannerService --> PlanPromptBuilder
-class PlanSchemaValidator <<component>> {
-  +isValid(response): boolean
-}
-GoalPlannerService --> PlanSchemaValidator
-
-interface IGoal <<required - Academic service>> {
-  +createGoal(studentId, data): Goal
-  +updateGoal(goalId, data): Goal
-  +completeGoal(goalId): void
-  +archiveGoal(goalId): void
-  +restoreGoal(goalId): void
-  +deleteGoal(goalId): void
-  +getGoals(studentId, status): List<Goal>
+interface IGoalClient <<required - Academic service>> {
+  +GoalExistsAsync(goalId): Task<bool>
 }
 
-GoalPlannerService --> IGoal
+class HttpGoalClient <<component>> {
+  -httpClient: HttpClient
+  --
+  +GoalExistsAsync(goalId)
+}
+
 interface IAIProvider <<required - AI provider>> {
-  +generate(prompt): AIResponse
+  +GenerateAsync(prompt): Task<AiPlan>
 }
 
-GoalPlannerService --> IAIProvider
+class MockAIProvider <<component>> {
+  --
+  +GenerateAsync(prompt)
+}
+
 interface IPlanDraftRepository <<required - Database>> {
-  +save(item: PlanDraft): void
-  +findById(id): PlanDraft
-  +findByOwner(ownerId): List<PlanDraft>
+  +GetByIdAsync(draftId): Task<PlanDraft?>
+  +AddAsync(draft): Task
+  +Remove(draft): void
+  +SaveChangesAsync(): Task
+  +GetApprovedTasksByGoalAsync(goalId): Task<List<PlanTask>>
 }
 
-GoalPlannerService --> IPlanDraftRepository
+class PlanDraftRepository <<component>> {
+  -context: GoalPlannerDbContext
+  --
+  +GetByIdAsync(...) / AddAsync(...)
+  +Remove(...) / SaveChangesAsync(...)
+  +GetApprovedTasksByGoalAsync(...)
+}
+
+class GoalPlannerDbContext {
+  +PlanDrafts: DbSet<PlanDraft>
+  +Milestones: DbSet<Milestone>
+  +PlanTasks: DbSet<PlanTask>
+}
+
 class PlanDraft {
   -draftId: String
-  -goalId: String
-  -status: String
+  -studentId: String
+  -goalId: String?
+  -goalText: String
+  -status: PlanStatus
   --
   +approve(): void
 }
 class Milestone {
+  -milestoneId: String
   -title: String
-  -deadline: Date
+  -deadline: DateOnly
+  -orderIndex: int
 }
 class PlanTask {
+  -taskId: String
   -title: String
   -durationHours: int
-  -deadline: Date
-  -dependsOn: String
+  -deadline: DateOnly
+  -dependsOnTaskId: String?
 }
-IPlanDraftRepository --> PlanDraft
+enum PlanStatus {
+  Draft
+  Approved
+}
+
+IGoalPlanner <|.. GoalPlannerService
+GoalPlannerService --> IGoalClient
+GoalPlannerService --> IAIProvider
+GoalPlannerService --> IPlanDraftRepository
+HttpGoalClient ..|> IGoalClient
+MockAIProvider ..|> IAIProvider
+PlanDraftRepository ..|> IPlanDraftRepository
+PlanDraftRepository --> GoalPlannerDbContext
+GoalPlannerDbContext --> PlanDraft
 PlanDraft *-- "1..*" Milestone
 Milestone *-- "1..*" PlanTask
+PlanDraft --> PlanStatus
 note bottom of GoalPlannerService
 SOLID applied:
-S - GoalPlannerService only coordinates; PlanPromptBuilder, PlanSchemaValidator each do one job.
+S - GoalPlannerService orchestrates; adapters and repository each do one job.
 O - A new AI model is added by a new IAIProvider implementation; the planner is not changed.
 L - GoalPlannerService can replace any other IGoalPlanner implementation.
-I - IGoalPlanner has only the operations its clients use.
-D - GoalPlannerService depends on interfaces (IGoal, IAIProvider, IPlanDraftRepository), not on concrete classes.
+I - IGoalPlanner exposes only the operations its clients use.
+D - GoalPlannerService depends on IGoalClient, IAIProvider, and IPlanDraftRepository.
 end note
 @enduml

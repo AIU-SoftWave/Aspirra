@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Services/">
+    <Project Path="src/Services/AcademicService/AcademicService.csproj" />
+    <Project Path="src/Services/AssessmentService/AssessmentService.csproj" />
+    <Project Path="src/Services/CourseService/CourseService.csproj" />
+    <Project Path="src/Services/GoalPlannerService/GoalPlannerService.csproj" />
+    <Project Path="src/Services/HabitService/HabitService.csproj" />
+    <Project Path="src/Services/StudentService/StudentService.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AcademicService.Tests/AcademicService.Tests.csproj" />
+    <Project Path="tests/AssessmentService.Tests/AssessmentService.Tests.csproj" />
+    <Project Path="tests/CourseService.Tests/CourseService.Tests.csproj" />
+    <Project Path="tests/GoalPlannerService.Tests/GoalPlannerService.Tests.csproj" />
+    <Project Path="tests/HabitService.Tests/HabitService.Tests.csproj" />
+    <Project Path="tests/StudentService.Tests/StudentService.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -108,7 +108,6 @@ IDashboard <|.. DashboardService
 INotification <|.. NotificationService
 IStudyGroup <|.. StudyGroupService
 IAdministration <|.. AdministrationService
-GoalService --> IStudentProfile
 CourseService --> IAssessment
 GoalPlannerService --> IGoal
 GoalPlannerService --> IAIProvider
@@ -123,7 +122,6 @@ CareerService --> IStudentProfile
 CareerService --> IAIProvider
 SkillService --> ICareer
 PortfolioService --> ISkill
-HabitService --> IGoal
 AnalyticsService --> IStudentProfile
 AnalyticsService --> IScheduling
 PredictionService --> IAnalytics

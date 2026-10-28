@@ -4,36 +4,35 @@
 title Level 2: Component Diagram - Goal Planner Service (FR-05) | Owner: Yomna Mohamed Fekry
 
 Container_Boundary(goalPlannerBoundary, "Goal Planner Service") {
-  
-  ' Provided interface
-  Component(iGoalPlanner, "IGoalPlanner", "Provided Interface", "generatePlan, updateDraft, approve, discard, getTasks")
-  
-  ' Core components
-  Component(goalPlannerService, "GoalPlannerService", "Component", "Orchestrates AI-assisted goal planning. Applies SOLID principles.")
-  Component(planPromptBuilder, "PlanPromptBuilder", "Component", "Builds AI prompts")
-  Component(planSchemaValidator, "PlanSchemaValidator", "Component", "Validates AI response schema")
-  
-  ' Persistence
-  Component(planDraftRepo, "IPlanDraftRepository", "Repository Interface / Component", "Data access for PlanDraft, Milestone, PlanTask (owned)")
-  
-  ' Domain
-  Component(domainModel, "PlanDraft, Milestone, PlanTask", "Domain Model", "Owned entities")
+
+  Component(iGoalPlanner, "IGoalPlanner", "Provided Interface", "generatePlan, updateDraft, approvePlan, discardPlan, getDraft, getTasks")
+  Component(plansController, "PlansController", "API Controller", "Exposes /api/plans endpoints")
+  Component(goalPlannerService, "GoalPlannerService", "Component", "Orchestrates AI plan generation, review, approval, and task retrieval")
+  Component(iAIProvider, "IAIProvider", "Required Interface", "Generates structured plans from prompts")
+  Component(mockAIProvider, "MockAIProvider", "AI Adapter", "Deterministic AI provider used for Sprint 1")
+  Component(iGoalClient, "IGoalClient", "Required Interface", "Reads the target goal from the Academic Service")
+  Component(httpGoalClient, "HttpGoalClient", "Client Adapter", "HTTP implementation of IGoalClient")
+  Component(iPlanDraftRepo, "IPlanDraftRepository", "Repository Interface", "Persistence abstraction for PlanDraft, Milestone, PlanTask")
+  Component(planDraftRepo, "PlanDraftRepository", "Repository", "EF Core implementation of IPlanDraftRepository")
+  Component(goalPlannerDb, "GoalPlannerDbContext", "EF Core DbContext", "Owns the goal_planner schema (PlanDrafts, Milestones, PlanTasks)")
+  Component(domainModel, "PlanDraft, Milestone, PlanTask, PlanStatus", "Domain Model", "Owned entities and enum")
 }
 
-' Required interfaces
+Rel(plansController, iGoalPlanner, "Exposes")
+Rel(plansController, goalPlannerService, "Calls")
+Rel(goalPlannerService, iAIProvider, "Depends on")
+Rel(goalPlannerService, iGoalClient, "Depends on")
+Rel(goalPlannerService, iPlanDraftRepo, "Depends on")
+Rel(mockAIProvider, iAIProvider, "Implements")
+Rel(httpGoalClient, iGoalClient, "Implements")
+Rel(planDraftRepo, iPlanDraftRepo, "Implements")
+Rel(planDraftRepo, goalPlannerDb, "Uses")
+Rel(goalPlannerDb, domainModel, "Maps to/from")
+
 Container_Ext(academicSvc, "Academic Service", "ASP.NET Core API", "Provides IGoal")
 System_Ext(aiProvider, "AI Provider", "External LLM API", "Provides IAIProvider")
-
-' Internal relationships
-Rel(iGoalPlanner, goalPlannerService, "Delegates calls")
-Rel(goalPlannerService, planPromptBuilder, "Uses")
-Rel(goalPlannerService, planSchemaValidator, "Uses")
-Rel(goalPlannerService, planDraftRepo, "Uses (IPlanDraftRepository)")
-Rel(planDraftRepo, domainModel, "Maps to/from")
-
-' Cross-service/external relationships
-Rel(goalPlannerService, academicSvc, "Uses IGoal (required)")
-Rel(goalPlannerService, aiProvider, "Uses IAIProvider (required)")
+Rel(httpGoalClient, academicSvc, "Uses IGoal (required)")
+Rel(mockAIProvider, aiProvider, "Replaces in production via IAIProvider")
 
 SHOW_LEGEND()
 @enduml

@@ -10,5 +10,7 @@ namespace Aspirra.AssessmentService.Models
         public DateOnly DueDate { get; set; }
         public string Priority { get; set; } = string.Empty;
         public AssignmentStatus Status { get; set; } = AssignmentStatus.NotStarted;
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

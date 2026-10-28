@@ -62,7 +62,7 @@ Jira Scrum is required for the course; Trello is not accepted.
 | Story convention | User stories created as `Task` with label `story`; linked to parent epic |
 | Story points field | `customfield_10016` |
 | Labels | `story`, `epic`, `FR-XX`, and service labels such as `academic-service` |
-| Sprint 1 | `Sprint 1 — Foundation`, active, 2026-10-22 to 2026-11-04, 16 stories / 46 points |
+| Sprint 1 | `Sprint 1 — Foundation`, closed 2026-10-28, 2026-10-22 to 2026-11-04, 16 stories / 46 points |
 | Suggested workflow | `Backlog → Ready → In Progress → In Review → Done` |
 
 The product backlog lives in `docs/proposal/08-C8-product-backlog.md` (73 stories, US-01.1–US-20.6, total 225 points). Estimation and sprint plan live in `docs/proposal/09-C9-estimation-and-sprint-plan.md`.

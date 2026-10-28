@@ -4,32 +4,22 @@
 title Level 2: Component Diagram - Academic Service (FR-02) | Owner: Ahmed Mohamed Ahmed
 
 Container_Boundary(academicBoundary, "Academic Service") {
-  
-  ' Provided interface
-  Component(iGoal, "IGoal", "Provided Interface", "createGoal, updateGoal, completeGoal, archiveGoal, restoreGoal, deleteGoal, getGoals")
-  
-  ' Core components
-  Component(goalService, "GoalService", "Component", "Orchestrates goal lifecycle. Applies SOLID principles.")
-  Component(goalValidator, "GoalValidator", "Component", "Validates goal data and dates")
-  
-  ' Persistence
-  Component(goalRepo, "IGoalRepository", "Repository Interface / Component", "Data access for Goal (owned)")
-  
-  ' Domain
-  Component(domainModel, "Goal, GoalStatus", "Domain Model", "Owned entities and enums")
+
+  Component(iGoal, "IGoal", "Provided Interface", "createGoal, updateGoal, completeGoal, archiveGoal, restoreGoal, deleteGoal, getGoal, getGoals")
+  Component(goalsController, "GoalsController", "API Controller", "Exposes /api/goals endpoints")
+  Component(goalService, "GoalService", "Component", "Implements the goal lifecycle and validates goal data and dates")
+  Component(iGoalRepo, "IGoalRepository", "Repository Interface", "Persistence abstraction for Goal")
+  Component(goalRepo, "GoalRepository", "Repository", "EF Core implementation of IGoalRepository")
+  Component(academicDb, "AcademicDbContext", "EF Core DbContext", "Owns the academic schema (Goals)")
+  Component(domainModel, "Goal, GoalStatus", "Domain Model", "Owned entity and enum")
 }
 
-' Required interfaces to other service containers
-Container_Ext(studentSvc, "Student Service", "ASP.NET Core API", "Provides IStudentProfile")
-
-' Internal relationships
-Rel(iGoal, goalService, "Delegates calls")
-Rel(goalService, goalValidator, "Uses")
-Rel(goalService, goalRepo, "Uses (IGoalRepository)")
-Rel(goalRepo, domainModel, "Maps to/from")
-
-' Cross-service relationships
-Rel(goalService, studentSvc, "Uses IStudentProfile (required)")
+Rel(goalsController, iGoal, "Exposes")
+Rel(goalsController, goalService, "Calls")
+Rel(goalService, iGoalRepo, "Depends on")
+Rel(goalRepo, iGoalRepo, "Implements")
+Rel(goalRepo, academicDb, "Uses")
+Rel(academicDb, domainModel, "Maps to/from")
 
 SHOW_LEGEND()
 @enduml

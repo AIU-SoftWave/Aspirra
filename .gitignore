@@ -2,3 +2,21 @@
 .DS_Store
 Thumbs.db
 .obsidian
+
+# .NET
+bin/
+obj/
+.vs/
+TestResults/
+*.user
+*.suo
+project.lock.json
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
