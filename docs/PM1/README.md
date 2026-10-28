@@ -1,6 +1,6 @@
 # PM1 Submission Index - Aspirra
 
-This directory contains all deliverables for PM1 (Part A–D).
+This directory contains all deliverables for PM1 (Part A–D). The consolidated submission report is [`report.md`](report.md), with all diagrams embedded, and the print-ready version is [`report.pdf`](report.pdf).
 
 ## Part A — Design [50 marks]
 
