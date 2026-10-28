@@ -1,0 +1,43 @@
+@startuml Aspirra-Container-Diagram-Mostafa
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram - Owner: Mostafa Khamis Abozead (Mostafa-abozead)\nFR-13 Habit, FR-14 Analytics, FR-15 Prediction, FR-16 AI Coach
+
+Person(student, "Student", "Uses Aspirra")
+
+System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
+  Boundary(mostafa, "Owner: Mostafa Khamis Abozead") {
+    Container(habitSvc, "Habit Service", "ASP.NET Core API", "FR-13 | Provides IHabit\nHabits, streaks, reminders")
+    Container(analyticsSvc, "Analytics Service", "ASP.NET Core API", "FR-14 | Provides IAnalytics\nWorkload & performance analysis")
+    Container(predictionSvc, "Prediction Service", "ASP.NET Core API", "FR-15 | Provides IPrediction\nRisk prediction & early warnings")
+    Container(aiCoachSvc, "AI Coach Service", "ASP.NET Core API", "FR-16 | Provides ICoach\nAI guidance & coaching")
+  }
+  
+  Container(academicSvc, "Academic Service", "ASP.NET Core API", "FR-02 | IGoal")
+  Container(studentSvc, "Student Service", "ASP.NET Core API", "FR-01 | IStudentProfile")
+  Container(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "FR-07 | IScheduling")
+}
+
+System_Ext(aiProvider, "AI Provider", "External LLM API", "AI capabilities")
+System_Ext(emailGateway, "Email Gateway", "External Email Service", "Email delivery")
+ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared DB - each service owns schema/tables")
+
+Rel(habitSvc, academicSvc, "Uses", "IGoal (required)")
+Rel(analyticsSvc, studentSvc, "Uses", "IStudentProfile (required)")
+Rel(analyticsSvc, schedulingSvc, "Uses", "IScheduling (required)")
+Rel(predictionSvc, analyticsSvc, "Uses", "IAnalytics (required)")
+Rel(aiCoachSvc, academicSvc, "Uses", "IGoal (required)")
+Rel(aiCoachSvc, habitSvc, "Uses", "IHabit (required)")
+Rel(aiCoachSvc, analyticsSvc, "Uses", "IAnalytics (required)")
+Rel(aiCoachSvc, aiProvider, "Uses", "IAIProvider (required)")
+
+Rel(habitSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(analyticsSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(predictionSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(aiCoachSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+
+SHOW_LEGEND()
+
+@enduml

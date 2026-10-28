@@ -1,0 +1,46 @@
+@startuml Aspirra-Container-Diagram-Yomna
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram - Owner: Yomna Mohamed Fekry (YomnaElmenawy)\nFR-05 Goal Planner, FR-06 Study Planner, FR-07 Scheduling, FR-08 Adaptation
+
+Person(student, "Student", "Uses Aspirra")
+
+System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
+  Boundary(yomna, "Owner: Yomna Mohamed Fekry") {
+    Container(goalPlannerSvc, "Goal Planner Service", "ASP.NET Core API", "FR-05 | Provides IGoalPlanner\nAI-assisted goal plans")
+    Container(studyPlannerSvc, "Study Planner Service", "ASP.NET Core API", "FR-06 | Provides IStudyPlanner\nStudy plans from courses/schedule")
+    Container(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "FR-07 | Provides IScheduling\nSmart scheduling & time allocation")
+    Container(adaptationSvc, "Adaptation Service", "ASP.NET Core API", "FR-08 | Provides IAdaptation\nAdaptive planning")
+  }
+  
+  ' Other services (for dependencies)
+  Container(academicSvc, "Academic Service", "ASP.NET Core API", "FR-02 | IGoal")
+  Container(courseSvc, "Course Service", "ASP.NET Core API", "FR-03 | ICourse")
+  Container(assessmentSvc, "Assessment Service", "ASP.NET Core API", "FR-04 | IAssessment")
+  Container(studentSvc, "Student Service", "ASP.NET Core API", "FR-01 | IStudentProfile")
+}
+
+System_Ext(aiProvider, "AI Provider", "External LLM API", "AI capabilities")
+System_Ext(emailGateway, "Email Gateway", "External Email Service", "Email delivery")
+ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared DB - each service owns schema/tables")
+
+Rel(goalPlannerSvc, academicSvc, "Uses", "IGoal (required)") 
+Rel(goalPlannerSvc, aiProvider, "Uses", "IAIProvider (required)")
+Rel(studyPlannerSvc, courseSvc, "Uses", "ICourse (required)")
+Rel(studyPlannerSvc, schedulingSvc, "Uses", "IScheduling (required)")
+Rel(studyPlannerSvc, aiProvider, "Uses", "IAIProvider (required)")
+Rel(schedulingSvc, goalPlannerSvc, "Uses", "IGoalPlanner (required)")
+Rel(schedulingSvc, assessmentSvc, "Uses", "IAssessment (required)")
+Rel(schedulingSvc, studentSvc, "Uses", "IStudentProfile (required)")
+Rel(adaptationSvc, schedulingSvc, "Uses", "IScheduling (required)")
+
+Rel(goalPlannerSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(studyPlannerSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(schedulingSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(adaptationSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+
+SHOW_LEGEND()
+
+@enduml

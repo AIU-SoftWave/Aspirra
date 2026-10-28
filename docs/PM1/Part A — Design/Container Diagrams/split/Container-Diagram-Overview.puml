@@ -1,0 +1,57 @@
+@startuml Aspirra-Container-Diagram-Overview
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Level 1: Container Diagram - Aspirra (Student Success & Career Planner) [Overview]
+
+Person(student, "Student", "Uses Aspirra to manage goals, study plans, schedules, habits, career preparation, and track progress.")
+
+System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
+  
+  Boundary(ahmed, "Owner: Ahmed Mohamed Ahmed") {
+    Container(studentSvc, "Student Service", "ASP.NET Core API", "FR-01 | IStudentProfile")
+    Container(academicSvc, "Academic Service", "ASP.NET Core API", "FR-02 | IGoal")
+    Container(courseSvc, "Course Service", "ASP.NET Core API", "FR-03 | ICourse")
+    Container(assessmentSvc, "Assessment Service", "ASP.NET Core API", "FR-04 | IAssessment")
+  }
+
+  Boundary(yomna, "Owner: Yomna Mohamed Fekry") {
+    Container(goalPlannerSvc, "Goal Planner Service", "ASP.NET Core API", "FR-05 | IGoalPlanner")
+    Container(studyPlannerSvc, "Study Planner Service", "ASP.NET Core API", "FR-06 | IStudyPlanner")
+    Container(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "FR-07 | IScheduling")
+    Container(adaptationSvc, "Adaptation Service", "ASP.NET Core API", "FR-08 | IAdaptation")
+  }
+
+  Boundary(arwa, "Owner: Arwa Mohey Hamdy") {
+    Container(careerSvc, "Career Service", "ASP.NET Core API", "FR-09 | ICareer")
+    Container(skillSvc, "Skill Service", "ASP.NET Core API", "FR-10 | ISkill")
+    Container(portfolioSvc, "Portfolio Service", "ASP.NET Core API", "FR-11 | IPortfolio")
+    Container(jobPrepSvc, "Job Preparation Service", "ASP.NET Core API", "FR-12 | IJobPrep")
+  }
+
+  Boundary(mostafa, "Owner: Mostafa Khamis Abozead") {
+    Container(habitSvc, "Habit Service", "ASP.NET Core API", "FR-13 | IHabit")
+    Container(analyticsSvc, "Analytics Service", "ASP.NET Core API", "FR-14 | IAnalytics")
+    Container(predictionSvc, "Prediction Service", "ASP.NET Core API", "FR-15 | IPrediction")
+    Container(aiCoachSvc, "AI Coach Service", "ASP.NET Core API", "FR-16 | ICoach")
+  }
+
+  Boundary(muhammed, "Owner: Muhammed Hany Hamdy") {
+    Container(dashboardSvc, "Dashboard Service", "ASP.NET Core API", "FR-17 | IDashboard")
+    Container(notificationSvc, "Notification Service", "ASP.NET Core API", "FR-18 | INotification")
+    Container(studyGroupSvc, "Study Group Service", "ASP.NET Core API", "FR-19 | IStudyGroup")
+    Container(adminSvc, "Administration Service", "ASP.NET Core API", "FR-20 | IAdministration")
+  }
+}
+
+System_Ext(aiProvider, "AI Provider", "External LLM API", "Provides AI capabilities")
+System_Ext(emailGateway, "Email Gateway", "External Email Service", "Sends emails")
+ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared DB, each service owns schema")
+
+Rel(student, studentSvc, "Uses", "IStudentProfile")
+Rel(student, dashboardSvc, "Views", "IDashboard")
+
+SHOW_LEGEND()
+
+@enduml

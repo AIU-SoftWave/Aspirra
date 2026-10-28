@@ -1,0 +1,37 @@
+@startuml Aspirra-Container-Diagram-Arwa
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram - Owner: Arwa Mohey Hamdy (ArwaMohey)\nFR-09 Career, FR-10 Skill, FR-11 Portfolio, FR-12 Job Preparation
+
+Person(student, "Student", "Uses Aspirra")
+
+System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
+  Boundary(arwa, "Owner: Arwa Mohey Hamdy") {
+    Container(careerSvc, "Career Service", "ASP.NET Core API", "FR-09 | Provides ICareer\nCareer roadmaps & milestones")
+    Container(skillSvc, "Skill Service", "ASP.NET Core API", "FR-10 | Provides ISkill\nSkills, gaps, development")
+    Container(portfolioSvc, "Portfolio Service", "ASP.NET Core API", "FR-11 | Provides IPortfolio\nProjects & artifacts")
+    Container(jobPrepSvc, "Job Preparation Service", "ASP.NET Core API", "FR-12 | Provides IJobPrep\nInternship/job prep")
+  }
+  
+  Container(studentSvc, "Student Service", "ASP.NET Core API", "FR-01 | IStudentProfile")
+}
+
+System_Ext(aiProvider, "AI Provider", "External LLM API", "AI capabilities")
+System_Ext(emailGateway, "Email Gateway", "External Email Service", "Email delivery")
+ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared DB - each service owns schema/tables")
+
+Rel(careerSvc, studentSvc, "Uses", "IStudentProfile (required)")
+Rel(careerSvc, aiProvider, "Uses", "IAIProvider (required)")
+Rel(skillSvc, careerSvc, "Uses", "ICareer (required)")
+Rel(portfolioSvc, skillSvc, "Uses", "ISkill (required)")
+
+Rel(careerSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(skillSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(portfolioSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(jobPrepSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+
+SHOW_LEGEND()
+
+@enduml

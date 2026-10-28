@@ -1,0 +1,34 @@
+@startuml Aspirra-Container-Diagram-Ahmed
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram - Owner: Ahmed Mohamed Ahmed (AbooSalh)\nFR-01 Student, FR-02 Academic, FR-03 Course, FR-04 Assessment
+
+Person(student, "Student", "Uses Aspirra")
+
+System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
+  Boundary(ahmed, "Owner: Ahmed Mohamed Ahmed") {
+    Container(studentSvc, "Student Service", "ASP.NET Core API", "FR-01 | Provides IStudentProfile\nManages profiles & availability")
+    Container(academicSvc, "Academic Service", "ASP.NET Core API", "FR-02 | Provides IGoal\nManages academic goals")
+    Container(courseSvc, "Course Service", "ASP.NET Core API", "FR-03 | Provides ICourse\nCourses, enrollments")
+    Container(assessmentSvc, "Assessment Service", "ASP.NET Core API", "FR-04 | Provides IAssessment\nAssignments, exams")
+  }
+}
+
+System_Ext(aiProvider, "AI Provider", "External LLM API", "AI capabilities")
+System_Ext(emailGateway, "Email Gateway", "External Email Service", "Email delivery")
+ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared DB - each service owns schema/tables")
+
+Rel(student, studentSvc, "Uses", "IStudentProfile")
+Rel(academicSvc, studentSvc, "Uses", "IStudentProfile (required)")
+Rel(courseSvc, assessmentSvc, "Uses", "IAssessment (required)")
+
+Rel(studentSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(academicSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(courseSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+Rel(assessmentSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+
+SHOW_LEGEND()
+
+@enduml
