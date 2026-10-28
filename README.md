@@ -384,6 +384,8 @@ docker compose up --build
 
 Every service exposes `GET /health`. Each service owns its PostgreSQL schema (`student`, `academic`, `course`, `assessment`, `goal_planner`, `habit`) and applies EF Core migrations at startup.
 
+In Development, each service also exposes interactive OpenAPI documentation at `/scalar/v1` and its OpenAPI document at `/openapi/v1.json`. For example, the Student service is at http://localhost:5011/scalar/v1. See [API documentation](docs/api/README.md) for all service links and a suggested end-to-end test flow.
+
 Run the tests (74 tests across 6 xUnit projects):
 
 ```bash

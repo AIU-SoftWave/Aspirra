@@ -5,9 +5,11 @@ using Aspirra.AssessmentService.Json;
 using Aspirra.AssessmentService.Repositories;
 using Aspirra.AssessmentService.Services;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddOpenApi();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new TimeOnlyJsonConverter());
@@ -25,6 +27,13 @@ builder.Services.AddScoped<IAssessmentRepository, EfAssessmentRepository>();
 builder.Services.AddScoped<IAssessment, AssessmentService>();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+        options.WithTitle("Aspirra Assessment Service API"));
+}
 
 using (var scope = app.Services.CreateScope())
 {

@@ -3,10 +3,12 @@ using Aspirra.HabitService.Interfaces;
 using Aspirra.HabitService.Repositories;
 using Aspirra.HabitService.Services;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
 if (string.IsNullOrWhiteSpace(connectionString))
@@ -22,6 +24,13 @@ builder.Services.AddScoped<IHabitRepository, HabitRepository>();
 builder.Services.AddScoped<IHabit, HabitService>();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+        options.WithTitle("Aspirra Habit Service API"));
+}
 
 app.MapControllers();
 

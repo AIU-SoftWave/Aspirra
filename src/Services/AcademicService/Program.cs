@@ -4,9 +4,11 @@ using Aspirra.AcademicService.Interfaces;
 using Aspirra.AcademicService.Repositories;
 using Aspirra.AcademicService.Services;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddOpenApi();
 builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
@@ -25,6 +27,13 @@ builder.Services.AddScoped<IGoalRepository, GoalRepository>();
 builder.Services.AddScoped<IGoal, GoalService>();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+        options.WithTitle("Aspirra Academic Service API"));
+}
 
 app.MapControllers();
 

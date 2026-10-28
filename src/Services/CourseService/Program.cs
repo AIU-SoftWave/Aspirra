@@ -3,10 +3,12 @@ using Aspirra.CourseService.Interfaces;
 using Aspirra.CourseService.Repositories;
 using Aspirra.CourseService.Services;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString("Default")
     ?? "Host=aspirra-db;Port=5432;Database=aspirra;Username=aspirra_user;Password=aspirra_password";
@@ -28,6 +30,13 @@ builder.Services.AddHttpClient<IAssessmentClient, HttpAssessmentClient>(client =
 });
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+        options.WithTitle("Aspirra Course Service API"));
+}
 
 app.MapControllers();
 app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));

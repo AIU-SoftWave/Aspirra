@@ -5,9 +5,11 @@ using Aspirra.GoalPlannerService.Interfaces;
 using Aspirra.GoalPlannerService.Repositories;
 using Aspirra.GoalPlannerService.Services;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddOpenApi();
 builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
@@ -34,6 +36,13 @@ builder.Services.AddHttpClient<IGoalClient, HttpGoalClient>(client =>
 });
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+        options.WithTitle("Aspirra Goal Planner Service API"));
+}
 
 app.MapControllers();
 

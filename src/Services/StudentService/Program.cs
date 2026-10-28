@@ -3,10 +3,12 @@ using Aspirra.StudentService.Interfaces;
 using Aspirra.StudentService.Repositories;
 using Aspirra.StudentService.Services;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString("Default")
     ?? "Host=aspirra-db;Port=5432;Database=aspirra;Username=aspirra_user;Password=aspirra_password";
@@ -20,6 +22,13 @@ builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 builder.Services.AddScoped<IStudentProfile, StudentProfileService>();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+        options.WithTitle("Aspirra Student Service API"));
+}
 
 app.MapControllers();
 
