@@ -1,32 +1,73 @@
 @startuml course-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - Course Service (FR-03) | Owner: Ahmed Mohamed Ahmed
 
-Container_Boundary(courseBoundary, "Course Service") {
+actor "Student" as student
+interface "ICourse" as p_icourse
 
-  Component(iCourse, "ICourse", "Provided Interface", "addCourse, updateCourse, removeCourse, getCourse, getCourses, getCourseProgress")
-  Component(coursesController, "CoursesController", "API Controller", "Exposes /api/courses endpoints")
-  Component(courseService, "CourseService", "Component", "Implements course management and course progress")
-  Component(iCourseRepo, "ICourseRepository", "Repository Interface", "Persistence abstraction for Course and CourseEnrollment")
-  Component(courseRepo, "CourseRepository", "Repository", "EF Core implementation of ICourseRepository")
-  Component(iAssessmentClient, "IAssessmentClient", "Required Interface", "Fetches course assignments from the Assessment Service")
-  Component(httpAssessmentClient, "HttpAssessmentClient", "Client Adapter", "HTTP implementation of IAssessmentClient")
-  Component(courseDb, "CourseDbContext", "EF Core DbContext", "Owns the course schema (Courses, CourseEnrollments)")
-  Component(domainModel, "Course, CourseEnrollment, CourseProgress", "Domain Model", "Owned entities and read model")
+component "<<container>>\nCourse Service" as courseContainer {
+  portin " " as port_in
+  portout " " as port_assess
+  portout " " as port_db
+
+  component "CoursesController\n(/api/courses)" as ctrl
+  component "CourseService" as svc
+  component "CourseRepository" as repo
+  component "HttpAssessmentClient" as client
+  component "CourseDbContext" as dbctx
+
+  port_in -- ctrl
+  ctrl -(0- svc : ICourse
+  svc -(0- repo : ICourseRepository
+  svc -(0- client : IAssessmentClient
+  repo --> dbctx : uses
+  client -- port_assess
+  dbctx -- port_db
 }
 
-Rel(coursesController, iCourse, "Exposes")
-Rel(coursesController, courseService, "Calls")
-Rel(courseService, iCourseRepo, "Depends on")
-Rel(courseService, iAssessmentClient, "Depends on")
-Rel(courseRepo, iCourseRepo, "Implements")
-Rel(httpAssessmentClient, iAssessmentClient, "Implements")
-Rel(courseRepo, courseDb, "Uses")
-Rel(courseDb, domainModel, "Maps to/from")
+component "Assessment Service" as assessSvc <<service>>
+database "Aspirra DB\n(course schema:\nCourses, CourseEnrollments)" as db <<database>>
 
-Container_Ext(assessmentSvc, "Assessment Service", "ASP.NET Core API", "Provides IAssessment")
-Rel(httpAssessmentClient, assessmentSvc, "Uses IAssessment (required)")
+student --( p_icourse
+p_icourse -- port_in
 
-SHOW_LEGEND()
+port_assess -(0- assessSvc : IAssessment
+port_db -(0- db : ICourseDB
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml

@@ -1,37 +1,116 @@
-@startuml Aspirra-Container-Diagram-Arwa
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-
-LAYOUT_WITH_LEGEND()
-
-title Container Diagram - Owner: Arwa Mohey Hamdy (ArwaMohey)\nFR-09 Career, FR-10 Skill, FR-11 Portfolio, FR-12 Job Preparation
-
-Person(student, "Student", "Uses Aspirra")
-
-System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
-  Boundary(arwa, "Owner: Arwa Mohey Hamdy") {
-    Container(careerSvc, "Career Service", "ASP.NET Core API", "FR-09 | Provides ICareer\nCareer roadmaps & milestones")
-    Container(skillSvc, "Skill Service", "ASP.NET Core API", "FR-10 | Provides ISkill\nSkills, gaps, development")
-    Container(portfolioSvc, "Portfolio Service", "ASP.NET Core API", "FR-11 | Provides IPortfolio\nProjects & artifacts")
-    Container(jobPrepSvc, "Job Preparation Service", "ASP.NET Core API", "FR-12 | Provides IJobPrep\nInternship/job prep")
-  }
-  
-  Container(studentSvc, "Student Service", "ASP.NET Core API", "FR-01 | IStudentProfile")
+@startuml Container-Diagram-Arwa
+left to right direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 25
+skinparam ranksep 65
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam package {
+  BackgroundColor #F8FAFC
+  BorderColor #94A3B8
+  FontColor #1E293B
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<dependency>> #F8FAFC
+  BorderColor<<dependency>> #64748B
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
 }
 
-System_Ext(aiProvider, "AI Provider", "External LLM API", "AI capabilities")
-System_Ext(emailGateway, "Email Gateway", "External Email Service", "Email delivery")
-ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared DB - each service owns schema/tables")
+title Level 1: Container Diagram — Owner: Arwa Mohey Hamdy (ArwaMohey)\nFR-09 Career, FR-10 Skill, FR-11 Portfolio, FR-12 Job Preparation
 
-Rel(careerSvc, studentSvc, "Uses", "IStudentProfile (required)")
-Rel(careerSvc, aiProvider, "Uses", "IAIProvider (required)")
-Rel(skillSvc, careerSvc, "Uses", "ICareer (required)")
-Rel(portfolioSvc, skillSvc, "Uses", "ISkill (required)")
+actor "Student" as student
 
-Rel(careerSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(skillSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(portfolioSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(jobPrepSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+interface "ICareer" as ext_icareer
+interface "ISkill" as ext_iskill
+interface "IPortfolio" as ext_iportf
+interface "IJobPrep" as ext_ijobprep
 
-SHOW_LEGEND()
+component "<<system>>\nAspirra (Modular Monolith)" as aspirra {
+  portin " " as p_career
+  portin " " as p_skill
+  portin " " as p_portf
+  portin " " as p_jobprep
 
+  portout " " as p_ai
+  portout " " as p_db_career
+  portout " " as p_db_skill
+  portout " " as p_db_portf
+  portout " " as p_db_jobprep
+
+  package "Owner: Arwa Mohey Hamdy" {
+    component "Career Service\n(FR-09)" as careerSvc <<service>>
+    component "Skill Service\n(FR-10)" as skillSvc <<service>>
+    component "Portfolio Service\n(FR-11)" as portfolioSvc <<service>>
+    component "Job Preparation Service\n(FR-12)" as jobPrepSvc <<service>>
+  }
+
+  package "Peer Services (Providers)" {
+    component "Student Service\n(FR-01)" as studentSvc <<dependency>>
+  }
+
+  p_career -- careerSvc
+  p_skill -- skillSvc
+  p_portf -- portfolioSvc
+  p_jobprep -- jobPrepSvc
+
+  careerSvc -(0- studentSvc : IStudentProfile
+  skillSvc -(0- careerSvc : ICareer
+  portfolioSvc -(0- skillSvc : ISkill
+
+  careerSvc -- p_ai
+
+  careerSvc -- p_db_career
+  skillSvc -- p_db_skill
+  portfolioSvc -- p_db_portf
+  jobPrepSvc -- p_db_jobprep
+}
+
+component "AI Provider\n(External LLM API)" as aiProvider <<external>>
+database "Aspirra Database\n(PostgreSQL 16)\nSchemas: career, skill,\nportfolio, job_preparation" as sharedDb <<database>>
+
+ext_icareer -- p_career
+ext_iskill -- p_skill
+ext_iportf -- p_portf
+ext_ijobprep -- p_jobprep
+
+student --( ext_icareer
+student --( ext_iskill
+student --( ext_iportf
+student --( ext_ijobprep
+
+p_ai -(0- aiProvider : IAIProvider
+p_db_career -(0- sharedDb : ICareerDB
+p_db_skill -(0- sharedDb : ISkillDB
+p_db_portf -(0- sharedDb : IPortfolioDB
+p_db_jobprep -(0- sharedDb : IJobPrepDB
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+  | <<service>> / <<dependency>> | Owned service / peer service provider |
+endlegend
 @enduml

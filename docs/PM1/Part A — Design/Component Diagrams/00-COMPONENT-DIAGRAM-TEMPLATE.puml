@@ -1,35 +1,74 @@
 @startuml component-diagram-template
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - <SERVICE_NAME> (<FR-XX>) | Owner: <OWNER_NAME>
 
-Container_Boundary(svcBoundary, "<SERVICE_NAME> Service") {
-  
-  ' Provided interface of this service
-  Component(providedApi, "I<SERVICE_INTERFACE>", "Provided Interface", "Exposed to other service containers")
-  
-  ' Core components
-  Component(serviceComp, "<ServiceClassName>", "Component", "Core business logic - orchestrates use cases (SOLID)")
-  Component(validator, "<ServiceValidator>", "Component", "Validation rules")
-  
-  ' Persistence
-  Component(repo, "<IRepo>Repository", "Component", "Data access for owned entities")
-  
-  ' Domain
-  Component(domain, "<DomainEntities>", "Domain Model", "Entities/enums owned by this service")
+actor "Student" as actorUser
+interface "I<SERVICE_INTERFACE>" as providedApi
+
+component "<<container>>\n<SERVICE_NAME> Service" as svcContainer {
+  portin " " as port_in
+  portout " " as port_ext
+  portout " " as port_db
+
+  component "<ServiceController>\n(/api/<resource>)" as ctrl
+  component "<ServiceClassName>" as serviceComp
+  component "<ServiceValidator>" as validator
+  component "<ServiceRepository>" as repo
+
+  port_in -- ctrl
+  ctrl -(0- serviceComp : I<SERVICE_INTERFACE>
+  serviceComp -(0- validator : I<ServiceValidator>
+  serviceComp -(0- repo : I<ServiceRepository>
+  serviceComp -- port_ext
+  repo -- port_db
 }
 
-' Required interfaces to other service containers/external systems
-Container_Ext(extSvc, "<External Service Container>", "<Technology>", "Provides required interface")
+component "<External Service>" as extSvc <<service>>
+database "Aspirra DB\n(<schema> schema:\n<Owned Tables>)" as db <<database>>
 
-' Internal relationships
-Rel(providedApi, serviceComp, "Delegates")
-Rel(serviceComp, validator, "Uses")
-Rel(serviceComp, repo, "Uses")
-Rel(repo, domain, "Maps to/from")
+actorUser --( providedApi
+providedApi -- port_in
 
-' Cross-service/external relationships
-Rel(serviceComp, extSvc, "Uses <IRequiredInterface> (required)")
+port_ext -(0- extSvc : I<RequiredInterface>
+port_db -(0- db : I<Service>DB
 
-SHOW_LEGEND()
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Port (portin provided / portout required) |
+  | Circle (lollipop) / Half-circle (socket) | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+  | <<service>> / <<database>> | External service dependency / Owned DB schema |
+endlegend
 @enduml

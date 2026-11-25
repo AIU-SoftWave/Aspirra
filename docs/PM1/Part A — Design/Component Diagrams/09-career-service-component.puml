@@ -1,37 +1,76 @@
 @startuml career-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - Career Service (FR-09) | Owner: Arwa Mohey Hamdy
 
-Container_Boundary(careerBoundary, "Career Service") {
-  
-  ' Provided interface
-  Component(iCareer, "ICareer", "Provided Interface", "chooseTargetCareer, generateRoadmap, trackProgress, changeTargetCareer")
-  
-  ' Core components
-  Component(careerService, "CareerService", "Component", "Manages career roadmaps. Applies SOLID principles.")
-  Component(careerPromptBuilder, "CareerPromptBuilder", "Component", "Builds AI prompts for roadmaps")
-  
-  ' Persistence
-  Component(careerRepo, "ICareerRepository", "Repository Interface / Component", "Data access for CareerRoadmap, Milestone (owned)")
-  
-  ' Domain
-  Component(domainModel, "CareerRoadmap, RoadmapMilestone", "Domain Model", "Owned entities")
+actor "Student" as student
+interface "ICareer" as p_icareer
+
+component "<<container>>\nCareer Service" as careerContainer {
+  portin " " as port_in
+  portout " " as port_student
+  portout " " as port_ai
+  portout " " as port_db
+
+  component "CareerService" as svc
+  component "CareerPromptBuilder" as promptBuilder
+  component "CareerRepository" as repo
+
+  port_in -- svc
+  svc -(0- promptBuilder : ICareerPromptBuilder
+  svc -(0- repo : ICareerRepository
+
+  svc -- port_student
+  svc -- port_ai
+  repo -- port_db
 }
 
-' Required interfaces
-Container_Ext(studentSvc, "Student Service", "ASP.NET Core API", "Provides IStudentProfile")
-System_Ext(aiProvider, "AI Provider", "External LLM API", "Provides IAIProvider")
+component "Student Service" as studentSvc <<service>>
+component "AI Provider\n(External LLM API)" as aiProvider <<external>>
+database "Aspirra DB\n(career schema:\nCareerRoadmaps, RoadmapMilestones)" as db <<database>>
 
-' Internal relationships
-Rel(iCareer, careerService, "Delegates calls")
-Rel(careerService, careerPromptBuilder, "Uses")
-Rel(careerService, careerRepo, "Uses (ICareerRepository)")
-Rel(careerRepo, domainModel, "Maps to/from")
+student --( p_icareer
+p_icareer -- port_in
 
-' Cross-service/external relationships
-Rel(careerService, studentSvc, "Uses IStudentProfile (required)")
-Rel(careerService, aiProvider, "Uses IAIProvider (required)")
+port_student -(0- studentSvc : IStudentProfile
+port_ai -(0- aiProvider : IAIProvider
+port_db -(0- db : ICareerDB
 
-SHOW_LEGEND()
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml

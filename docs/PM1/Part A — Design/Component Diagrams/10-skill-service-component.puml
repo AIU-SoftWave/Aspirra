@@ -1,35 +1,70 @@
 @startuml skill-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - Skill Service (FR-10) | Owner: Arwa Mohey Hamdy
 
-Container_Boundary(skillBoundary, "Skill Service") {
-  
-  ' Provided interface
-  Component(iSkill, "ISkill", "Provided Interface", "addSkill, viewSkillGaps, updateSkillLevel")
-  
-  ' Core components
-  Component(skillService, "SkillService", "Component", "Tracks skills and gaps. Applies SOLID principles.")
-  Component(gapAnalyzer, "GapAnalyzer", "Component", "Compares skills with career requirements")
-  
-  ' Persistence
-  Component(skillRepo, "ISkillRepository", "Repository Interface / Component", "Data access for Skill, SkillGap (owned)")
-  
-  ' Domain
-  Component(domainModel, "Skill, SkillLevel, SkillGap", "Domain Model", "Owned entities and enums")
+actor "Student" as student
+interface "ISkill" as p_iskill
+
+component "<<container>>\nSkill Service" as skillContainer {
+  portin " " as port_in
+  portout " " as port_career
+  portout " " as port_db
+
+  component "SkillService" as svc
+  component "GapAnalyzer" as analyzer
+  component "SkillRepository" as repo
+
+  port_in -- svc
+  svc -(0- analyzer : IGapAnalyzer
+  svc -(0- repo : ISkillRepository
+
+  svc -- port_career
+  repo -- port_db
 }
 
-' Required interfaces
-Container_Ext(careerSvc, "Career Service", "ASP.NET Core API", "Provides ICareer")
+component "Career Service" as careerSvc <<service>>
+database "Aspirra DB\n(skill schema:\nSkills, SkillGaps)" as db <<database>>
 
-' Internal relationships
-Rel(iSkill, skillService, "Delegates calls")
-Rel(skillService, gapAnalyzer, "Uses")
-Rel(skillService, skillRepo, "Uses (ISkillRepository)")
-Rel(skillRepo, domainModel, "Maps to/from")
+student --( p_iskill
+p_iskill -- port_in
 
-' Cross-service relationships
-Rel(skillService, careerSvc, "Uses ICareer (required)")
+port_career -(0- careerSvc : ICareer
+port_db -(0- db : ISkillDB
 
-SHOW_LEGEND()
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml

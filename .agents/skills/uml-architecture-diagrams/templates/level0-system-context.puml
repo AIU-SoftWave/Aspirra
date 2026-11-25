@@ -1,0 +1,78 @@
+@startuml
+left to right direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 16
+skinparam ranksep 85
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+
+title Level 0: System Context Diagram - <System Name>
+
+' Left-side actors & provided interfaces
+actor "User" as user_left
+interface "ICatalog" as i_catalog
+interface "IOrder" as i_order
+
+component "<<system>>\n<System Name>" as sys {
+  ' Left boundary ports
+  portin " " as p_catalog
+  portin " " as p_order
+
+  ' Right boundary ports (provided on right + required external)
+  portout " " as p_admin
+  portout " " as p_payment
+  portout " " as p_email
+}
+
+' Right-side provided interfaces, actors, and external systems
+interface "IAdmin" as i_admin
+actor "Administrator" as admin
+component "Payment Gateway" as paymentGw <<external>>
+component "Email Service" as emailSvc <<external>>
+
+admin -[hidden]right- paymentGw
+paymentGw -[hidden]right- emailSvc
+
+' Left provided interfaces wired to left boundary ports
+i_catalog -- p_catalog
+i_order -- p_order
+user_left --( i_catalog
+user_left --( i_order
+
+' Right provided interface wired to right boundary port
+p_admin -- i_admin
+i_admin )-- admin
+
+' Required external interfaces via ball-and-socket
+p_payment -(0- paymentGw : IPaymentGW
+p_email -(0- emailSvc : IEmailGateway
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Port (every interface attaches to a port) |
+  | Circle (lollipop) | Provided interface exposed by the system |
+  | Half-circle (socket) | Required interface consumed by actor or system |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+  | <<external>> | External third-party system |
+endlegend
+@enduml

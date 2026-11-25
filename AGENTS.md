@@ -109,6 +109,14 @@ Notes:
 - Use `--json` for machine-readable output.
 - `acli` cannot add project members non-interactively; do not promise that capability.
 
+## Architecture diagrams & reports
+
+- **UML 2.x standard (no C4 macros):** Level 0 (System Context), Level 1 (Container + `Container Diagrams/split/`), and Level 2 (Component) diagrams under `docs/PM1/Part A — Design/` use native UML 2.x PlantUML notation (`skinparam componentStyle uml2`, boundary `portin`/`portout` squares, provided lollipops, required sockets, and `-(0-` ball-and-socket assembly connectors) per CSE454 Lab 3. Use the `uml-architecture-diagrams` skill (`.agents/skills/uml-architecture-diagrams/SKILL.md`) when authoring or updating architecture diagrams.
+- **PlantUML binary:** Render with `~/.local/bin/plantuml` (PlantUML `1.2026.10`, backed by `$HOME/plantuml.jar`). Do not use `/usr/bin/plantuml` (`1.2020.02`), which does not support `portin`/`portout`.
+- **Preserve PNG filenames:** Keep existing `@startuml <name>` headers in `Component Diagrams/01..20-*.puml` (e.g., `@startuml student-service-component-diagram`) and `Aspirra-Container-Diagram.puml` so regenerated PNGs overwrite the exact paths embedded in `docs/PM1/report.md` (63 embedded PNGs).
+- **Dependency & schema invariants:** Keep `Interfaces.md`, `Aspirra-Container-Diagram.puml`, the 6 `Container Diagrams/split/*.puml` files, and all 20 component diagrams synchronized (20 services, 36 cross-service/external dependencies: 31 internal + 4 `IAIProvider` + 1 `IEmailGateway`; each service owns its own isolated PostgreSQL schema).
+- **PDF report export:** Whenever diagrams embedded in `docs/PM1/report.md` change, re-export `docs/PM1/report.pdf` (A4 portrait, keeping service headings paired with their diagrams via `break-inside: avoid`) and visually inspect rendered pages.
+
 ## Guardrails
 
 - Do not commit, push, amend, force-push, or open/merge PRs unless explicitly asked.

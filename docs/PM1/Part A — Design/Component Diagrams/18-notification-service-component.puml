@@ -1,43 +1,88 @@
 @startuml notification-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 30
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - Notification Service (FR-18) | Owner: Muhammed Hany Hamdy
 
-Container_Boundary(notificationBoundary, "Notification Service") {
-  
-  ' Provided interface
-  Component(iNotification, "INotification", "Provided Interface", "sendReminder, sendEarlyWarning, sendStreakMilestone, getNotifications")
-  
-  ' Core components
-  Component(notificationService, "NotificationService", "Component", "Sends notifications across channels. Applies SOLID principles.")
-  Component(notificationDispatcher, "NotificationDispatcher", "Component", "Dispatches to channels")
-  
-  ' Persistence
-  Component(notificationRepo, "INotificationRepository", "Repository Interface / Component", "Data access for Notification (owned)")
-  
-  ' Domain
-  Component(domainModel, "Notification, NotificationType, NotificationChannel", "Domain Model", "Owned entities and enums")
+actor "Student" as student
+interface "INotification" as p_inotif
+
+component "<<container>>\nNotification Service" as notificationContainer {
+  portin " " as port_in
+  portout " " as port_assess
+  portout " " as port_sched
+  portout " " as port_habit
+  portout " " as port_pred
+  portout " " as port_email
+  portout " " as port_db
+
+  component "NotificationService" as svc
+  component "NotificationDispatcher" as dispatcher
+  component "NotificationRepository" as repo
+
+  port_in -- svc
+  svc -(0- dispatcher : INotificationDispatcher
+  svc -(0- repo : INotificationRepository
+
+  svc -- port_assess
+  svc -- port_sched
+  svc -- port_habit
+  svc -- port_pred
+  dispatcher -- port_email
+  repo -- port_db
 }
 
-' Required interfaces
-Container_Ext(assessmentSvc, "Assessment Service", "ASP.NET Core API", "Provides IAssessment")
-Container_Ext(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "Provides IScheduling")
-Container_Ext(habitSvc, "Habit Service", "ASP.NET Core API", "Provides IHabit")
-Container_Ext(predictionSvc, "Prediction Service", "ASP.NET Core API", "Provides IPrediction")
-System_Ext(emailGateway, "Email Gateway", "External Email Service", "Provides IEmailGateway")
+component "Assessment Service" as assessmentSvc <<service>>
+component "Scheduling Service" as schedulingSvc <<service>>
+component "Habit Service" as habitSvc <<service>>
+component "Prediction Service" as predictionSvc <<service>>
+component "Email Gateway\n(External Email Service)" as emailGateway <<external>>
+database "Aspirra DB\n(notification schema:\nNotifications)" as db <<database>>
 
-' Internal relationships
-Rel(iNotification, notificationService, "Delegates calls")
-Rel(notificationService, notificationDispatcher, "Uses")
-Rel(notificationService, notificationRepo, "Uses (INotificationRepository)")
-Rel(notificationRepo, domainModel, "Maps to/from")
+student --( p_inotif
+p_inotif -- port_in
 
-' Cross-service/external relationships
-Rel(notificationService, assessmentSvc, "Uses IAssessment (required)")
-Rel(notificationService, schedulingSvc, "Uses IScheduling (required)")
-Rel(notificationService, habitSvc, "Uses IHabit (required)")
-Rel(notificationService, predictionSvc, "Uses IPrediction (required)")
-Rel(notificationService, emailGateway, "Uses IEmailGateway (required)")
+port_assess -(0- assessmentSvc : IAssessment
+port_sched -(0- schedulingSvc : IScheduling
+port_habit -(0- habitSvc : IHabit
+port_pred -(0- predictionSvc : IPrediction
+port_email -(0- emailGateway : IEmailGateway
+port_db -(0- db : INotificationDB
 
-SHOW_LEGEND()
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml

@@ -1,0 +1,75 @@
+@startuml
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+title Level 3: Code - Class Diagram (<Service Name>)
+
+interface IOrder <<provided>> {
+  +PlaceOrder(customerId, items): Order
+  +CancelOrder(orderId): void
+}
+
+class OrderService <<component>> {
+  -repository: IOrderRepository
+  -paymentClient: IPaymentClient
+  --
+  +PlaceOrder(customerId, items): Order
+  +CancelOrder(orderId): void
+}
+
+interface IPaymentClient <<required - Payment Gateway>> {
+  +Charge(orderId, amount): Receipt
+  +Refund(orderId): void
+}
+
+interface IOrderRepository <<required - Database>> {
+  +Save(order): void
+  +FindById(orderId): Order
+}
+
+class Order {
+  -id: String
+  -customerId: String
+  -status: String
+  --
+  +Cancel(): void
+}
+
+class OrderItem {
+  -productId: String
+  -quantity: int
+  -unitPrice: decimal
+}
+
+IOrder <|.. OrderService
+OrderService --> IPaymentClient
+OrderService --> IOrderRepository
+IOrderRepository "1" -- "0..*" Order : stores
+Order *-- "1..*" OrderItem
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+endlegend
+@enduml

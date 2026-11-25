@@ -1,35 +1,70 @@
 @startuml prediction-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - Prediction Service (FR-15) | Owner: Mostafa Khamis Abozead
 
-Container_Boundary(predictionBoundary, "Prediction Service") {
-  
-  ' Provided interface
-  Component(iPrediction, "IPrediction", "Provided Interface", "getCompletionLikelihood, getEarlyWarnings, suggestRecoveryActions")
-  
-  ' Core components
-  Component(predictionService, "PredictionService", "Component", "Predicts risks and early warnings. Applies SOLID principles.")
-  Component(riskEvaluator, "RiskEvaluator", "Component", "Evaluates risk based on workload/progress")
-  
-  ' Persistence
-  Component(predictionRepo, "IPredictionRepository", "Repository Interface / Component", "Data access for Prediction, EarlyWarning (owned)")
-  
-  ' Domain
-  Component(domainModel, "Prediction, EarlyWarning, RiskLevel", "Domain Model", "Owned entities and enums")
+actor "Student" as student
+interface "IPrediction" as p_ipred
+
+component "<<container>>\nPrediction Service" as predictionContainer {
+  portin " " as port_in
+  portout " " as port_analytics
+  portout " " as port_db
+
+  component "PredictionService" as svc
+  component "RiskEvaluator" as evaluator
+  component "PredictionRepository" as repo
+
+  port_in -- svc
+  svc -(0- evaluator : IRiskEvaluator
+  svc -(0- repo : IPredictionRepository
+
+  svc -- port_analytics
+  repo -- port_db
 }
 
-' Required interfaces
-Container_Ext(analyticsSvc, "Analytics Service", "ASP.NET Core API", "Provides IAnalytics")
+component "Analytics Service" as analyticsSvc <<service>>
+database "Aspirra DB\n(prediction schema:\nPredictions, EarlyWarnings)" as db <<database>>
 
-' Internal relationships
-Rel(iPrediction, predictionService, "Delegates calls")
-Rel(predictionService, riskEvaluator, "Uses")
-Rel(predictionService, predictionRepo, "Uses (IPredictionRepository)")
-Rel(predictionRepo, domainModel, "Maps to/from")
+student --( p_ipred
+p_ipred -- port_in
 
-' Cross-service relationships
-Rel(predictionService, analyticsSvc, "Uses IAnalytics (required)")
+port_analytics -(0- analyticsSvc : IAnalytics
+port_db -(0- db : IPredictionDB
 
-SHOW_LEGEND()
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml

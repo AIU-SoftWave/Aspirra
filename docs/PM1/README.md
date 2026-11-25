@@ -6,12 +6,13 @@ This directory contains all deliverables for PM1 (Part A–D). The consolidated 
 
 ### Architecture Diagrams
 - [System Context Diagram (Level 0) - PNG](Part%20A%20%E2%80%94%20Design/Architecture%20Diagrams/System%20Context%20diagram.png)
-- [System Context Diagram (Level 0) - C4 PlantUML](Part%20A%20%E2%80%94%20Design/Architecture%20Diagrams/System%20Context%20diagram.puml)
+- [System Context Diagram (Level 0) - UML PlantUML](Part%20A%20%E2%80%94%20Design/Architecture%20Diagrams/System%20Context%20diagram.puml)
 - [Interfaces Document (Level 0)](Part%20A%20%E2%80%94%20Design/Architecture%20Diagrams/Interfaces/Interfaces.md)
 
 ### Container Diagrams (Level 1)
-- [Aspirra Container Diagram (C4 PlantUML)](Part%20A%20%E2%80%94%20Design/Container%20Diagrams/Aspirra-Container-Diagram.puml)
+- [Aspirra Container Diagram (UML PlantUML)](Part%20A%20%E2%80%94%20Design/Container%20Diagrams/Aspirra-Container-Diagram.puml)
 - [Aspirra Container Diagram (PNG)](Part%20A%20%E2%80%94%20Design/Container%20Diagrams/Aspirra-Container-Diagram.png)
+- [Split Container Diagrams by Owner (UML PlantUML + PNG)](Part%20A%20%E2%80%94%20Design/Container%20Diagrams/split/)
 
 ### Component Diagrams (Level 2)
 - [Component Diagram Template](Part%20A%20%E2%80%94%20Design/Component%20Diagrams/00-COMPONENT-DIAGRAM-TEMPLATE.puml)

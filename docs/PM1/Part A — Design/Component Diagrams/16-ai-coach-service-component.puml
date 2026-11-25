@@ -1,41 +1,84 @@
 @startuml ai-coach-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - AI Coach Service (FR-16) | Owner: Mostafa Khamis Abozead
 
-Container_Boundary(aiCoachBoundary, "AI Coach Service") {
-  
-  ' Provided interface
-  Component(iCoach, "ICoach", "Provided Interface", "getPersonalizedAdvice, getRecoveryStrategy, getMotivationalGuidance")
-  
-  ' Core components
-  Component(aiCoachService, "AICoachService", "Component", "AI coaching logic. Applies SOLID principles.")
-  Component(coachPromptBuilder, "CoachPromptBuilder", "Component", "Builds coaching prompts")
-  
-  ' Persistence
-  Component(coachRepo, "ICoachRepository", "Repository Interface / Component", "Data access for CoachingSession (owned)")
-  
-  ' Domain
-  Component(domainModel, "CoachingAdvice, CoachingSession", "Domain Model", "Owned entities")
+actor "Student" as student
+interface "ICoach" as p_icoach
+
+component "<<container>>\nAI Coach Service" as aiCoachContainer {
+  portin " " as port_in
+  portout " " as port_goal
+  portout " " as port_habit
+  portout " " as port_analytics
+  portout " " as port_ai
+  portout " " as port_db
+
+  component "AICoachService" as svc
+  component "CoachPromptBuilder" as promptBuilder
+  component "CoachRepository" as repo
+
+  port_in -- svc
+  svc -(0- promptBuilder : ICoachPromptBuilder
+  svc -(0- repo : ICoachRepository
+
+  svc -- port_goal
+  svc -- port_habit
+  svc -- port_analytics
+  svc -- port_ai
+  repo -- port_db
 }
 
-' Required interfaces
-Container_Ext(academicSvc, "Academic Service", "ASP.NET Core API", "Provides IGoal")
-Container_Ext(habitSvc, "Habit Service", "ASP.NET Core API", "Provides IHabit")
-Container_Ext(analyticsSvc, "Analytics Service", "ASP.NET Core API", "Provides IAnalytics")
-System_Ext(aiProvider, "AI Provider", "External LLM API", "Provides IAIProvider")
+component "Academic Service" as academicSvc <<service>>
+component "Habit Service" as habitSvc <<service>>
+component "Analytics Service" as analyticsSvc <<service>>
+component "AI Provider\n(External LLM API)" as aiProvider <<external>>
+database "Aspirra DB\n(ai_coach schema:\nCoachingSessions, CoachingAdvice)" as db <<database>>
 
-' Internal relationships
-Rel(iCoach, aiCoachService, "Delegates calls")
-Rel(aiCoachService, coachPromptBuilder, "Uses")
-Rel(aiCoachService, coachRepo, "Uses (ICoachRepository)")
-Rel(coachRepo, domainModel, "Maps to/from")
+student --( p_icoach
+p_icoach -- port_in
 
-' Cross-service/external relationships
-Rel(aiCoachService, academicSvc, "Uses IGoal (required)")
-Rel(aiCoachService, habitSvc, "Uses IHabit (required)")
-Rel(aiCoachService, analyticsSvc, "Uses IAnalytics (required)")
-Rel(aiCoachService, aiProvider, "Uses IAIProvider (required)")
+port_goal -(0- academicSvc : IGoal
+port_habit -(0- habitSvc : IHabit
+port_analytics -(0- analyticsSvc : IAnalytics
+port_ai -(0- aiProvider : IAIProvider
+port_db -(0- db : IAICoachDB
 
-SHOW_LEGEND()
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml

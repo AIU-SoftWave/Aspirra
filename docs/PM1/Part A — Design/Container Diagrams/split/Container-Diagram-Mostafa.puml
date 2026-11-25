@@ -1,42 +1,121 @@
-@startuml Aspirra-Container-Diagram-Mostafa
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-
-LAYOUT_WITH_LEGEND()
-
-title Container Diagram - Owner: Mostafa Khamis Abozead (Mostafa-abozead)\nFR-13 Habit, FR-14 Analytics, FR-15 Prediction, FR-16 AI Coach
-
-Person(student, "Student", "Uses Aspirra")
-
-System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
-  Boundary(mostafa, "Owner: Mostafa Khamis Abozead") {
-    Container(habitSvc, "Habit Service", "ASP.NET Core API", "FR-13 | Provides IHabit\nHabits, streaks, reminders")
-    Container(analyticsSvc, "Analytics Service", "ASP.NET Core API", "FR-14 | Provides IAnalytics\nWorkload & performance analysis")
-    Container(predictionSvc, "Prediction Service", "ASP.NET Core API", "FR-15 | Provides IPrediction\nRisk prediction & early warnings")
-    Container(aiCoachSvc, "AI Coach Service", "ASP.NET Core API", "FR-16 | Provides ICoach\nAI guidance & coaching")
-  }
-  
-  Container(academicSvc, "Academic Service", "ASP.NET Core API", "FR-02 | IGoal")
-  Container(studentSvc, "Student Service", "ASP.NET Core API", "FR-01 | IStudentProfile")
-  Container(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "FR-07 | IScheduling")
+@startuml Container-Diagram-Mostafa
+left to right direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 25
+skinparam ranksep 65
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam package {
+  BackgroundColor #F8FAFC
+  BorderColor #94A3B8
+  FontColor #1E293B
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<dependency>> #F8FAFC
+  BorderColor<<dependency>> #64748B
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
 }
 
-System_Ext(aiProvider, "AI Provider", "External LLM API", "AI capabilities")
-System_Ext(emailGateway, "Email Gateway", "External Email Service", "Email delivery")
-ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared DB - each service owns schema/tables")
+title Level 1: Container Diagram — Owner: Mostafa Khamis Abozead (Mostafa-abozead)\nFR-13 Habit, FR-14 Analytics, FR-15 Prediction, FR-16 AI Coach
 
-Rel(analyticsSvc, studentSvc, "Uses", "IStudentProfile (required)")
-Rel(analyticsSvc, schedulingSvc, "Uses", "IScheduling (required)")
-Rel(predictionSvc, analyticsSvc, "Uses", "IAnalytics (required)")
-Rel(aiCoachSvc, academicSvc, "Uses", "IGoal (required)")
-Rel(aiCoachSvc, habitSvc, "Uses", "IHabit (required)")
-Rel(aiCoachSvc, analyticsSvc, "Uses", "IAnalytics (required)")
-Rel(aiCoachSvc, aiProvider, "Uses", "IAIProvider (required)")
+actor "Student" as student
 
-Rel(habitSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(analyticsSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(predictionSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(aiCoachSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+interface "IHabit" as ext_ihabit
+interface "IAnalytics" as ext_ianalytics
+interface "IPrediction" as ext_ipred
+interface "ICoach" as ext_icoach
 
-SHOW_LEGEND()
+component "<<system>>\nAspirra (Modular Monolith)" as aspirra {
+  portin " " as p_habit
+  portin " " as p_analytics
+  portin " " as p_pred
+  portin " " as p_coach
 
+  portout " " as p_ai
+  portout " " as p_db_habit
+  portout " " as p_db_analytics
+  portout " " as p_db_pred
+  portout " " as p_db_coach
+
+  package "Owner: Mostafa Khamis Abozead" {
+    component "Habit Service\n(FR-13)" as habitSvc <<service>>
+    component "Analytics Service\n(FR-14)" as analyticsSvc <<service>>
+    component "Prediction Service\n(FR-15)" as predictionSvc <<service>>
+    component "AI Coach Service\n(FR-16)" as aiCoachSvc <<service>>
+  }
+
+  package "Peer Services (Providers)" {
+    component "Student Service\n(FR-01)" as studentSvc <<dependency>>
+    component "Academic Service\n(FR-02)" as academicSvc <<dependency>>
+    component "Scheduling Service\n(FR-07)" as schedulingSvc <<dependency>>
+  }
+
+  p_habit -- habitSvc
+  p_analytics -- analyticsSvc
+  p_pred -- predictionSvc
+  p_coach -- aiCoachSvc
+
+  analyticsSvc -(0- studentSvc : IStudentProfile
+  analyticsSvc -(0- schedulingSvc : IScheduling
+  predictionSvc -(0- analyticsSvc : IAnalytics
+  aiCoachSvc -(0- academicSvc : IGoal
+  aiCoachSvc -(0- habitSvc : IHabit
+  aiCoachSvc -(0- analyticsSvc : IAnalytics
+
+  aiCoachSvc -- p_ai
+
+  habitSvc -- p_db_habit
+  analyticsSvc -- p_db_analytics
+  predictionSvc -- p_db_pred
+  aiCoachSvc -- p_db_coach
+}
+
+component "AI Provider\n(External LLM API)" as aiProvider <<external>>
+database "Aspirra Database\n(PostgreSQL 16)\nSchemas: habit, analytics,\nprediction, ai_coach" as sharedDb <<database>>
+
+ext_ihabit -- p_habit
+ext_ianalytics -- p_analytics
+ext_ipred -- p_pred
+ext_icoach -- p_coach
+
+student --( ext_ihabit
+student --( ext_ianalytics
+student --( ext_ipred
+student --( ext_icoach
+
+p_ai -(0- aiProvider : IAIProvider
+p_db_habit -(0- sharedDb : IHabitDB
+p_db_analytics -(0- sharedDb : IAnalyticsDB
+p_db_pred -(0- sharedDb : IPredictionDB
+p_db_coach -(0- sharedDb : IAICoachDB
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+  | <<service>> / <<dependency>> | Owned service / peer service provider |
+endlegend
 @enduml

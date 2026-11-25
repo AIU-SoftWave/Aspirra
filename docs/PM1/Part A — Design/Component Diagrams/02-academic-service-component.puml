@@ -1,25 +1,65 @@
 @startuml academic-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - Academic Service (FR-02) | Owner: Ahmed Mohamed Ahmed
 
-Container_Boundary(academicBoundary, "Academic Service") {
+actor "Student" as student
+interface "IGoal" as p_igoal
 
-  Component(iGoal, "IGoal", "Provided Interface", "createGoal, updateGoal, completeGoal, archiveGoal, restoreGoal, deleteGoal, getGoal, getGoals")
-  Component(goalsController, "GoalsController", "API Controller", "Exposes /api/goals endpoints")
-  Component(goalService, "GoalService", "Component", "Implements the goal lifecycle and validates goal data and dates")
-  Component(iGoalRepo, "IGoalRepository", "Repository Interface", "Persistence abstraction for Goal")
-  Component(goalRepo, "GoalRepository", "Repository", "EF Core implementation of IGoalRepository")
-  Component(academicDb, "AcademicDbContext", "EF Core DbContext", "Owns the academic schema (Goals)")
-  Component(domainModel, "Goal, GoalStatus", "Domain Model", "Owned entity and enum")
+component "<<container>>\nAcademic Service" as academicContainer {
+  portin " " as port_in
+  portout " " as port_db
+
+  component "GoalsController\n(/api/goals)" as ctrl
+  component "GoalService" as svc
+  component "GoalRepository" as repo
+  component "AcademicDbContext" as dbctx
+
+  port_in -- ctrl
+  ctrl -(0- svc : IGoal
+  svc -(0- repo : IGoalRepository
+  repo --> dbctx : uses
+  dbctx -- port_db
 }
 
-Rel(goalsController, iGoal, "Exposes")
-Rel(goalsController, goalService, "Calls")
-Rel(goalService, iGoalRepo, "Depends on")
-Rel(goalRepo, iGoalRepo, "Implements")
-Rel(goalRepo, academicDb, "Uses")
-Rel(academicDb, domainModel, "Maps to/from")
+database "Aspirra DB\n(academic schema:\nGoals)" as db <<database>>
 
-SHOW_LEGEND()
+student --( p_igoal
+p_igoal -- port_in
+
+port_db -(0- db : IAcademicDB
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml

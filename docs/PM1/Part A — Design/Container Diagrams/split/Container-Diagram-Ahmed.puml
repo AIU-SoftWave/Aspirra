@@ -1,33 +1,101 @@
-@startuml Aspirra-Container-Diagram-Ahmed
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-
-LAYOUT_WITH_LEGEND()
-
-title Container Diagram - Owner: Ahmed Mohamed Ahmed (AbooSalh)\nFR-01 Student, FR-02 Academic, FR-03 Course, FR-04 Assessment
-
-Person(student, "Student", "Uses Aspirra")
-
-System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
-  Boundary(ahmed, "Owner: Ahmed Mohamed Ahmed") {
-    Container(studentSvc, "Student Service", "ASP.NET Core API", "FR-01 | Provides IStudentProfile\nManages profiles & availability")
-    Container(academicSvc, "Academic Service", "ASP.NET Core API", "FR-02 | Provides IGoal\nManages academic goals")
-    Container(courseSvc, "Course Service", "ASP.NET Core API", "FR-03 | Provides ICourse\nCourses, enrollments")
-    Container(assessmentSvc, "Assessment Service", "ASP.NET Core API", "FR-04 | Provides IAssessment\nAssignments, exams")
-  }
+@startuml Container-Diagram-Ahmed
+left to right direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 25
+skinparam ranksep 65
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam package {
+  BackgroundColor #F8FAFC
+  BorderColor #94A3B8
+  FontColor #1E293B
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
 }
 
-System_Ext(aiProvider, "AI Provider", "External LLM API", "AI capabilities")
-System_Ext(emailGateway, "Email Gateway", "External Email Service", "Email delivery")
-ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared DB - each service owns schema/tables")
+title Level 1: Container Diagram — Owner: Ahmed Mohamed Ahmed (AbooSalh)\nFR-01 Student, FR-02 Academic, FR-03 Course, FR-04 Assessment
 
-Rel(student, studentSvc, "Uses", "IStudentProfile")
-Rel(courseSvc, assessmentSvc, "Uses", "IAssessment (required)")
+actor "Student" as student
 
-Rel(studentSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(academicSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(courseSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(assessmentSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+interface "IStudentProfile" as ext_istudent
+interface "IGoal" as ext_igoal
+interface "ICourse" as ext_icourse
+interface "IAssessment" as ext_iassess
 
-SHOW_LEGEND()
+component "<<system>>\nAspirra (Modular Monolith)" as aspirra {
+  portin " " as p_student
+  portin " " as p_goal
+  portin " " as p_course
+  portin " " as p_assess
 
+  portout " " as p_db_student
+  portout " " as p_db_academic
+  portout " " as p_db_course
+  portout " " as p_db_assess
+
+  package "Owner: Ahmed Mohamed Ahmed" {
+    component "Student Service\n(FR-01)" as studentSvc <<service>>
+    component "Academic Service\n(FR-02)" as academicSvc <<service>>
+    component "Course Service\n(FR-03)" as courseSvc <<service>>
+    component "Assessment Service\n(FR-04)" as assessmentSvc <<service>>
+  }
+
+  p_student -- studentSvc
+  p_goal -- academicSvc
+  p_course -- courseSvc
+  p_assess -- assessmentSvc
+
+  courseSvc -(0- assessmentSvc : IAssessment
+
+  studentSvc -- p_db_student
+  academicSvc -- p_db_academic
+  courseSvc -- p_db_course
+  assessmentSvc -- p_db_assess
+}
+
+database "Aspirra Database\n(PostgreSQL 16)\nSchemas: student, academic,\ncourse, assessment" as sharedDb <<database>>
+
+ext_istudent -- p_student
+ext_igoal -- p_goal
+ext_icourse -- p_course
+ext_iassess -- p_assess
+
+student --( ext_istudent
+student --( ext_igoal
+student --( ext_icourse
+student --( ext_iassess
+
+p_db_student -(0- sharedDb : IStudentDB
+p_db_academic -(0- sharedDb : IAcademicDB
+p_db_course -(0- sharedDb : ICourseDB
+p_db_assess -(0- sharedDb : IAssessmentDB
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml
