@@ -116,6 +116,32 @@ Notes:
 - **Preserve PNG filenames:** Keep existing `@startuml <name>` headers in `Component Diagrams/01..20-*.puml` (e.g., `@startuml student-service-component-diagram`) and `Aspirra-Container-Diagram.puml` so regenerated PNGs overwrite the exact paths embedded in `docs/PM1/report.md` (63 embedded PNGs).
 - **Dependency & schema invariants:** Keep `Interfaces.md`, `Aspirra-Container-Diagram.puml`, the 6 `Container Diagrams/split/*.puml` files, and all 20 component diagrams synchronized (20 services, 36 cross-service/external dependencies: 31 internal + 4 `IAIProvider` + 1 `IEmailGateway`; each service owns its own isolated PostgreSQL schema).
 - **PDF report export:** Whenever diagrams embedded in `docs/PM1/report.md` change, re-export `docs/PM1/report.pdf` (A4 portrait, keeping service headings paired with their diagrams via `break-inside: avoid`) and visually inspect rendered pages.
+- **PM2 scenario diagrams (`docs/PM2/Part A — Design/`):** File names follow `NN-owner-topic.puml` (e.g., `01-ahmed-complete-goal-object.puml`) and must match the corresponding GitHub issue body. For one scenario, the object, sequence, and collaboration diagrams share the same sample values (IDs, dates, priority) and numbered messages (`1`, `1.1`, `1.2`, …); the collaboration README maps each message → `Verify` block → test name.
+- **Actors in class diagrams:** Use `class X <<actor>>` (renders as an actor), not `actor X`.
+
+## SonarCloud & CI quality gate
+
+- Organization `aboosalh`; project key `AIU-SoftWave_Aspirra`; dashboard https://sonarcloud.io/project/overview?id=AIU-SoftWave_Aspirra. This is unrelated to the GitHub org `aiu-softwave` used in `ghcr.io/aiu-softwave/aspirra` image paths — do not "fix" one to match the other.
+- Keep **Automatic Analysis disabled**; CI analysis otherwise aborts with "You are running CI analysis while Automatic Analysis is enabled."
+- The token lives only as the GitHub repo secret `SONAR_TOKEN` (Jenkins credential `sonar-token`). Never echo it or write it to files.
+- Pass `/d:sonar.qualitygate.wait=true` explicitly in `dotnet sonarscanner begin`; do not rely on `sonar-project.properties` alone (a red gate still exited 0 until the flag was explicit).
+- SonarCloud scans Dockerfiles and workflow YAML: `curl` downloads must use `--proto '=https' --tlsv1.2` (rule `docker:S6506`).
+- Gate check: `curl -s "https://sonarcloud.io/api/qualitygates/project_status?projectKey=AIU-SoftWave_Aspirra&pullRequest=<N>"`. Passing baseline: new coverage ≥ 80%, new reliability/security/maintainability ratings A.
+
+## Tests & coverage
+
+- Pin the same test packages across all six `tests/*.Tests` projects: `Moq 4.20.72`, `coverlet.collector 6.0.4`, `JunitXml.TestLogger 6.1.0` (bump all together).
+- Run: `dotnet test Aspirra.slnx -c Release --settings coverlet.runsettings --collect:"XPlat Code Coverage" --results-directory artifacts/coverage`.
+- SonarCloud consumes `artifacts/coverage/**/coverage.opencover.xml`; `artifacts/` is gitignored — never commit results.
+- Coverage: quote SonarCloud for the quality gate (overall coverage differs from local coverlet — 56.7% vs 37.1% on PR #69); use coverlet only for the per-module breakdown.
+- `JunitXml.TestLogger` resolves a relative `LogFilePath` against the test project directory — pass an absolute path when targeting `artifacts/`.
+
+## Jenkins controller image
+
+- Files: `devops/jenkins/Dockerfile` + `devops/jenkins/docker-compose.yml` (controller `aspirra-jenkins`).
+- `dotnet-install.sh` is unreliable (243 MB SDK download timeouts): pin `DOTNET_VERSION` and `curl` the SDK tarball with `--retry 5 --retry-all-errors --proto '=https' --tlsv1.2`.
+- Minimal Debian/Jenkins images need `ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1`, else `dotnet tool install` aborts (exit 134, "Couldn't find a valid ICU package").
+- Verified: .NET SDK `10.0.404`, `dotnet-sonarscanner` `12.1.0`.
 
 ## Guardrails
 
@@ -125,6 +151,9 @@ Notes:
 - Do not modify another member's owned service, branch, or Jira stories without coordination.
 - Never expose or commit credentials, tokens, API keys, or `.env` files.
 - Keep generated plans editable and require student approval before consequential changes, per the product requirements.
+- The working tree may be left on another workstream's branch (e.g. `feature/pm1-*`): run `git branch --show-current` before staging, stage explicit paths (never `git add -A`), and do not commit PM1 or another member's files.
+- On completing a task: post an evidence comment, `gh issue close <n> --reason completed`, and mirror with `acli jira workitem transition --key SCRUM-XXX --status "Done"`.
+- `gh` lacks the `project` scope (no GitHub Project board), and `develop`/`main` currently have no branch protection — do not rely on either.
 
 ## Verification
 
