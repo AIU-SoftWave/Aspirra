@@ -1,38 +1,82 @@
 @startuml goal-planner-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - Goal Planner Service (FR-05) | Owner: Yomna Mohamed Fekry
 
-Container_Boundary(goalPlannerBoundary, "Goal Planner Service") {
+actor "Student" as student
+interface "IGoalPlanner" as p_igplan
 
-  Component(iGoalPlanner, "IGoalPlanner", "Provided Interface", "generatePlan, updateDraft, approvePlan, discardPlan, getDraft, getTasks")
-  Component(plansController, "PlansController", "API Controller", "Exposes /api/plans endpoints")
-  Component(goalPlannerService, "GoalPlannerService", "Component", "Orchestrates AI plan generation, review, approval, and task retrieval")
-  Component(iAIProvider, "IAIProvider", "Required Interface", "Generates structured plans from prompts")
-  Component(mockAIProvider, "MockAIProvider", "AI Adapter", "Deterministic AI provider used for Sprint 1")
-  Component(iGoalClient, "IGoalClient", "Required Interface", "Reads the target goal from the Academic Service")
-  Component(httpGoalClient, "HttpGoalClient", "Client Adapter", "HTTP implementation of IGoalClient")
-  Component(iPlanDraftRepo, "IPlanDraftRepository", "Repository Interface", "Persistence abstraction for PlanDraft, Milestone, PlanTask")
-  Component(planDraftRepo, "PlanDraftRepository", "Repository", "EF Core implementation of IPlanDraftRepository")
-  Component(goalPlannerDb, "GoalPlannerDbContext", "EF Core DbContext", "Owns the goal_planner schema (PlanDrafts, Milestones, PlanTasks)")
-  Component(domainModel, "PlanDraft, Milestone, PlanTask, PlanStatus", "Domain Model", "Owned entities and enum")
+component "<<container>>\nGoal Planner Service" as goalPlannerContainer {
+  portin " " as port_in
+  portout " " as port_goal
+  portout " " as port_ai
+  portout " " as port_db
+
+  component "PlansController\n(/api/plans)" as ctrl
+  component "GoalPlannerService" as svc
+  component "HttpGoalClient" as goalClient
+  component "MockAIProvider\n(AI Adapter)" as aiAdapter
+  component "PlanDraftRepository" as repo
+  component "GoalPlannerDbContext" as dbctx
+
+  port_in -- ctrl
+  ctrl -(0- svc : IGoalPlanner
+  svc -(0- goalClient : IGoalClient
+  svc -(0- aiAdapter : IAIProvider
+  svc -(0- repo : IPlanDraftRepository
+  repo --> dbctx : uses
+
+  goalClient -- port_goal
+  aiAdapter -- port_ai
+  dbctx -- port_db
 }
 
-Rel(plansController, iGoalPlanner, "Exposes")
-Rel(plansController, goalPlannerService, "Calls")
-Rel(goalPlannerService, iAIProvider, "Depends on")
-Rel(goalPlannerService, iGoalClient, "Depends on")
-Rel(goalPlannerService, iPlanDraftRepo, "Depends on")
-Rel(mockAIProvider, iAIProvider, "Implements")
-Rel(httpGoalClient, iGoalClient, "Implements")
-Rel(planDraftRepo, iPlanDraftRepo, "Implements")
-Rel(planDraftRepo, goalPlannerDb, "Uses")
-Rel(goalPlannerDb, domainModel, "Maps to/from")
+component "Academic Service" as academicSvc <<service>>
+component "AI Provider\n(External LLM API)" as aiProvider <<external>>
+database "Aspirra DB\n(goal_planner schema:\nPlanDrafts, Milestones, PlanTasks)" as db <<database>>
 
-Container_Ext(academicSvc, "Academic Service", "ASP.NET Core API", "Provides IGoal")
-System_Ext(aiProvider, "AI Provider", "External LLM API", "Provides IAIProvider")
-Rel(httpGoalClient, academicSvc, "Uses IGoal (required)")
-Rel(mockAIProvider, aiProvider, "Replaces in production via IAIProvider")
+student --( p_igplan
+p_igplan -- port_in
 
-SHOW_LEGEND()
+port_goal -(0- academicSvc : IGoal
+port_ai -(0- aiProvider : IAIProvider
+port_db -(0- db : IGoalPlannerDB
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml

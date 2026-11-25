@@ -1,39 +1,78 @@
 @startuml study-group-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - Study Group Service (FR-19) | Owner: Muhammed Hany Hamdy
 
-Container_Boundary(studyGroupBoundary, "Study Group Service") {
-  
-  ' Provided interface
-  Component(iStudyGroup, "IStudyGroup", "Provided Interface", "createGroup, joinGroup, shareGoal, postUpdate, findPartner")
-  
-  ' Core components
-  Component(studyGroupService, "StudyGroupService", "Component", "Manages groups and accountability. Applies SOLID principles.")
-  Component(accountabilityMatcher, "AccountabilityMatcher", "Component", "Matches accountability partners")
-  
-  ' Persistence
-  Component(studyGroupRepo, "IStudyGroupRepository", "Repository Interface / Component", "Data access for StudyGroup, GroupMember, Post (owned)")
-  
-  ' Domain
-  Component(domainModel, "StudyGroup, GroupMember, GroupPost, PartnerRequest", "Domain Model", "Owned entities")
+actor "Student" as student
+interface "IStudyGroup" as p_igroup
+
+component "<<container>>\nStudy Group Service" as studyGroupContainer {
+  portin " " as port_in
+  portout " " as port_student
+  portout " " as port_goal
+  portout " " as port_analytics
+  portout " " as port_db
+
+  component "StudyGroupService" as svc
+  component "AccountabilityMatcher" as matcher
+  component "StudyGroupRepository" as repo
+
+  port_in -- svc
+  svc -(0- matcher : IAccountabilityMatcher
+  svc -(0- repo : IStudyGroupRepository
+
+  svc -- port_student
+  svc -- port_goal
+  svc -- port_analytics
+  repo -- port_db
 }
 
-' Required interfaces
-Container_Ext(studentSvc, "Student Service", "ASP.NET Core API", "Provides IStudentProfile")
-Container_Ext(academicSvc, "Academic Service", "ASP.NET Core API", "Provides IGoal")
-Container_Ext(analyticsSvc, "Analytics Service", "ASP.NET Core API", "Provides IAnalytics")
+component "Student Service" as studentSvc <<service>>
+component "Academic Service" as academicSvc <<service>>
+component "Analytics Service" as analyticsSvc <<service>>
+database "Aspirra DB\n(study_group schema:\nStudyGroups, GroupMembers,\nGroupPosts, PartnerRequests)" as db <<database>>
 
-' Internal relationships
-Rel(iStudyGroup, studyGroupService, "Delegates calls")
-Rel(studyGroupService, accountabilityMatcher, "Uses")
-Rel(studyGroupService, studyGroupRepo, "Uses (IStudyGroupRepository)")
-Rel(studyGroupRepo, domainModel, "Maps to/from")
+student --( p_igroup
+p_igroup -- port_in
 
-' Cross-service relationships
-Rel(studyGroupService, studentSvc, "Uses IStudentProfile (required)")
-Rel(studyGroupService, academicSvc, "Uses IGoal (required)")
-Rel(studyGroupService, analyticsSvc, "Uses IAnalytics (required)")
+port_student -(0- studentSvc : IStudentProfile
+port_goal -(0- academicSvc : IGoal
+port_analytics -(0- analyticsSvc : IAnalytics
+port_db -(0- db : IStudyGroupDB
 
-SHOW_LEGEND()
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml

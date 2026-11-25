@@ -1,46 +1,124 @@
-@startuml Aspirra-Container-Diagram-Yomna
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-
-LAYOUT_WITH_LEGEND()
-
-title Container Diagram - Owner: Yomna Mohamed Fekry (YomnaElmenawy)\nFR-05 Goal Planner, FR-06 Study Planner, FR-07 Scheduling, FR-08 Adaptation
-
-Person(student, "Student", "Uses Aspirra")
-
-System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
-  Boundary(yomna, "Owner: Yomna Mohamed Fekry") {
-    Container(goalPlannerSvc, "Goal Planner Service", "ASP.NET Core API", "FR-05 | Provides IGoalPlanner\nAI-assisted goal plans")
-    Container(studyPlannerSvc, "Study Planner Service", "ASP.NET Core API", "FR-06 | Provides IStudyPlanner\nStudy plans from courses/schedule")
-    Container(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "FR-07 | Provides IScheduling\nSmart scheduling & time allocation")
-    Container(adaptationSvc, "Adaptation Service", "ASP.NET Core API", "FR-08 | Provides IAdaptation\nAdaptive planning")
-  }
-  
-  ' Other services (for dependencies)
-  Container(academicSvc, "Academic Service", "ASP.NET Core API", "FR-02 | IGoal")
-  Container(courseSvc, "Course Service", "ASP.NET Core API", "FR-03 | ICourse")
-  Container(assessmentSvc, "Assessment Service", "ASP.NET Core API", "FR-04 | IAssessment")
-  Container(studentSvc, "Student Service", "ASP.NET Core API", "FR-01 | IStudentProfile")
+@startuml Container-Diagram-Yomna
+left to right direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 25
+skinparam ranksep 65
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam package {
+  BackgroundColor #F8FAFC
+  BorderColor #94A3B8
+  FontColor #1E293B
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<dependency>> #F8FAFC
+  BorderColor<<dependency>> #64748B
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
 }
 
-System_Ext(aiProvider, "AI Provider", "External LLM API", "AI capabilities")
-System_Ext(emailGateway, "Email Gateway", "External Email Service", "Email delivery")
-ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared DB - each service owns schema/tables")
+title Level 1: Container Diagram — Owner: Yomna Mohamed Fekry (YomnaElmenawy)\nFR-05 Goal Planner, FR-06 Study Planner, FR-07 Scheduling, FR-08 Adaptation
 
-Rel(goalPlannerSvc, academicSvc, "Uses", "IGoal (required)") 
-Rel(goalPlannerSvc, aiProvider, "Uses", "IAIProvider (required)")
-Rel(studyPlannerSvc, courseSvc, "Uses", "ICourse (required)")
-Rel(studyPlannerSvc, schedulingSvc, "Uses", "IScheduling (required)")
-Rel(studyPlannerSvc, aiProvider, "Uses", "IAIProvider (required)")
-Rel(schedulingSvc, goalPlannerSvc, "Uses", "IGoalPlanner (required)")
-Rel(schedulingSvc, assessmentSvc, "Uses", "IAssessment (required)")
-Rel(schedulingSvc, studentSvc, "Uses", "IStudentProfile (required)")
-Rel(adaptationSvc, schedulingSvc, "Uses", "IScheduling (required)")
+actor "Student" as student
 
-Rel(goalPlannerSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(studyPlannerSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(schedulingSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(adaptationSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+interface "IGoalPlanner" as ext_igplan
+interface "IStudyPlanner" as ext_isplan
+interface "IScheduling" as ext_isched
+interface "IAdaptation" as ext_iadapt
 
-SHOW_LEGEND()
+component "<<system>>\nAspirra (Modular Monolith)" as aspirra {
+  portin " " as p_gplan
+  portin " " as p_splan
+  portin " " as p_sched
+  portin " " as p_adapt
 
+  portout " " as p_ai
+  portout " " as p_db_gplan
+  portout " " as p_db_splan
+  portout " " as p_db_sched
+  portout " " as p_db_adapt
+
+  package "Owner: Yomna Mohamed Fekry" {
+    component "Goal Planner Service\n(FR-05)" as goalPlannerSvc <<service>>
+    component "Study Planner Service\n(FR-06)" as studyPlannerSvc <<service>>
+    component "Scheduling Service\n(FR-07)" as schedulingSvc <<service>>
+    component "Adaptation Service\n(FR-08)" as adaptationSvc <<service>>
+  }
+
+  package "Peer Services (Providers)" {
+    component "Student Service\n(FR-01)" as studentSvc <<dependency>>
+    component "Academic Service\n(FR-02)" as academicSvc <<dependency>>
+    component "Course Service\n(FR-03)" as courseSvc <<dependency>>
+    component "Assessment Service\n(FR-04)" as assessmentSvc <<dependency>>
+  }
+
+  p_gplan -- goalPlannerSvc
+  p_splan -- studyPlannerSvc
+  p_sched -- schedulingSvc
+  p_adapt -- adaptationSvc
+
+  goalPlannerSvc -(0- academicSvc : IGoal
+  studyPlannerSvc -(0- courseSvc : ICourse
+  studyPlannerSvc -(0- schedulingSvc : IScheduling
+  schedulingSvc -(0- goalPlannerSvc : IGoalPlanner
+  schedulingSvc -(0- assessmentSvc : IAssessment
+  schedulingSvc -(0- studentSvc : IStudentProfile
+  adaptationSvc -(0- schedulingSvc : IScheduling
+
+  goalPlannerSvc -- p_ai
+  studyPlannerSvc -- p_ai
+
+  goalPlannerSvc -- p_db_gplan
+  studyPlannerSvc -- p_db_splan
+  schedulingSvc -- p_db_sched
+  adaptationSvc -- p_db_adapt
+}
+
+component "AI Provider\n(External LLM API)" as aiProvider <<external>>
+database "Aspirra Database\n(PostgreSQL 16)\nSchemas: goal_planner, study_planner,\nscheduling, adaptation" as sharedDb <<database>>
+
+ext_igplan -- p_gplan
+ext_isplan -- p_splan
+ext_isched -- p_sched
+ext_iadapt -- p_adapt
+
+student --( ext_igplan
+student --( ext_isplan
+student --( ext_isched
+student --( ext_iadapt
+
+p_ai -(0- aiProvider : IAIProvider
+p_db_gplan -(0- sharedDb : IGoalPlannerDB
+p_db_splan -(0- sharedDb : IStudyPlannerDB
+p_db_sched -(0- sharedDb : ISchedulingDB
+p_db_adapt -(0- sharedDb : IAdaptationDB
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+  | <<service>> / <<dependency>> | Owned service / peer service provider |
+endlegend
 @enduml

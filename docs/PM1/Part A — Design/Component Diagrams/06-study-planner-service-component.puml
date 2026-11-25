@@ -1,39 +1,80 @@
 @startuml study-planner-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - Study Planner Service (FR-06) | Owner: Yomna Mohamed Fekry
 
-Container_Boundary(studyPlannerBoundary, "Study Planner Service") {
-  
-  ' Provided interface
-  Component(iStudyPlanner, "IStudyPlanner", "Provided Interface", "generateStudyPlan, regenerateStudyPlan")
-  
-  ' Core components
-  Component(studyPlannerService, "StudyPlannerService", "Component", "Generates personalized study plans. Applies SOLID principles.")
-  Component(studyPlanValidator, "StudyPlanValidator", "Component", "Validates study plan structure")
-  
-  ' Persistence
-  Component(studyPlanRepo, "IStudyPlanRepository", "Repository Interface / Component", "Data access for StudyPlan, StudyTask (owned)")
-  
-  ' Domain
-  Component(domainModel, "StudyPlan, StudyTask", "Domain Model", "Owned entities")
+actor "Student" as student
+interface "IStudyPlanner" as p_isplan
+
+component "<<container>>\nStudy Planner Service" as studyPlannerContainer {
+  portin " " as port_in
+  portout " " as port_course
+  portout " " as port_sched
+  portout " " as port_ai
+  portout " " as port_db
+
+  component "StudyPlannerService" as svc
+  component "StudyPlanValidator" as validator
+  component "StudyPlanRepository" as repo
+
+  port_in -- svc
+  svc -(0- validator : IStudyPlanValidator
+  svc -(0- repo : IStudyPlanRepository
+
+  svc -- port_course
+  svc -- port_sched
+  svc -- port_ai
+  repo -- port_db
 }
 
-' Required interfaces
-Container_Ext(courseSvc, "Course Service", "ASP.NET Core API", "Provides ICourse")
-Container_Ext(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "Provides IScheduling")
-System_Ext(aiProvider, "AI Provider", "External LLM API", "Provides IAIProvider")
+component "Course Service" as courseSvc <<service>>
+component "Scheduling Service" as schedulingSvc <<service>>
+component "AI Provider\n(External LLM API)" as aiProvider <<external>>
+database "Aspirra DB\n(study_planner schema:\nStudyPlans, StudyTasks)" as db <<database>>
 
-' Internal relationships
-Rel(iStudyPlanner, studyPlannerService, "Delegates calls")
-Rel(studyPlannerService, studyPlanValidator, "Uses")
-Rel(studyPlannerService, studyPlanRepo, "Uses (IStudyPlanRepository)")
-Rel(studyPlanRepo, domainModel, "Maps to/from")
+student --( p_isplan
+p_isplan -- port_in
 
-' Cross-service/external relationships
-Rel(studyPlannerService, courseSvc, "Uses ICourse (required)")
-Rel(studyPlannerService, schedulingSvc, "Uses IScheduling (required)")
-Rel(studyPlannerService, aiProvider, "Uses IAIProvider (required)")
+port_course -(0- courseSvc : ICourse
+port_sched -(0- schedulingSvc : IScheduling
+port_ai -(0- aiProvider : IAIProvider
+port_db -(0- db : IStudyPlannerDB
 
-SHOW_LEGEND()
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml

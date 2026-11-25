@@ -1,128 +1,244 @@
 @startuml Aspirra-Container-Diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-
-LAYOUT_WITH_LEGEND()
+left to right direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 14
+skinparam ranksep 65
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam package {
+  BackgroundColor #F8FAFC
+  BorderColor #94A3B8
+  FontColor #1E293B
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 1: Container Diagram - Aspirra (Student Success & Career Planner)
 
-Person(student, "Student", "Uses Aspirra to manage goals, study plans, schedules, habits, career preparation, and track progress.")
-Person(admin, "Administrator", "Manages student accounts, usage statistics, and resolves account issues through the Administration Service.")
+actor "Student" as student
+actor "Administrator" as admin
 
-System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
-  
-  ' Ahmed Mohamed Ahmed (AbooSalh)
-  Boundary(ahmed, "Owner: Ahmed Mohamed Ahmed") {
-    Container(studentSvc, "Student Service", "ASP.NET Core API", "FR-01 | Provides IStudentProfile. Manages student profiles and availability.")
-    Container(academicSvc, "Academic Service", "ASP.NET Core API", "FR-02 | Provides IGoal. Manages academic goals and their lifecycle.")
-    Container(courseSvc, "Course Service", "ASP.NET Core API", "FR-03 | Provides ICourse. Manages courses, enrollments, and course details.")
-    Container(assessmentSvc, "Assessment Service", "ASP.NET Core API", "FR-04 | Provides IAssessment. Manages assignments, exams, and assessments.")
+' Provided interfaces exposed on the Aspirra system boundary
+interface "IStudentProfile" as ext_istudent
+interface "IGoal" as ext_igoal
+interface "ICourse" as ext_icourse
+interface "IAssessment" as ext_iassess
+interface "IGoalPlanner" as ext_igplan
+interface "IStudyPlanner" as ext_isplan
+interface "IScheduling" as ext_isched
+interface "IAdaptation" as ext_iadapt
+interface "ICareer" as ext_icareer
+interface "ISkill" as ext_iskill
+interface "IPortfolio" as ext_iportf
+interface "IJobPrep" as ext_ijobprep
+interface "IHabit" as ext_ihabit
+interface "IAnalytics" as ext_ianalytics
+interface "IPrediction" as ext_ipred
+interface "ICoach" as ext_icoach
+interface "IDashboard" as ext_idash
+interface "INotification" as ext_inotif
+interface "IStudyGroup" as ext_igroup
+interface "IAdministration" as ext_iadmin
+
+component "<<system>>\nAspirra (Modular Monolith)" as aspirra {
+  ' Provided boundary ports
+  portin " " as p_student
+  portin " " as p_goal
+  portin " " as p_course
+  portin " " as p_assess
+  portin " " as p_gplan
+  portin " " as p_splan
+  portin " " as p_sched
+  portin " " as p_adapt
+  portin " " as p_career
+  portin " " as p_skill
+  portin " " as p_portf
+  portin " " as p_jobprep
+  portin " " as p_habit
+  portin " " as p_analytics
+  portin " " as p_pred
+  portin " " as p_coach
+  portin " " as p_dash
+  portin " " as p_notif
+  portin " " as p_group
+  portin " " as p_admin
+
+  ' Required external / persistence boundary ports
+  portout " " as p_ai
+  portout " " as p_email
+  portout " " as p_db
+
+  package "Owner: Ahmed Mohamed Ahmed" as g_ahmed {
+    component "Student Service\n(FR-01)" as studentSvc <<service>>
+    component "Academic Service\n(FR-02)" as academicSvc <<service>>
+    component "Course Service\n(FR-03)" as courseSvc <<service>>
+    component "Assessment Service\n(FR-04)" as assessmentSvc <<service>>
   }
 
-  ' Yomna Mohamed Fekry (YomnaElmenawy)
-  Boundary(yomna, "Owner: Yomna Mohamed Fekry") {
-    Container(goalPlannerSvc, "Goal Planner Service", "ASP.NET Core API", "FR-05 | Provides IGoalPlanner. Generates and approves AI-assisted goal plans.")
-    Container(studyPlannerSvc, "Study Planner Service", "ASP.NET Core API", "FR-06 | Provides IStudyPlanner. Generates study plans based on courses and schedule.")
-    Container(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "FR-07 | Provides IScheduling. Manages smart scheduling and time allocation.")
-    Container(adaptationSvc, "Adaptation Service", "ASP.NET Core API", "FR-08 | Provides IAdaptation. Enables adaptive planning based on progress and changes.")
+  package "Owner: Yomna Mohamed Fekry" as g_yomna {
+    component "Goal Planner Service\n(FR-05)" as goalPlannerSvc <<service>>
+    component "Study Planner Service\n(FR-06)" as studyPlannerSvc <<service>>
+    component "Scheduling Service\n(FR-07)" as schedulingSvc <<service>>
+    component "Adaptation Service\n(FR-08)" as adaptationSvc <<service>>
   }
 
-  ' Arwa Mohey Hamdy (ArwaMohey)
-  Boundary(arwa, "Owner: Arwa Mohey Hamdy") {
-    Container(careerSvc, "Career Service", "ASP.NET Core API", "FR-09 | Provides ICareer. Manages career roadmaps and milestones.")
-    Container(skillSvc, "Skill Service", "ASP.NET Core API", "FR-10 | Provides ISkill. Tracks skills, gaps, and skill development.")
-    Container(portfolioSvc, "Portfolio Service", "ASP.NET Core API", "FR-11 | Provides IPortfolio. Manages projects and portfolio artifacts.")
-    Container(jobPrepSvc, "Job Preparation Service", "ASP.NET Core API", "FR-12 | Provides IJobPrep. Manages internship/job preparation activities.")
+  package "Owner: Arwa Mohey Hamdy" as g_arwa {
+    component "Career Service\n(FR-09)" as careerSvc <<service>>
+    component "Skill Service\n(FR-10)" as skillSvc <<service>>
+    component "Portfolio Service\n(FR-11)" as portfolioSvc <<service>>
+    component "Job Preparation Service\n(FR-12)" as jobPrepSvc <<service>>
   }
 
-  ' Mostafa Khamis Abozead (Mostafa-abozead)
-  Boundary(mostafa, "Owner: Mostafa Khamis Abozead") {
-    Container(habitSvc, "Habit Service", "ASP.NET Core API", "FR-13 | Provides IHabit. Manages habits, streaks, and reminders.")
-    Container(analyticsSvc, "Analytics Service", "ASP.NET Core API", "FR-14 | Provides IAnalytics. Analyzes study workload and performance.")
-    Container(predictionSvc, "Prediction Service", "ASP.NET Core API", "FR-15 | Provides IPrediction. Predicts risks and issues early warnings.")
-    Container(aiCoachSvc, "AI Coach Service", "ASP.NET Core API", "FR-16 | Provides ICoach. Coaches students with AI guidance.")
+  package "Owner: Mostafa Khamis Abozead" as g_mostafa {
+    component "Habit Service\n(FR-13)" as habitSvc <<service>>
+    component "Analytics Service\n(FR-14)" as analyticsSvc <<service>>
+    component "Prediction Service\n(FR-15)" as predictionSvc <<service>>
+    component "AI Coach Service\n(FR-16)" as aiCoachSvc <<service>>
   }
 
-  ' Muhammed Hany Hamdy (muhammedhanii)
-  Boundary(muhammed, "Owner: Muhammed Hany Hamdy") {
-    Container(dashboardSvc, "Dashboard Service", "ASP.NET Core API", "FR-17 | Provides IDashboard. Displays aggregated student dashboard.")
-    Container(notificationSvc, "Notification Service", "ASP.NET Core API", "FR-18 | Provides INotification. Sends notifications across channels.")
-    Container(studyGroupSvc, "Study Group Service", "ASP.NET Core API", "FR-19 | Provides IStudyGroup. Manages study groups and accountability.")
-    Container(adminSvc, "Administration Service", "ASP.NET Core API", "FR-20 | Provides IAdministration. Manages administration and system configuration.")
+  package "Owner: Muhammed Hany Hamdy" as g_muhammed {
+    component "Dashboard Service\n(FR-17)" as dashboardSvc <<service>>
+    component "Notification Service\n(FR-18)" as notificationSvc <<service>>
+    component "Study Group Service\n(FR-19)" as studyGroupSvc <<service>>
+    component "Administration Service\n(FR-20)" as adminSvc <<service>>
   }
+
+  ' Delegation from provided boundary ports to owning service containers
+  p_student -- studentSvc
+  p_goal -- academicSvc
+  p_course -- courseSvc
+  p_assess -- assessmentSvc
+  p_gplan -- goalPlannerSvc
+  p_splan -- studyPlannerSvc
+  p_sched -- schedulingSvc
+  p_adapt -- adaptationSvc
+  p_career -- careerSvc
+  p_skill -- skillSvc
+  p_portf -- portfolioSvc
+  p_jobprep -- jobPrepSvc
+  p_habit -- habitSvc
+  p_analytics -- analyticsSvc
+  p_pred -- predictionSvc
+  p_coach -- aiCoachSvc
+  p_dash -- dashboardSvc
+  p_notif -- notificationSvc
+  p_group -- studyGroupSvc
+  p_admin -- adminSvc
+
+  ' Cross-service assembly connectors (socket on requiring service, lollipop on providing service)
+  courseSvc -(0- assessmentSvc : IAssessment
+  goalPlannerSvc -(0- academicSvc : IGoal
+  studyPlannerSvc -(0- courseSvc : ICourse
+  studyPlannerSvc -(0- schedulingSvc : IScheduling
+  schedulingSvc -(0- goalPlannerSvc : IGoalPlanner
+  schedulingSvc -(0- assessmentSvc : IAssessment
+  schedulingSvc -(0- studentSvc : IStudentProfile
+  adaptationSvc -(0- schedulingSvc : IScheduling
+  careerSvc -(0- studentSvc : IStudentProfile
+  skillSvc -(0- careerSvc : ICareer
+  portfolioSvc -(0- skillSvc : ISkill
+  analyticsSvc -(0- studentSvc : IStudentProfile
+  analyticsSvc -(0- schedulingSvc : IScheduling
+  predictionSvc -(0- analyticsSvc : IAnalytics
+  aiCoachSvc -(0- academicSvc : IGoal
+  aiCoachSvc -(0- habitSvc : IHabit
+  aiCoachSvc -(0- analyticsSvc : IAnalytics
+  dashboardSvc -(0- academicSvc : IGoal
+  dashboardSvc -(0- schedulingSvc : IScheduling
+  dashboardSvc -(0- adaptationSvc : IAdaptation
+  dashboardSvc -(0- habitSvc : IHabit
+  dashboardSvc -(0- analyticsSvc : IAnalytics
+  dashboardSvc -(0- careerSvc : ICareer
+  notificationSvc -(0- assessmentSvc : IAssessment
+  notificationSvc -(0- schedulingSvc : IScheduling
+  notificationSvc -(0- habitSvc : IHabit
+  notificationSvc -(0- predictionSvc : IPrediction
+  studyGroupSvc -(0- studentSvc : IStudentProfile
+  studyGroupSvc -(0- academicSvc : IGoal
+  studyGroupSvc -(0- analyticsSvc : IAnalytics
+  adminSvc -(0- studentSvc : IStudentProfile
+
+  ' Delegation from services to required external ports
+  goalPlannerSvc -- p_ai
+  studyPlannerSvc -- p_ai
+  careerSvc -- p_ai
+  aiCoachSvc -- p_ai
+  notificationSvc -- p_email
+  g_ahmed -- p_db
+  g_yomna -- p_db
+  g_arwa -- p_db
+  g_mostafa -- p_db
+  g_muhammed -- p_db
 }
 
-' External Systems
-System_Ext(aiProvider, "AI Provider", "External LLM API", "Provides AI capabilities (plan generation, coaching, etc.) via IAIProvider")
-System_Ext(emailGateway, "Email Gateway", "External Email Service", "Sends emails via IEmailGateway")
+' External Systems & Shared Database
+component "AI Provider\n(External LLM API)" as aiProvider <<external>>
+component "Email Gateway\n(External Email Service)" as emailGateway <<external>>
+database "Aspirra Database\n(PostgreSQL 16)\n20 isolated schemas\n(no cross-service DB reads)" as sharedDb <<database>>
 
-' Shared Database (each service owns its own data/schema)
-ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL 16", "Shared database instance. Each service owns its own schema/tables. No service reads another service's database directly.")
+' Wire provided lollipops to boundary ports
+ext_istudent -- p_student
+ext_igoal -- p_goal
+ext_icourse -- p_course
+ext_iassess -- p_assess
+ext_igplan -- p_gplan
+ext_isplan -- p_splan
+ext_isched -- p_sched
+ext_iadapt -- p_adapt
+ext_icareer -- p_career
+ext_iskill -- p_skill
+ext_iportf -- p_portf
+ext_ijobprep -- p_jobprep
+ext_ihabit -- p_habit
+ext_ianalytics -- p_analytics
+ext_ipred -- p_pred
+ext_icoach -- p_coach
+ext_idash -- p_dash
+ext_inotif -- p_notif
+ext_igroup -- p_group
+ext_iadmin -- p_admin
 
-' User interactions (high-level)
-Rel(student, studentSvc, "Uses", "IStudentProfile")
-Rel(student, dashboardSvc, "Views dashboard via", "IDashboard")
-Rel(admin, adminSvc, "Manages accounts and statistics via", "IAdministration")
+' Primary actor connections via required sockets
+student --( ext_istudent
+student --( ext_idash
+admin --( ext_iadmin
 
-' Cross-service dependencies via provided/required interfaces
-Rel(courseSvc, assessmentSvc, "Uses", "IAssessment (required)")
-Rel(goalPlannerSvc, academicSvc, "Uses", "IGoal (required)")
-Rel(goalPlannerSvc, aiProvider, "Uses", "IAIProvider (required)")
-Rel(studyPlannerSvc, courseSvc, "Uses", "ICourse (required)")
-Rel(studyPlannerSvc, schedulingSvc, "Uses", "IScheduling (required)")
-Rel(studyPlannerSvc, aiProvider, "Uses", "IAIProvider (required)")
-Rel(schedulingSvc, goalPlannerSvc, "Uses", "IGoalPlanner (required)")
-Rel(schedulingSvc, assessmentSvc, "Uses", "IAssessment (required)")
-Rel(schedulingSvc, studentSvc, "Uses", "IStudentProfile (required)")
-Rel(adaptationSvc, schedulingSvc, "Uses", "IScheduling (required)")
-Rel(careerSvc, studentSvc, "Uses", "IStudentProfile (required)")
-Rel(careerSvc, aiProvider, "Uses", "IAIProvider (required)")
-Rel(skillSvc, careerSvc, "Uses", "ICareer (required)")
-Rel(portfolioSvc, skillSvc, "Uses", "ISkill (required)")
-Rel(analyticsSvc, studentSvc, "Uses", "IStudentProfile (required)")
-Rel(analyticsSvc, schedulingSvc, "Uses", "IScheduling (required)")
-Rel(predictionSvc, analyticsSvc, "Uses", "IAnalytics (required)")
-Rel(aiCoachSvc, academicSvc, "Uses", "IGoal (required)")
-Rel(aiCoachSvc, habitSvc, "Uses", "IHabit (required)")
-Rel(aiCoachSvc, analyticsSvc, "Uses", "IAnalytics (required)")
-Rel(aiCoachSvc, aiProvider, "Uses", "IAIProvider (required)")
-Rel(dashboardSvc, academicSvc, "Uses", "IGoal (required)")
-Rel(dashboardSvc, schedulingSvc, "Uses", "IScheduling (required)")
-Rel(dashboardSvc, adaptationSvc, "Uses", "IAdaptation (required)")
-Rel(dashboardSvc, habitSvc, "Uses", "IHabit (required)")
-Rel(dashboardSvc, analyticsSvc, "Uses", "IAnalytics (required)")
-Rel(dashboardSvc, careerSvc, "Uses", "ICareer (required)")
-Rel(notificationSvc, assessmentSvc, "Uses", "IAssessment (required)")
-Rel(notificationSvc, schedulingSvc, "Uses", "IScheduling (required)")
-Rel(notificationSvc, habitSvc, "Uses", "IHabit (required)")
-Rel(notificationSvc, predictionSvc, "Uses", "IPrediction (required)")
-Rel(notificationSvc, emailGateway, "Uses", "IEmailGateway (required)")
-Rel(studyGroupSvc, studentSvc, "Uses", "IStudentProfile (required)")
-Rel(studyGroupSvc, academicSvc, "Uses", "IGoal (required)")
-Rel(studyGroupSvc, analyticsSvc, "Uses", "IAnalytics (required)")
-Rel(adminSvc, studentSvc, "Uses", "IStudentProfile (required)")
+' Required external & database assembly connectors
+p_ai -(0- aiProvider : IAIProvider
+p_email -(0- emailGateway : IEmailGateway
+p_db -(0- sharedDb : IPersistence (per-service schemas)
 
-' Persistence (shared DB, each service owns its own data)
-Rel(studentSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(academicSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(courseSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(assessmentSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(goalPlannerSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(studyPlannerSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(schedulingSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(adaptationSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(careerSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(skillSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(portfolioSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(jobPrepSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(habitSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(analyticsSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(predictionSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(aiCoachSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(dashboardSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(notificationSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(studyGroupSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(adminSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-
-SHOW_LEGEND()
-
+legend bottom
+  |= Symbol |= UML Meaning |
+  | <<service>> component | ASP.NET Core service container (one per FR-01..FR-20) |
+  | Square on boundary | Port (provided portin on left, required portout on right) |
+  | Circle (lollipop) | Provided interface exposed by a service/system |
+  | Half-circle (socket) | Required interface consumed by an actor or service |
+  | Ball-and-socket -(0- | Assembly connector: requiring side (socket) -> providing side (lollipop) |
+  | <<external>> / <<database>> | External third-party system / PostgreSQL 16 (isolated per-service schemas) |
+endlegend
 @enduml

@@ -1,37 +1,74 @@
 @startuml analytics-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - Analytics Service (FR-14) | Owner: Mostafa Khamis Abozead
 
-Container_Boundary(analyticsBoundary, "Analytics Service") {
-  
-  ' Provided interface
-  Component(iAnalytics, "IAnalytics", "Provided Interface", "getGoalWorkload, getOverloadedGoals, getWorkloadSummary")
-  
-  ' Core components
-  Component(analyticsService, "AnalyticsService", "Component", "Analyzes study workload. Applies SOLID principles.")
-  Component(workloadCalculator, "WorkloadCalculator", "Component", "Calculates workload and overload")
-  
-  ' Persistence
-  Component(analyticsRepo, "IAnalyticsRepository", "Repository Interface / Component", "Data access for workload snapshots (owned)")
-  
-  ' Domain
-  Component(domainModel, "WorkloadSummary, OverloadReport", "Domain Model", "Owned value objects")
+actor "Student" as student
+interface "IAnalytics" as p_ianalytics
+
+component "<<container>>\nAnalytics Service" as analyticsContainer {
+  portin " " as port_in
+  portout " " as port_student
+  portout " " as port_sched
+  portout " " as port_db
+
+  component "AnalyticsService" as svc
+  component "WorkloadCalculator" as calc
+  component "AnalyticsRepository" as repo
+
+  port_in -- svc
+  svc -(0- calc : IWorkloadCalculator
+  svc -(0- repo : IAnalyticsRepository
+
+  svc -- port_student
+  svc -- port_sched
+  repo -- port_db
 }
 
-' Required interfaces
-Container_Ext(studentSvc, "Student Service", "ASP.NET Core API", "Provides IStudentProfile")
-Container_Ext(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "Provides IScheduling")
+component "Student Service" as studentSvc <<service>>
+component "Scheduling Service" as schedulingSvc <<service>>
+database "Aspirra DB\n(analytics schema:\nWorkloadSummaries, OverloadReports)" as db <<database>>
 
-' Internal relationships
-Rel(iAnalytics, analyticsService, "Delegates calls")
-Rel(analyticsService, workloadCalculator, "Uses")
-Rel(analyticsService, analyticsRepo, "Uses (IAnalyticsRepository)")
-Rel(analyticsRepo, domainModel, "Maps to/from")
+student --( p_ianalytics
+p_ianalytics -- port_in
 
-' Cross-service relationships
-Rel(analyticsService, studentSvc, "Uses IStudentProfile (required)")
-Rel(analyticsService, schedulingSvc, "Uses IScheduling (required)")
+port_student -(0- studentSvc : IStudentProfile
+port_sched -(0- schedulingSvc : IScheduling
+port_db -(0- db : IAnalyticsDB
 
-SHOW_LEGEND()
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml

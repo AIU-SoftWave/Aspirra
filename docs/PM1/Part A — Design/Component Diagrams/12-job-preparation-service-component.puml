@@ -1,30 +1,63 @@
 @startuml job-preparation-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - Job Preparation Service (FR-12) | Owner: Arwa Mohey Hamdy
 
-Container_Boundary(jobPrepBoundary, "Job Preparation Service") {
-  
-  ' Provided interface
-  Component(iJobPrep, "IJobPrep", "Provided Interface", "trackApplication, interviewPrep, trackUpdates, recordOutcome")
-  
-  ' Core components
-  Component(jobPrepService, "JobPreparationService", "Component", "Manages job/internship preparation. Applies SOLID principles.")
-  Component(applicationTracker, "ApplicationTracker", "Component", "Tracks applications and outcomes")
-  
-  ' Persistence
-  Component(jobPrepRepo, "IJobPrepRepository", "Repository Interface / Component", "Data access for JobApplication, InterviewPrep (owned)")
-  
-  ' Domain
-  Component(domainModel, "JobApplication, ApplicationStatus, InterviewPrepTask", "Domain Model", "Owned entities and enums")
+actor "Student" as student
+interface "IJobPrep" as p_ijobprep
+
+component "<<container>>\nJob Preparation Service" as jobPrepContainer {
+  portin " " as port_in
+  portout " " as port_db
+
+  component "JobPreparationService" as svc
+  component "ApplicationTracker" as tracker
+  component "JobPrepRepository" as repo
+
+  port_in -- svc
+  svc -(0- tracker : IApplicationTracker
+  svc -(0- repo : IJobPrepRepository
+  repo -- port_db
 }
 
-' No required interfaces to other services shown
-' Internal relationships
-Rel(iJobPrep, jobPrepService, "Delegates calls")
-Rel(jobPrepService, applicationTracker, "Uses")
-Rel(jobPrepService, jobPrepRepo, "Uses (IJobPrepRepository)")
-Rel(jobPrepRepo, domainModel, "Maps to/from")
+database "Aspirra DB\n(job_preparation schema:\nJobApplications, InterviewPrepTasks)" as db <<database>>
 
-SHOW_LEGEND()
+student --( p_ijobprep
+p_ijobprep -- port_in
+
+port_db -(0- db : IJobPrepDB
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml

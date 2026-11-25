@@ -1,57 +1,197 @@
-@startuml Aspirra-Container-Diagram-Overview
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-
-LAYOUT_WITH_LEGEND()
-
-title Level 1: Container Diagram - Aspirra (Student Success & Career Planner) [Overview]
-
-Person(student, "Student", "Uses Aspirra to manage goals, study plans, schedules, habits, career preparation, and track progress.")
-
-System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
-  
-  Boundary(ahmed, "Owner: Ahmed Mohamed Ahmed") {
-    Container(studentSvc, "Student Service", "ASP.NET Core API", "FR-01 | IStudentProfile")
-    Container(academicSvc, "Academic Service", "ASP.NET Core API", "FR-02 | IGoal")
-    Container(courseSvc, "Course Service", "ASP.NET Core API", "FR-03 | ICourse")
-    Container(assessmentSvc, "Assessment Service", "ASP.NET Core API", "FR-04 | IAssessment")
-  }
-
-  Boundary(yomna, "Owner: Yomna Mohamed Fekry") {
-    Container(goalPlannerSvc, "Goal Planner Service", "ASP.NET Core API", "FR-05 | IGoalPlanner")
-    Container(studyPlannerSvc, "Study Planner Service", "ASP.NET Core API", "FR-06 | IStudyPlanner")
-    Container(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "FR-07 | IScheduling")
-    Container(adaptationSvc, "Adaptation Service", "ASP.NET Core API", "FR-08 | IAdaptation")
-  }
-
-  Boundary(arwa, "Owner: Arwa Mohey Hamdy") {
-    Container(careerSvc, "Career Service", "ASP.NET Core API", "FR-09 | ICareer")
-    Container(skillSvc, "Skill Service", "ASP.NET Core API", "FR-10 | ISkill")
-    Container(portfolioSvc, "Portfolio Service", "ASP.NET Core API", "FR-11 | IPortfolio")
-    Container(jobPrepSvc, "Job Preparation Service", "ASP.NET Core API", "FR-12 | IJobPrep")
-  }
-
-  Boundary(mostafa, "Owner: Mostafa Khamis Abozead") {
-    Container(habitSvc, "Habit Service", "ASP.NET Core API", "FR-13 | IHabit")
-    Container(analyticsSvc, "Analytics Service", "ASP.NET Core API", "FR-14 | IAnalytics")
-    Container(predictionSvc, "Prediction Service", "ASP.NET Core API", "FR-15 | IPrediction")
-    Container(aiCoachSvc, "AI Coach Service", "ASP.NET Core API", "FR-16 | ICoach")
-  }
-
-  Boundary(muhammed, "Owner: Muhammed Hany Hamdy") {
-    Container(dashboardSvc, "Dashboard Service", "ASP.NET Core API", "FR-17 | IDashboard")
-    Container(notificationSvc, "Notification Service", "ASP.NET Core API", "FR-18 | INotification")
-    Container(studyGroupSvc, "Study Group Service", "ASP.NET Core API", "FR-19 | IStudyGroup")
-    Container(adminSvc, "Administration Service", "ASP.NET Core API", "FR-20 | IAdministration")
-  }
+@startuml Container-Diagram-Overview
+left to right direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 12
+skinparam ranksep 65
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam package {
+  BackgroundColor #F8FAFC
+  BorderColor #94A3B8
+  FontColor #1E293B
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
 }
 
-System_Ext(aiProvider, "AI Provider", "External LLM API", "Provides AI capabilities")
-System_Ext(emailGateway, "Email Gateway", "External Email Service", "Sends emails")
-ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared DB, each service owns schema")
+title Level 1: Container Diagram — Aspirra Overview (All 20 Services by Owner)
 
-Rel(student, studentSvc, "Uses", "IStudentProfile")
-Rel(student, dashboardSvc, "Views", "IDashboard")
+actor "Student" as student
+actor "Administrator" as admin
 
-SHOW_LEGEND()
+interface "IStudentProfile" as ext_istudent
+interface "IGoal" as ext_igoal
+interface "ICourse" as ext_icourse
+interface "IAssessment" as ext_iassess
+interface "IGoalPlanner" as ext_igplan
+interface "IStudyPlanner" as ext_isplan
+interface "IScheduling" as ext_isched
+interface "IAdaptation" as ext_iadapt
+interface "ICareer" as ext_icareer
+interface "ISkill" as ext_iskill
+interface "IPortfolio" as ext_iportf
+interface "IJobPrep" as ext_ijobprep
+interface "IHabit" as ext_ihabit
+interface "IAnalytics" as ext_ianalytics
+interface "IPrediction" as ext_ipred
+interface "ICoach" as ext_icoach
+interface "IDashboard" as ext_idash
+interface "INotification" as ext_inotif
+interface "IStudyGroup" as ext_igroup
+interface "IAdministration" as ext_iadmin
 
+component "<<system>>\nAspirra (Modular Monolith)" as aspirra {
+  portin " " as p_student
+  portin " " as p_goal
+  portin " " as p_course
+  portin " " as p_assess
+  portin " " as p_gplan
+  portin " " as p_splan
+  portin " " as p_sched
+  portin " " as p_adapt
+  portin " " as p_career
+  portin " " as p_skill
+  portin " " as p_portf
+  portin " " as p_jobprep
+  portin " " as p_habit
+  portin " " as p_analytics
+  portin " " as p_pred
+  portin " " as p_coach
+  portin " " as p_dash
+  portin " " as p_notif
+  portin " " as p_group
+  portin " " as p_admin
+
+  portout " " as p_ai
+  portout " " as p_email
+  portout " " as p_db
+
+  package "Owner: Ahmed Mohamed Ahmed" as g_ahmed {
+    component "Student Service\n(FR-01)" as studentSvc <<service>>
+    component "Academic Service\n(FR-02)" as academicSvc <<service>>
+    component "Course Service\n(FR-03)" as courseSvc <<service>>
+    component "Assessment Service\n(FR-04)" as assessmentSvc <<service>>
+  }
+
+  package "Owner: Yomna Mohamed Fekry" as g_yomna {
+    component "Goal Planner Service\n(FR-05)" as goalPlannerSvc <<service>>
+    component "Study Planner Service\n(FR-06)" as studyPlannerSvc <<service>>
+    component "Scheduling Service\n(FR-07)" as schedulingSvc <<service>>
+    component "Adaptation Service\n(FR-08)" as adaptationSvc <<service>>
+  }
+
+  package "Owner: Arwa Mohey Hamdy" as g_arwa {
+    component "Career Service\n(FR-09)" as careerSvc <<service>>
+    component "Skill Service\n(FR-10)" as skillSvc <<service>>
+    component "Portfolio Service\n(FR-11)" as portfolioSvc <<service>>
+    component "Job Preparation Service\n(FR-12)" as jobPrepSvc <<service>>
+  }
+
+  package "Owner: Mostafa Khamis Abozead" as g_mostafa {
+    component "Habit Service\n(FR-13)" as habitSvc <<service>>
+    component "Analytics Service\n(FR-14)" as analyticsSvc <<service>>
+    component "Prediction Service\n(FR-15)" as predictionSvc <<service>>
+    component "AI Coach Service\n(FR-16)" as aiCoachSvc <<service>>
+  }
+
+  package "Owner: Muhammed Hany Hamdy" as g_muhammed {
+    component "Dashboard Service\n(FR-17)" as dashboardSvc <<service>>
+    component "Notification Service\n(FR-18)" as notificationSvc <<service>>
+    component "Study Group Service\n(FR-19)" as studyGroupSvc <<service>>
+    component "Administration Service\n(FR-20)" as adminSvc <<service>>
+  }
+
+  p_student -- studentSvc
+  p_goal -- academicSvc
+  p_course -- courseSvc
+  p_assess -- assessmentSvc
+  p_gplan -- goalPlannerSvc
+  p_splan -- studyPlannerSvc
+  p_sched -- schedulingSvc
+  p_adapt -- adaptationSvc
+  p_career -- careerSvc
+  p_skill -- skillSvc
+  p_portf -- portfolioSvc
+  p_jobprep -- jobPrepSvc
+  p_habit -- habitSvc
+  p_analytics -- analyticsSvc
+  p_pred -- predictionSvc
+  p_coach -- aiCoachSvc
+  p_dash -- dashboardSvc
+  p_notif -- notificationSvc
+  p_group -- studyGroupSvc
+  p_admin -- adminSvc
+
+  goalPlannerSvc -- p_ai
+  studyPlannerSvc -- p_ai
+  careerSvc -- p_ai
+  aiCoachSvc -- p_ai
+  notificationSvc -- p_email
+  g_ahmed -- p_db
+  g_yomna -- p_db
+  g_arwa -- p_db
+  g_mostafa -- p_db
+  g_muhammed -- p_db
+}
+
+component "AI Provider\n(External LLM API)" as aiProvider <<external>>
+component "Email Gateway\n(External Email Service)" as emailGateway <<external>>
+database "Aspirra Database\n(PostgreSQL 16)\n20 isolated schemas" as sharedDb <<database>>
+
+ext_istudent -- p_student
+ext_igoal -- p_goal
+ext_icourse -- p_course
+ext_iassess -- p_assess
+ext_igplan -- p_gplan
+ext_isplan -- p_splan
+ext_isched -- p_sched
+ext_iadapt -- p_adapt
+ext_icareer -- p_career
+ext_iskill -- p_skill
+ext_iportf -- p_portf
+ext_ijobprep -- p_jobprep
+ext_ihabit -- p_habit
+ext_ianalytics -- p_analytics
+ext_ipred -- p_pred
+ext_icoach -- p_coach
+ext_idash -- p_dash
+ext_inotif -- p_notif
+ext_igroup -- p_group
+ext_iadmin -- p_admin
+
+student --( ext_istudent
+student --( ext_idash
+admin --( ext_iadmin
+
+p_ai -(0- aiProvider : IAIProvider
+p_email -(0- emailGateway : IEmailGateway
+p_db -(0- sharedDb : IPersistence
+
+legend bottom
+  Overview view omitting internal cross-service connectors for readability.
+  See Aspirra-Container-Diagram and per-owner split diagrams for full ball-and-socket dependencies.
+endlegend
 @enduml

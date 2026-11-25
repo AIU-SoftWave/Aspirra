@@ -1,22 +1,169 @@
-@startuml System-Context-Diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
-
-LAYOUT_WITH_LEGEND()
+@startuml
+left to right direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 16
+skinparam ranksep 85
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
 
 title Level 0: System Context Diagram - Aspirra (Student Success & Career Planner)
 
-Person(student, "Student", "Uses Aspirra to manage goals, study plans, schedules, habits, career preparation, and track progress.")
-Person(admin, "Administrator", "Manages student accounts, usage statistics, and resolves account issues via the Administration Service.")
+' Left-side actors (FR-01 -> FR-12)
+actor "Student" as student_acad
+actor "Student" as student_plan
+actor "Student" as student_career
 
-System(aspirra, "Aspirra", "A student success and career planner that turns goals into editable plans, schedules, habits, progress tracking, and career preparation.\nProvides IStudentProfile, IGoal, ICourse, IAssessment, IGoalPlanner, IStudyPlanner, IScheduling, IAdaptation, ICareer, ISkill, IPortfolio, IJobPrep, IHabit, IAnalytics, IPrediction, ICoach, IDashboard, INotification, IStudyGroup, IAdministration.")
+' Left-side provided interfaces (FR-01 -> FR-12)
+interface "IStudentProfile" as i_student
+interface "IGoal" as i_goal
+interface "ICourse" as i_course
+interface "IAssessment" as i_assess
+interface "IGoalPlanner" as i_gplan
+interface "IStudyPlanner" as i_splan
+interface "IScheduling" as i_sched
+interface "IAdaptation" as i_adapt
+interface "ICareer" as i_career
+interface "ISkill" as i_skill
+interface "IPortfolio" as i_portf
+interface "IJobPrep" as i_jobprep
 
-System_Ext(aiProvider, "AI Provider", "External LLM API that provides AI capabilities for plan generation, career roadmaps, coaching, and adaptive planning via IAIProvider.")
-System_Ext(emailGateway, "Email Gateway", "External Email Service used to send reminders, warnings, and notifications via IEmailGateway.")
+component "<<system>>\nAspirra\n(Student Success & Career Planner)" as aspirra {
+  ' Left boundary ports (FR-01 -> FR-12)
+  portin " " as p_student
+  portin " " as p_goal
+  portin " " as p_course
+  portin " " as p_assess
+  portin " " as p_gplan
+  portin " " as p_splan
+  portin " " as p_sched
+  portin " " as p_adapt
+  portin " " as p_career
+  portin " " as p_skill
+  portin " " as p_portf
+  portin " " as p_jobprep
 
-Rel(student, aspirra, "Uses provided interfaces", "IStudentProfile, IGoal, ICourse, IAssessment, IGoalPlanner, IStudyPlanner, IScheduling, IAdaptation, ICareer, ISkill, IPortfolio, IJobPrep, IHabit, IAnalytics, IPrediction, ICoach, IDashboard")
-Rel(admin, aspirra, "Manages accounts and statistics via", "IAdministration (provided)")
-Rel(aspirra, aiProvider, "Uses AI capabilities via", "IAIProvider (required)")
-Rel(aspirra, emailGateway, "Sends notifications via", "IEmailGateway (required)")
+  ' Right boundary ports (FR-13 -> FR-20 provided + external required)
+  portout " " as p_habit
+  portout " " as p_analytics
+  portout " " as p_pred
+  portout " " as p_coach
+  portout " " as p_dash
+  portout " " as p_notif
+  portout " " as p_group
+  portout " " as p_admin
+  portout " " as p_ai
+  portout " " as p_email
+}
 
-SHOW_LEGEND()
+' Right-side provided interfaces (FR-13 -> FR-20)
+interface "IHabit" as i_habit
+interface "IAnalytics" as i_analytics
+interface "IPrediction" as i_pred
+interface "ICoach" as i_coach
+interface "IDashboard" as i_dash
+interface "INotification" as i_notif
+interface "IStudyGroup" as i_group
+interface "IAdministration" as i_admin
+
+' Right-side actors (FR-13 -> FR-20) & external systems
+actor "Student" as student_track
+actor "Student" as student_engage
+actor "Administrator" as admin
+component "AI Provider\n(External LLM API)" as aiProvider <<external>>
+component "Email Gateway\n(External Email Service)" as emailGateway <<external>>
+
+' Keep left and right actors ordered top-to-bottom
+student_acad -[hidden]right- student_plan
+student_plan -[hidden]right- student_career
+
+student_track -[hidden]right- student_engage
+student_engage -[hidden]right- admin
+admin -[hidden]right- aiProvider
+aiProvider -[hidden]right- emailGateway
+
+' Left provided interfaces wired to left boundary ports
+i_student -- p_student
+i_goal -- p_goal
+i_course -- p_course
+i_assess -- p_assess
+i_gplan -- p_gplan
+i_splan -- p_splan
+i_sched -- p_sched
+i_adapt -- p_adapt
+i_career -- p_career
+i_skill -- p_skill
+i_portf -- p_portf
+i_jobprep -- p_jobprep
+
+' Left actor consumption via required sockets
+student_acad --( i_student
+student_acad --( i_goal
+student_acad --( i_course
+student_acad --( i_assess
+
+student_plan --( i_gplan
+student_plan --( i_splan
+student_plan --( i_sched
+student_plan --( i_adapt
+
+student_career --( i_career
+student_career --( i_skill
+student_career --( i_portf
+student_career --( i_jobprep
+
+' Right provided interfaces wired to right boundary ports
+p_habit -- i_habit
+p_analytics -- i_analytics
+p_pred -- i_pred
+p_coach -- i_coach
+p_dash -- i_dash
+p_notif -- i_notif
+p_group -- i_group
+p_admin -- i_admin
+
+' Right actor consumption via required sockets (lollipop on Aspirra, socket on actor)
+i_habit )-- student_track
+i_analytics )-- student_track
+i_pred )-- student_track
+i_coach )-- student_track
+
+i_dash )-- student_engage
+i_notif )-- student_engage
+i_group )-- student_engage
+
+i_admin )-- admin
+
+' Required external interfaces attached to right boundary ports
+p_ai -(0- aiProvider : IAIProvider
+p_email -(0- emailGateway : IEmailGateway
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Port (every interface attaches to a port) |
+  | Circle (lollipop) | Provided interface exposed by Aspirra |
+  | Half-circle (socket) | Required interface consumed by actor or system |
+  | Ball-and-socket -(0- | Assembly connector binding required to provided interface |
+  | <<external>> | External third-party system |
+  | Repeated Student actor | Same Student role balanced on left & right by functional group |
+endlegend
 @enduml

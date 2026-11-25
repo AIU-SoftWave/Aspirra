@@ -1,35 +1,70 @@
 @startuml administration-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - Administration Service (FR-20) | Owner: Muhammed Hany Hamdy
 
-Container_Boundary(adminBoundary, "Administration Service") {
-  
-  ' Provided interface
-  Component(iAdministration, "IAdministration", "Provided Interface", "viewAccounts, createAccount, updateAccount, suspendAccount, getUsageStats, resolveIssue")
-  
-  ' Core components
-  Component(adminService, "AdministrationService", "Component", "Manages administration. Applies SOLID principles.")
-  Component(statsAggregator, "StatsAggregator", "Component", "Aggregates usage statistics")
-  
-  ' Persistence
-  Component(adminRepo, "IAdministrationRepository", "Repository Interface / Component", "Data access for AdminAction, AccountIssue (owned)")
-  
-  ' Domain
-  Component(domainModel, "AccountIssue, AdminAction, UsageStats", "Domain Model", "Owned entities")
+actor "Administrator" as admin
+interface "IAdministration" as p_iadmin
+
+component "<<container>>\nAdministration Service" as adminContainer {
+  portin " " as port_in
+  portout " " as port_student
+  portout " " as port_db
+
+  component "AdministrationService" as svc
+  component "StatsAggregator" as stats
+  component "AdministrationRepository" as repo
+
+  port_in -- svc
+  svc -(0- stats : IStatsAggregator
+  svc -(0- repo : IAdministrationRepository
+
+  svc -- port_student
+  repo -- port_db
 }
 
-' Required interfaces
-Container_Ext(studentSvc, "Student Service", "ASP.NET Core API", "Provides IStudentProfile")
+component "Student Service" as studentSvc <<service>>
+database "Aspirra DB\n(administration schema:\nAccountIssues, AdminActions, UsageStats)" as db <<database>>
 
-' Internal relationships
-Rel(iAdministration, adminService, "Delegates calls")
-Rel(adminService, statsAggregator, "Uses")
-Rel(adminService, adminRepo, "Uses (IAdministrationRepository)")
-Rel(adminRepo, domainModel, "Maps to/from")
+admin --( p_iadmin
+p_iadmin -- port_in
 
-' Cross-service relationships
-Rel(adminService, studentSvc, "Uses IStudentProfile (required)")
+port_student -(0- studentSvc : IStudentProfile
+port_db -(0- db : IAdministrationDB
 
-SHOW_LEGEND()
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml

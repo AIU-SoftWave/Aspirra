@@ -1,57 +1,139 @@
-@startuml Aspirra-Container-Diagram-Muhammed
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-
-LAYOUT_WITH_LEGEND()
-
-title Container Diagram - Owner: Muhammed Hany Hamdy (muhammedhanii)\nFR-17 Dashboard, FR-18 Notification, FR-19 Study Group, FR-20 Administration
-
-Person(student, "Student", "Uses Aspirra")
-
-System_Boundary(aspirra, "Aspirra System (Modular Monolith)") {
-  Boundary(muhammed, "Owner: Muhammed Hany Hamdy") {
-    Container(dashboardSvc, "Dashboard Service", "ASP.NET Core API", "FR-17 | Provides IDashboard\nAggregated dashboard")
-    Container(notificationSvc, "Notification Service", "ASP.NET Core API", "FR-18 | Provides INotification\nNotifications across channels")
-    Container(studyGroupSvc, "Study Group Service", "ASP.NET Core API", "FR-19 | Provides IStudyGroup\nStudy groups & accountability")
-    Container(adminSvc, "Administration Service", "ASP.NET Core API", "FR-20 | Provides IAdministration\nSystem configuration")
-  }
-  
-  Container(academicSvc, "Academic Service", "ASP.NET Core API", "FR-02 | IGoal")
-  Container(studentSvc, "Student Service", "ASP.NET Core API", "FR-01 | IStudentProfile")
-  Container(schedulingSvc, "Scheduling Service", "ASP.NET Core API", "FR-07 | IScheduling")
-  Container(adaptationSvc, "Adaptation Service", "ASP.NET Core API", "FR-08 | IAdaptation")
-  Container(habitSvc, "Habit Service", "ASP.NET Core API", "FR-13 | IHabit")
-  Container(analyticsSvc, "Analytics Service", "ASP.NET Core API", "FR-14 | IAnalytics")
-  Container(careerSvc, "Career Service", "ASP.NET Core API", "FR-09 | ICareer")
-  Container(assessmentSvc, "Assessment Service", "ASP.NET Core API", "FR-04 | IAssessment")
-  Container(predictionSvc, "Prediction Service", "ASP.NET Core API", "FR-15 | IPrediction")
+@startuml Container-Diagram-Muhammed
+left to right direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 22
+skinparam ranksep 65
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam package {
+  BackgroundColor #F8FAFC
+  BorderColor #94A3B8
+  FontColor #1E293B
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<dependency>> #F8FAFC
+  BorderColor<<dependency>> #64748B
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
 }
 
-System_Ext(aiProvider, "AI Provider", "External LLM API", "AI capabilities")
-System_Ext(emailGateway, "Email Gateway", "External Email Service", "Email delivery")
-ContainerDb(sharedDb, "Aspirra Database", "PostgreSQL / SQL Server", "Shared DB - each service owns schema/tables")
+title Level 1: Container Diagram — Owner: Muhammed Hany Hamdy (muhammedhanii)\nFR-17 Dashboard, FR-18 Notification, FR-19 Study Group, FR-20 Administration
 
-Rel(student, dashboardSvc, "Views", "IDashboard")
-Rel(dashboardSvc, academicSvc, "Uses", "IGoal (required)")
-Rel(dashboardSvc, schedulingSvc, "Uses", "IScheduling (required)")
-Rel(dashboardSvc, adaptationSvc, "Uses", "IAdaptation (required)")
-Rel(dashboardSvc, habitSvc, "Uses", "IHabit (required)")
-Rel(dashboardSvc, analyticsSvc, "Uses", "IAnalytics (required)")
-Rel(dashboardSvc, careerSvc, "Uses", "ICareer (required)")
-Rel(notificationSvc, assessmentSvc, "Uses", "IAssessment (required)")
-Rel(notificationSvc, schedulingSvc, "Uses", "IScheduling (required)")
-Rel(notificationSvc, habitSvc, "Uses", "IHabit (required)")
-Rel(notificationSvc, predictionSvc, "Uses", "IPrediction (required)")
-Rel(notificationSvc, emailGateway, "Uses", "IEmailGateway (required)")
-Rel(studyGroupSvc, studentSvc, "Uses", "IStudentProfile (required)")
-Rel(studyGroupSvc, academicSvc, "Uses", "IGoal (required)")
-Rel(studyGroupSvc, analyticsSvc, "Uses", "IAnalytics (required)")
-Rel(adminSvc, studentSvc, "Uses", "IStudentProfile (required)")
+actor "Student" as student
+actor "Administrator" as admin
 
-Rel(dashboardSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(notificationSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(studyGroupSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
-Rel(adminSvc, sharedDb, "Reads/Writes (owns schema)", "SQL/ORM")
+interface "IDashboard" as ext_idash
+interface "INotification" as ext_inotif
+interface "IStudyGroup" as ext_igroup
+interface "IAdministration" as ext_iadmin
 
-SHOW_LEGEND()
+component "<<system>>\nAspirra (Modular Monolith)" as aspirra {
+  portin " " as p_dash
+  portin " " as p_notif
+  portin " " as p_group
+  portin " " as p_admin
 
+  portout " " as p_email
+  portout " " as p_db_dash
+  portout " " as p_db_notif
+  portout " " as p_db_group
+  portout " " as p_db_admin
+
+  package "Owner: Muhammed Hany Hamdy" {
+    component "Dashboard Service\n(FR-17)" as dashboardSvc <<service>>
+    component "Notification Service\n(FR-18)" as notificationSvc <<service>>
+    component "Study Group Service\n(FR-19)" as studyGroupSvc <<service>>
+    component "Administration Service\n(FR-20)" as adminSvc <<service>>
+  }
+
+  package "Peer Services (Providers)" {
+    component "Student Service\n(FR-01)" as studentSvc <<dependency>>
+    component "Academic Service\n(FR-02)" as academicSvc <<dependency>>
+    component "Assessment Service\n(FR-04)" as assessmentSvc <<dependency>>
+    component "Scheduling Service\n(FR-07)" as schedulingSvc <<dependency>>
+    component "Adaptation Service\n(FR-08)" as adaptationSvc <<dependency>>
+    component "Career Service\n(FR-09)" as careerSvc <<dependency>>
+    component "Habit Service\n(FR-13)" as habitSvc <<dependency>>
+    component "Analytics Service\n(FR-14)" as analyticsSvc <<dependency>>
+    component "Prediction Service\n(FR-15)" as predictionSvc <<dependency>>
+  }
+
+  p_dash -- dashboardSvc
+  p_notif -- notificationSvc
+  p_group -- studyGroupSvc
+  p_admin -- adminSvc
+
+  dashboardSvc -(0- academicSvc : IGoal
+  dashboardSvc -(0- schedulingSvc : IScheduling
+  dashboardSvc -(0- adaptationSvc : IAdaptation
+  dashboardSvc -(0- habitSvc : IHabit
+  dashboardSvc -(0- analyticsSvc : IAnalytics
+  dashboardSvc -(0- careerSvc : ICareer
+
+  notificationSvc -(0- assessmentSvc : IAssessment
+  notificationSvc -(0- schedulingSvc : IScheduling
+  notificationSvc -(0- habitSvc : IHabit
+  notificationSvc -(0- predictionSvc : IPrediction
+
+  studyGroupSvc -(0- studentSvc : IStudentProfile
+  studyGroupSvc -(0- academicSvc : IGoal
+  studyGroupSvc -(0- analyticsSvc : IAnalytics
+
+  adminSvc -(0- studentSvc : IStudentProfile
+
+  notificationSvc -- p_email
+
+  dashboardSvc -- p_db_dash
+  notificationSvc -- p_db_notif
+  studyGroupSvc -- p_db_group
+  adminSvc -- p_db_admin
+}
+
+component "Email Gateway\n(External Email Service)" as emailGateway <<external>>
+database "Aspirra Database\n(PostgreSQL 16)\nSchemas: dashboard, notification,\nstudy_group, administration" as sharedDb <<database>>
+
+ext_idash -- p_dash
+ext_inotif -- p_notif
+ext_igroup -- p_group
+ext_iadmin -- p_admin
+
+student --( ext_idash
+student --( ext_inotif
+student --( ext_igroup
+admin --( ext_iadmin
+
+p_email -(0- emailGateway : IEmailGateway
+p_db_dash -(0- sharedDb : IDashboardDB
+p_db_notif -(0- sharedDb : INotificationDB
+p_db_group -(0- sharedDb : IStudyGroupDB
+p_db_admin -(0- sharedDb : IAdministrationDB
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+  | <<service>> / <<dependency>> | Owned service / peer service provider |
+endlegend
 @enduml

@@ -1,0 +1,80 @@
+@startuml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
+
+title Level 2: Component Diagram - <Service Name>
+
+actor "User" as user
+interface "IOrder" as p_iorder
+
+component "<<container>>\nOrder Service" as orderContainer {
+  portin " " as port_in
+  portout " " as port_catalog
+  portout " " as port_payment
+  portout " " as port_db
+
+  component "OrdersController\n(/api/orders)" as ctrl
+  component "OrderService" as svc
+  component "HttpCatalogClient" as catalogClient
+  component "OrderRepository" as repo
+  component "OrderDbContext" as dbctx
+
+  port_in -- ctrl
+  ctrl -(0- svc : IOrder
+  svc -(0- catalogClient : ICatalogClient
+  svc -(0- repo : IOrderRepository
+  repo --> dbctx : uses
+
+  catalogClient -- port_catalog
+  svc -- port_payment
+  dbctx -- port_db
+}
+
+component "Catalog Service" as catalogSvc <<service>>
+component "Payment Gateway" as paymentGw <<external>>
+database "Order DB\n(order schema:\nOrders, OrderItems)" as db <<database>>
+
+user --( p_iorder
+p_iorder -- port_in
+
+port_catalog -(0- catalogSvc : ICatalog
+port_payment -(0- paymentGw : IPaymentGW
+port_db -(0- db : IOrderDB
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
+@enduml

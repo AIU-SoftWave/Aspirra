@@ -1,0 +1,91 @@
+@startuml
+left to right direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 22
+skinparam ranksep 65
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam package {
+  BackgroundColor #F8FAFC
+  BorderColor #94A3B8
+  FontColor #1E293B
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+  BackgroundColor<<service>> #FFFFFF
+  BorderColor<<service>> #2563EB
+  BackgroundColor<<external>> #F1F5F9
+  BorderColor<<external>> #475569
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
+
+title Level 1: Container Diagram - <System Name>
+
+actor "User" as user
+
+interface "ICatalog" as ext_icatalog
+interface "IOrder" as ext_iorder
+
+component "<<system>>\n<System Name>" as sys {
+  portin " " as p_catalog
+  portin " " as p_order
+
+  portout " " as p_payment
+  portout " " as p_db
+
+  package "Core Services" as g_core {
+    component "Catalog Service" as catalogSvc <<service>>
+    component "Order Service" as orderSvc <<service>>
+    component "Payment Service" as paymentSvc <<service>>
+  }
+
+  ' Delegation from boundary ports to owning services
+  p_catalog -- catalogSvc
+  p_order -- orderSvc
+
+  ' Cross-service assembly connectors (requiring -> providing)
+  orderSvc -(0- catalogSvc : ICatalog
+  orderSvc -(0- paymentSvc : IPayment
+
+  ' Delegation to external / persistence boundary ports
+  paymentSvc -- p_payment
+  g_core -- p_db
+}
+
+component "Payment Gateway" as paymentGw <<external>>
+database "System Database\n(per-service schemas)" as sharedDb <<database>>
+
+ext_icatalog -- p_catalog
+ext_iorder -- p_order
+user --( ext_icatalog
+user --( ext_iorder
+
+p_payment -(0- paymentGw : IPaymentGW
+p_db -(0- sharedDb : IPersistence
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | <<service>> component | Service container |
+  | Square on boundary | Port (portin left / portout right) |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+  | <<external>> / <<database>> | External system / Owned database |
+endlegend
+@enduml

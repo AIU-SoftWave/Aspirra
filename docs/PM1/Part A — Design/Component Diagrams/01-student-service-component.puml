@@ -1,25 +1,65 @@
 @startuml student-service-component-diagram
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+top to bottom direction
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #334155
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam port {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam actor {
+  BackgroundColor #DBEAFE
+  BorderColor #1E3A8A
+}
+skinparam component {
+  BackgroundColor #EFF6FF
+  BorderColor #1D4ED8
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #1E3A8A
+}
+skinparam database {
+  BackgroundColor #F1F5F9
+  BorderColor #334155
+}
 
 title Level 2: Component Diagram - Student Service (FR-01) | Owner: Ahmed Mohamed Ahmed
 
-Container_Boundary(studentBoundary, "Student Service") {
+actor "Student" as student
+interface "IStudentProfile" as p_istudent
 
-  Component(iStudentProfile, "IStudentProfile", "Provided Interface", "createProfile, updateProfile, getProfile, getAvailability")
-  Component(profilesController, "ProfilesController", "API Controller", "Exposes /api/profiles endpoints")
-  Component(studentProfileService, "StudentProfileService", "Component", "Implements profile use cases and validates required fields and time slots")
-  Component(iProfileRepo, "IProfileRepository", "Repository Interface", "Persistence abstraction for Profile and TimeSlot")
-  Component(profileRepo, "ProfileRepository", "Repository", "EF Core implementation of IProfileRepository")
-  Component(studentDb, "StudentDbContext", "EF Core DbContext", "Owns the student schema (Profiles, TimeSlots)")
-  Component(domainModel, "Profile, TimeSlot", "Domain Model", "Owned entities")
+component "<<container>>\nStudent Service" as studentContainer {
+  portin " " as port_in
+  portout " " as port_db
+
+  component "ProfilesController\n(/api/profiles)" as ctrl
+  component "StudentProfileService" as svc
+  component "ProfileRepository" as repo
+  component "StudentDbContext" as dbctx
+
+  port_in -- ctrl
+  ctrl -(0- svc : IStudentProfile
+  svc -(0- repo : IProfileRepository
+  repo --> dbctx : uses
+  dbctx -- port_db
 }
 
-Rel(profilesController, iStudentProfile, "Exposes")
-Rel(profilesController, studentProfileService, "Calls")
-Rel(studentProfileService, iProfileRepo, "Depends on")
-Rel(profileRepo, iProfileRepo, "Implements")
-Rel(profileRepo, studentDb, "Uses")
-Rel(studentDb, domainModel, "Maps to/from")
+database "Aspirra DB\n(student schema:\nProfiles, TimeSlots)" as db <<database>>
 
-SHOW_LEGEND()
+student --( p_istudent
+p_istudent -- port_in
+
+port_db -(0- db : IStudentDB
+
+legend bottom
+  |= Symbol |= UML Meaning |
+  | Square on boundary | Boundary port (portin / portout) |
+  | Lollipop O / Socket ( | Provided / Required interface |
+  | Ball-and-socket -(0- | Assembly connector (requiring -> providing) |
+endlegend
 @enduml
