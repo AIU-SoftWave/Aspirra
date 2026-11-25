@@ -17,7 +17,7 @@ Jira and GitHub mirror each other, but **Jira wins** for sprint status and point
 
 ## Setup already completed
 
-- Jira Sprint 2 (`39`) is active: `2026-11-12` → `2026-11-25`.
+- Jira Sprint 2 (`39`) is active: `2026-11-12` → `2026-11-28`.
 - Jira epic `SCRUM-174` owns PM2; tasks `SCRUM-175`–`SCRUM-189` are parented to it.
 - GitHub milestone `#2` and parent issue `#53` own the GitHub side.
 - GitHub labels `pm2`, `type:test`, `type:devops`, `type:docs` exist.
@@ -171,12 +171,12 @@ Minimum evidence for PM2:
 
 | Time | Checkpoint |
 | --- | --- |
-| Nov 23 | Setup, Jira/GitHub mirrors, Ahmed scenario, pipeline scaffold |
-| Nov 24 12:00 | Yomna/Mostafa complete; Arwa/Muhammed code checkpoint |
-| Nov 24 20:00 | All diagrams/tests integrated; Sonar + Jenkins green |
-| Nov 25 12:00 | Report draft; Sprint 2 close-out |
-| Nov 25 18:00 | Code freeze; final verification |
-| Nov 25 20:00 | PDF + tag ready; each member submits before 23:59 |
+| Nov 26 12:00 | Diagrams + code skeleton |
+| Nov 27 12:00 | Implementation and tests complete |
+| Nov 27 20:00 | PRs merged into `develop`; Sonar + Jenkins green |
+| Nov 28 12:00 | Report draft; Sprint 2 close-out |
+| Nov 28 18:00 | Code freeze; final verification |
+| Nov 28 20:00 | PDF + tag ready; each member submits before 23:59 |
 
 If a checkpoint slips, reduce scope in the report and say so. Do not invent results.
 

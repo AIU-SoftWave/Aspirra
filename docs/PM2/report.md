@@ -9,7 +9,7 @@
 **Jira project:** https://aspirra.atlassian.net (project `SCRUM`, board `1`)  
 **Jira epic:** [SCRUM-174](https://aspirra.atlassian.net/browse/SCRUM-174)  
 **GitHub parent:** [#53](https://github.com/AIU-SoftWave/Aspirra/issues/53)  
-**Submission date:** 2026-11-25  
+**Submission date:** 2026-11-28  
 **Tag / commit:** `pm2-submission` / _pending_
 
 > This is the report scaffold. Replace every `_pending_` and `TODO` only with verified evidence. Do not invent test counts, coverage, quality-gate results, or CI runs.
@@ -71,7 +71,7 @@ The PM2 work is tracked as Jira epic `SCRUM-174` and 15 GitHub sub-issues (`#54`
 
 **Scope:** 48 SP committed in Sprint 2.
 
-**Honest status:** In progress — PM2-02 through PM2-05 are complete (issues #55–#58 closed, Jira SCRUM-176–179 Done). PM2-10 tooling and Moq tests are in place (101 tests passing, 37.1% line coverage locally); Skill/Notification tests blocked on PM2-08/09. SonarQube (PM2-11) and Jenkins (PM2-12) are scaffolded but need `SONAR_TOKEN` and a real run. PM2-01 class diagrams are drafted but Skill/Notification slices still need reconciliation against PM2-08/09 code.
+**Honest status:** In progress — PM2-01 through PM2-05 are complete (issues #54–#58 closed, Jira SCRUM-175–179 Done; #54 class diagrams merged via PR #71, with Skill/Notification planned slices to be reconciled once PM2-08/09 code lands). PM2-10 tooling and Moq tests are in place (101 tests passing, 37.1% line coverage locally); Skill/Notification tests remain pending PM2-08/09 implementation. SonarQube (PM2-11) passed its quality gate on PR #69; Jenkins (PM2-12) controller image is built and awaiting a live pipeline run.
 
 ---
 
@@ -342,7 +342,7 @@ docker compose up --build
 | Item | Value |
 | --- | --- |
 | Sprint | Sprint 2 — Design & DevOps |
-| Dates | 2026-11-12 → 2026-11-25 |
+| Dates | 2026-11-12 → 2026-11-28 |
 | Tasks | 15 |
 | Committed SP | 48 |
 | Completed SP | _pending_ |
@@ -369,7 +369,7 @@ The C9 product plan shifts by one sprint because Sprint 2 is a process/design sp
 ### C.4 Risks and trade-offs
 
 - The design sprint consumes the schedule buffer; new product scope requires an explicit trade-off.
-- Arwa/Muhammed code slices may land late; the checkpoint is Nov 24 12:00.
+- Arwa/Muhammed code slices may land late; checkpoints are Nov 26 12:00 (diagrams + code skeleton) and Nov 27 12:00 (implementation and tests).
 - SonarQube and Jenkins credentials are external dependencies.
 - The PDF must be rebuilt after the final commit; a stale PDF is not acceptable.
 

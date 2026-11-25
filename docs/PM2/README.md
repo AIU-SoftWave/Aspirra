@@ -2,11 +2,11 @@
 
 This directory contains the complete CSE454 Project Milestone 2 (PM2) submission: software design, DevOps evidence, project-management evidence, and design-to-code traceability.
 
-- **Submission deadline:** 2026-11-25, 23:59
+- **Submission deadline:** 2026-11-28, 23:59
 - **Jira epic:** [SCRUM-174 — PM2 — Software Design & DevOps](https://aspirra.atlassian.net/browse/SCRUM-174)
 - **GitHub parent issue:** [#53 — PM2 — Software Design & DevOps milestone](https://github.com/AIU-SoftWave/Aspirra/issues/53)
-- **GitHub milestone:** `PM2 — Software Design & DevOps` (due 2026-11-25)
-- **Sprint:** `Sprint 2 — Design & DevOps` (2026-11-12 → 2026-11-25), 48 SP committed
+- **GitHub milestone:** `PM2 — Software Design & DevOps` (due 2026-11-28)
+- **Sprint:** `Sprint 2 — Design & DevOps` (2026-11-12 → 2026-11-28), 48 SP committed
 - **Consolidated report:** [`report.md`](report.md) / `report.pdf` (generated in PM2-15)
 
 ## Status

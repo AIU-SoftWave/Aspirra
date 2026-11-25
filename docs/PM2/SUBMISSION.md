@@ -1,6 +1,6 @@
 # PM2 Submission Checklist
 
-**Deadline:** 2026-11-25, 23:59  
+**Deadline:** 2026-11-28, 23:59  
 **Repository:** https://github.com/AIU-SoftWave/Aspirra  
 **Jira epic:** https://aspirra.atlassian.net/browse/SCRUM-174  
 **GitHub parent:** https://github.com/AIU-SoftWave/Aspirra/issues/53
@@ -148,7 +148,7 @@ gh run list --repo AIU-SoftWave/Aspirra --limit 5
 ## 6. Submission and final check
 
 - [ ] Submit the PDF and appendix through the course submission channel.
-- [ ] Submit before **2026-11-25 23:59**; do not rely on a last-minute upload.
+- [ ] Submit before **2026-11-28 23:59**; do not rely on a last-minute upload.
 - [ ] Keep the repository public and the tag pushed.
 - [ ] Keep Jira and GitHub open for grader inspection.
 - [ ] Save the submission confirmation and timestamp.

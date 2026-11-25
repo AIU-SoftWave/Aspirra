@@ -7,7 +7,7 @@ PM2 project-management evidence: Sprint 1 actuals, Sprint 2 execution, velocity,
 | Sprint | Goal | Start | End | State | Committed | Completed |
 | --- | --- | --- | --- | --- | --- | --- |
 | Sprint 1 — Foundation | Core academic foundation and first AI plan | 2026-10-22 | 2026-11-04 | Closed | 46 SP | 46 SP |
-| Sprint 2 — Design & DevOps | PM2 design and DevOps evidence | 2026-11-12 | 2026-11-25 | Active | 48 SP | _pending_ |
+| Sprint 2 — Design & DevOps | PM2 design and DevOps evidence | 2026-11-12 | 2026-11-28 | Active | 48 SP | _pending_ |
 | Sprint 3 — Product increment 2 | C9 Sprint 2 product scope | _pending_ | _pending_ | Planned | 50 SP | _pending_ |
 | Sprint 4 — Product increment 3 | C9 Sprint 3 product scope | _pending_ | _pending_ | Planned | 49 SP | _pending_ |
 | Sprint 5 — Product increment 4 | C9 Sprint 4 product scope | _pending_ | _pending_ | Planned | 49 SP | _pending_ |
@@ -68,7 +68,7 @@ The product backlog remains 179 SP after Sprint 1. The plan fits, but the schedu
 | Risk | Impact | Mitigation |
 | --- | --- | --- |
 | Design sprint reduces product delivery time | Schedule pressure | Defer C9 Sprint 2, keep scope fixed |
-| Arwa/Muhammed code slices incomplete | Missing scenario evidence | Checkpoint Nov 24 12:00; reduce to design-only if blocked |
+| Arwa/Muhammed code slices incomplete | Missing scenario evidence | Checkpoints Nov 26 12:00 (skeleton) and Nov 27 12:00 (implementation/tests); reduce to design-only if blocked |
 | Sonar token unavailable | No quality gate | Configure secret early; document blocker honestly |
 | Jenkins environment drift | Pipeline differs from Actions | Pin SDK/JDK versions in Docker |
-| Last-day PDF failure | No submission | Build PDF on Nov 24 and again on Nov 25 |
+| Last-day PDF failure | No submission | Build PDF on Nov 27 and again on Nov 28 |
