@@ -241,12 +241,16 @@ Per-module line coverage (local, before PM2-08/09):
 | --- | --- |
 | Organization | `aboosalh` |
 | Project key | `AIU-SoftWave_Aspirra` |
-| Quality gate | _pending_ |
-| Bugs | _pending_ |
-| Vulnerabilities | _pending_ |
-| Code smells | _pending_ |
-| Coverage on new code | _pending_ |
-| Dashboard | _pending_ |
+| Quality gate | **Passed** (PR #69) |
+| New bugs | 0 |
+| New vulnerabilities | 0 |
+| New code smells | 2 |
+| Coverage (new code) | 89.5% (threshold 80%) |
+| Coverage (overall) | 56.7% |
+| Dashboard | https://sonarcloud.io/project/overview?id=AIU-SoftWave_Aspirra |
+| PR dashboard | https://sonarcloud.io/dashboard?id=AIU-SoftWave_Aspirra&pullRequest=69 |
+
+Quality gate conditions (all OK): new reliability rating A, new security rating A, new maintainability rating A, new coverage 89.5% ≥ 80%, new duplication 0.0%, security hotspots reviewed 100%.
 
 ### B.4 Jenkins
 

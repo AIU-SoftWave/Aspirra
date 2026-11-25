@@ -75,13 +75,15 @@ dotnet test Aspirra.slnx -c Release --no-build
 dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
 ```
 
-Quality gate evidence:
+Quality gate evidence (PR #69, 2026-11-25):
 
-- [ ] Quality gate status: _pending_
-- [ ] Bugs / vulnerabilities / code smells: _pending_
-- [ ] Coverage on new code: _pending_
-- [ ] Duplication: _pending_
-- [ ] URL: _pending_
+- [x] Quality gate status: **Passed**
+- [x] Bugs / vulnerabilities / code smells: 0 bugs, 0 vulnerabilities, 2 code smells
+- [x] Coverage on new code: 89.5% (threshold 80%)
+- [x] Duplication: 0.0%
+- [x] URL: https://sonarcloud.io/project/overview?id=AIU-SoftWave_Aspirra
+
+> One new security issue (docker:S6506, non-HTTPS `curl` in `devops/jenkins/Dockerfile`) was found and fixed by adding `--proto '=https' --tlsv1.2`.
 
 ## Jenkins
 
