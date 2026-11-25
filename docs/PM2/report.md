@@ -93,19 +93,45 @@ Each scenario uses the same participants across its object, sequence, and collab
 
 ### A.2 Updated class diagrams
 
-The class diagrams were updated first so every message in the scenario diagrams maps to an existing link.
+The class diagrams were updated first so every message in the scenario diagrams maps to an existing link. The complete message → class-link mapping table is maintained in [`Part A — Design/Class Diagram/README.md`](Part%20A%20%E2%80%94%20Design/Class%20Diagram/README.md).
 
 | Diagram | Scope | Status |
 | --- | --- | --- |
-| `Part A — Design/Class Diagram/00-pm2-scenario-class-diagram.puml` | Cross-service scenario view | Drafted; PNG rendered |
-| `Part A — Design/Class Diagram/02-academic-service.puml` | Goal and completion flow | Drafted; PNG rendered |
-| `Part A — Design/Class Diagram/03-course-service.puml` | Course boundary | Drafted; PNG rendered |
-| `Part A — Design/Class Diagram/05-goal-planner-service.puml` | Plan generation and approval | Drafted; PNG rendered |
-| `Part A — Design/Class Diagram/13-habit-service.puml` | Habit completion and streak | Drafted; PNG rendered |
-| `Part A — Design/Class Diagram/skill-service.puml` | Add Skill planned slice | Baseline drafted; reconcile with PM2-08 |
-| `Part A — Design/Class Diagram/notification-service.puml` | Deadline reminders planned slice | Baseline drafted; reconcile with PM2-09 |
+| `Part A — Design/Class Diagram/00-pm2-scenario-class-diagram.puml` | Cross-service scenario view | Updated & verified; PNG rendered |
+| `Part A — Design/Class Diagram/02-academic-service.puml` | Goal and completion flow | Updated & verified; PNG rendered |
+| `Part A — Design/Class Diagram/03-course-service.puml` | Course boundary | Updated & verified; PNG rendered |
+| `Part A — Design/Class Diagram/05-goal-planner-service.puml` | Plan generation and approval | Updated & verified; PNG rendered |
+| `Part A — Design/Class Diagram/13-habit-service.puml` | Habit completion and streak | Updated & verified; PNG rendered |
+| `Part A — Design/Class Diagram/skill-service.puml` | Add Skill planned slice | Planned baseline updated; reconcile with PM2-08 |
+| `Part A — Design/Class Diagram/notification-service.puml` | Deadline reminders planned slice | Planned baseline updated; reconcile with PM2-09 |
 
-<!-- Embed updated class diagram PNGs here after PM2-01 is complete. -->
+#### Cross-service PM2 scenario class diagram
+
+![PM2 Scenario Class Diagram](Part%20A%20%E2%80%94%20Design/Class%20Diagram/00-pm2-scenario-class-diagram.png)
+
+#### Academic Service (`academic-service`, FR-02)
+
+![Academic Service Class Diagram](Part%20A%20%E2%80%94%20Design/Class%20Diagram/02-academic-service.png)
+
+#### Course Service (`course-service`, FR-03)
+
+![Course Service Class Diagram](Part%20A%20%E2%80%94%20Design/Class%20Diagram/03-course-service.png)
+
+#### Goal Planner Service (`goal-planner-service`, FR-05)
+
+![Goal Planner Service Class Diagram](Part%20A%20%E2%80%94%20Design/Class%20Diagram/05-goal-planner-service.png)
+
+#### Habit Service (`habit-service`, FR-13)
+
+![Habit Service Class Diagram](Part%20A%20%E2%80%94%20Design/Class%20Diagram/13-habit-service.png)
+
+#### Skill Service (`skill-service`, FR-10 — planned minimal slice)
+
+![Skill Service Class Diagram](Part%20A%20%E2%80%94%20Design/Class%20Diagram/skill-service.png)
+
+#### Notification Service (`notification-service`, FR-18 — planned minimal slice)
+
+![Notification Service Class Diagram](Part%20A%20%E2%80%94%20Design/Class%20Diagram/notification-service.png)
 
 ### A.3 Object diagrams
 

@@ -31,11 +31,11 @@ legend right
 endlegend
 
 interface IHabit <<provided>> {
-  +CreateHabitAsync(studentId, request): ServiceResult<Habit>
-  +CompleteHabitAsync(habitId, date): ServiceResult<Habit>
-  +GetHabitsAsync(studentId): List<Habit>
-  +GetStreaksAsync(studentId, today): List<HabitStreakResponse>
-  +LinkToGoalAsync(habitId, goalId): ServiceResult<Habit>
+  +CreateHabitAsync(studentId, request): Task<ServiceResult<Habit>>
+  +CompleteHabitAsync(habitId, date): Task<ServiceResult<Habit>>
+  +GetHabitsAsync(studentId): Task<List<Habit>>
+  +GetStreaksAsync(studentId, today): Task<List<HabitStreakResponse>>
+  +LinkToGoalAsync(habitId, goalId): Task<ServiceResult<Habit>>
 }
 
 class HabitsController <<component>> {
@@ -81,24 +81,25 @@ class HabitDbContext {
 }
 
 class Habit {
-  -habitId: String
-  -studentId: String
-  -goalId: String?
-  -name: String
-  -frequency: HabitFrequency
-  -goalTarget: String?
-  -reminderTime: TimeOnly?
-  -currentStreak: int
-  -isActive: bool
-  -createdAt: DateTime
-  -updatedAt: DateTime
+  +HabitId: string
+  +StudentId: string
+  +GoalId: string?
+  +Name: string
+  +Frequency: HabitFrequency
+  +GoalTarget: string?
+  +ReminderTime: TimeOnly?
+  +CurrentStreak: int
+  +IsActive: bool
+  +CreatedAt: DateTime
+  +UpdatedAt: DateTime
+  +HabitLogs: ICollection<HabitLog>
 }
 class HabitLog {
-  -logId: String
-  -habitId: String
-  -logDate: DateOnly
-  -completed: bool
-  -completedAt: DateTime?
+  +LogId: string
+  +HabitId: string
+  +LogDate: DateOnly
+  +Completed: bool
+  +CompletedAt: DateTime?
 }
 enum HabitFrequency {
   Daily
@@ -108,6 +109,10 @@ enum HabitFrequency {
 HabitsController --> IHabit
 IHabit <|.. HabitService
 HabitService --> IHabitRepository
+HabitService --> Habit
+HabitService --> HabitLog
+IHabitRepository "1" -- "0..*" Habit : stores
+IHabitRepository "1" -- "0..*" HabitLog : stores
 HabitRepository ..|> IHabitRepository
 HabitRepository --> HabitDbContext
 HabitDbContext --> Habit

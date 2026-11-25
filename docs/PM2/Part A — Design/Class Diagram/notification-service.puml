@@ -21,6 +21,14 @@ skinparam interface {
 }
 hide empty members
 
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Plain line | Association |
+endlegend
+
 interface INotification <<provided>> {
   +SendDeadlineRemindersAsync(studentId, days): Task<ServiceResult<List<Notification>>>
 }
@@ -65,12 +73,19 @@ class NotificationDbContext {
 }
 
 class Notification {
-  -notificationId: String
-  -studentId: String
-  -type: String
-  -message: String
-  -status: NotificationStatus
-  -sentAt: DateTime?
+  +NotificationId: string
+  +StudentId: string
+  +Type: string
+  +Message: string
+  +Status: NotificationStatus
+  +SentAt: DateTime?
+}
+
+class Deadline {
+  +AssessmentId: string
+  +StudentId: string
+  +Title: string
+  +DueDate: DateTime
 }
 
 enum NotificationStatus {
@@ -84,6 +99,9 @@ INotification <|.. NotificationService
 NotificationService --> IAssessment
 NotificationService --> IEmailGateway
 NotificationService --> INotificationRepository
+NotificationService --> Notification
+IAssessment ..> Deadline
+INotificationRepository "1" -- "0..*" Notification : stores
 NotificationRepository ..|> INotificationRepository
 NotificationRepository --> NotificationDbContext
 NotificationDbContext --> Notification
