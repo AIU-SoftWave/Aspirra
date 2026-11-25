@@ -122,6 +122,10 @@ namespace Aspirra.AcademicService.Controllers
             {
                 return NotFound(new { code = "NOT_FOUND", message = "Goal not found" });
             }
+            catch (GoalValidationException exception)
+            {
+                return BadRequest(new { code = exception.Code, message = exception.Message });
+            }
         }
     }
 }

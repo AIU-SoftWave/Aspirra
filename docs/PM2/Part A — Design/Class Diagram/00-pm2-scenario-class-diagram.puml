@@ -1,0 +1,151 @@
+@startuml 00-pm2-scenario-class-diagram
+title PM2 Scenario Class Diagram — controllers, provided interfaces, services, repositories
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 11
+skinparam nodesep 30
+skinparam ranksep 50
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Controller / service component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses |
+  | Dotted arrow, hollow head | Implements |
+  | Filled diamond | Composition |
+endlegend
+
+class Student <<actor>>
+
+package "Academic Service — Complete Goal" {
+  class GoalsController <<component>> {
+    +CompleteGoal(goalId)
+    +ArchiveGoal(goalId)
+    +RestoreGoal(goalId)
+  }
+  interface IGoal <<provided>>
+  class GoalService <<component>>
+  interface IGoalRepository <<required - Database>>
+  class Goal
+  enum GoalStatus
+}
+
+package "Goal Planner — Generate Goal Plan" {
+  class PlansController <<component>> {
+    +Generate(request)
+    +Approve(draftId)
+    +Update(draftId, input)
+  }
+  interface IGoalPlanner <<provided>>
+  class GoalPlannerService <<component>>
+  interface IAIProvider <<required - AI>>
+  interface IPlanDraftRepository <<required - Database>>
+  interface IGoalClient <<required - Academic>>
+  class PlanDraft
+  class Milestone
+  class PlanTask
+  enum PlanStatus
+}
+
+package "Habit Service — Complete Habit" {
+  class HabitsController <<component>> {
+    +CompleteHabit(habitId, request)
+    +GetStreaks(studentId)
+  }
+  interface IHabit <<provided>>
+  class HabitService <<component>>
+  interface IHabitRepository <<required - Database>>
+  class Habit
+  class HabitLog
+}
+
+package "Skill Service — Add Skill (planned minimal slice)" {
+  class SkillsController <<component>> {
+    +AddSkill(request)
+  }
+  interface ISkill <<provided>>
+  class SkillService <<component>>
+  interface ISkillRepository <<required - Database>>
+  class Skill
+}
+
+package "Notification Service — Deadline Reminders (planned minimal slice)" {
+  class NotificationsController <<component>> {
+    +SendDeadlineReminders()
+  }
+  interface INotification <<provided>>
+  class NotificationService <<component>>
+  interface IAssessment <<required - Assessment>>
+  interface IEmailGateway <<required - Email>>
+  interface INotificationRepository <<required - Database>>
+  class Notification
+  enum NotificationStatus
+}
+
+Student --> GoalsController
+Student --> PlansController
+Student --> HabitsController
+Student --> SkillsController
+Student --> NotificationsController
+
+GoalsController --> IGoal
+IGoal <|.. GoalService
+GoalService --> IGoalRepository
+IGoalRepository --> Goal
+Goal --> GoalStatus
+
+PlansController --> IGoalPlanner
+IGoalPlanner <|.. GoalPlannerService
+GoalPlannerService --> IAIProvider
+GoalPlannerService --> IPlanDraftRepository
+GoalPlannerService --> IGoalClient
+IPlanDraftRepository --> PlanDraft
+PlanDraft *-- "1..*" Milestone
+Milestone *-- "1..*" PlanTask
+PlanDraft --> PlanStatus
+
+HabitsController --> IHabit
+IHabit <|.. HabitService
+HabitService --> IHabitRepository
+IHabitRepository --> Habit
+Habit *-- "0..*" HabitLog
+
+SkillsController --> ISkill
+ISkill <|.. SkillService
+SkillService --> ISkillRepository
+ISkillRepository --> Skill
+
+NotificationsController --> INotification
+INotification <|.. NotificationService
+NotificationService --> IAssessment
+NotificationService --> IEmailGateway
+NotificationService --> INotificationRepository
+INotificationRepository --> Notification
+Notification --> NotificationStatus
+
+note bottom of Goal
+  complete: Active/Completed -> Completed
+  archive: Active/Completed -> Archived
+  restore: Archived -> Active
+  Archived -> Completed is rejected before UpdateAsync.
+end note
+
+note bottom of NotificationService
+  Planned PM2 slice; reconcile class and method names with the implementation from PM2-08/09.
+end note
+
+@enduml

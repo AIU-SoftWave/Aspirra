@@ -112,4 +112,44 @@ public class AcademicApiTests
         Assert.Equal("REQUIRED_FIELD", document.RootElement.GetProperty("code").GetString());
         Assert.Equal("Title is required.", document.RootElement.GetProperty("message").GetString());
     }
+
+    [Fact]
+    public async Task CompleteGoal_WhenArchived_ReturnsInvalidTransition()
+    {
+        using var factory = new AcademicApiFactory();
+        using var client = factory.CreateClient();
+        var payload = new
+        {
+            studentId = "student-1",
+            title = "Prepare for finals",
+            description = "Review every course",
+            targetDate = FutureDate,
+            priority = "High"
+        };
+
+        var createResponse = await client.PostAsJsonAsync("/api/goals", payload);
+        var created = await createResponse.Content.ReadFromJsonAsync<Goal>(JsonOptions);
+
+        var archiveResponse = await client.PostAsync($"/api/goals/{created!.GoalId}/archive", null);
+        Assert.Equal(HttpStatusCode.OK, archiveResponse.StatusCode);
+
+        var completeResponse = await client.PostAsync($"/api/goals/{created.GoalId}/complete", null);
+
+        Assert.Equal(HttpStatusCode.BadRequest, completeResponse.StatusCode);
+        using var document = JsonDocument.Parse(await completeResponse.Content.ReadAsStringAsync());
+        Assert.Equal("INVALID_TRANSITION", document.RootElement.GetProperty("code").GetString());
+    }
+
+    [Fact]
+    public async Task CompleteGoal_WhenMissing_ReturnsNotFound()
+    {
+        using var factory = new AcademicApiFactory();
+        using var client = factory.CreateClient();
+
+        var response = await client.PostAsync("/api/goals/missing-goal/complete", null);
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        using var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        Assert.Equal("NOT_FOUND", document.RootElement.GetProperty("code").GetString());
+    }
 }

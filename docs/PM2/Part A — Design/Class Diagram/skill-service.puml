@@ -1,0 +1,79 @@
+@startuml skill-service
+title PM2 Level 3: Code - Class Diagram (skill-service, planned minimal slice) - FR-10\nOwner: Arwa Mohey Hamdy
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+interface ISkill <<provided>> {
+  +AddSkillAsync(studentId, request): Task<ServiceResult<Skill>>
+  +GetSkillsAsync(studentId): Task<List<Skill>>
+}
+
+class SkillsController <<component>> {
+  -skillService: ISkill
+  --
+  +AddSkill(request)
+  +GetSkills(studentId)
+}
+
+class SkillService <<component>> {
+  -repository: ISkillRepository
+  --
+  +AddSkillAsync(...) / GetSkillsAsync(...)
+}
+
+interface ISkillRepository <<required - Database>> {
+  +GetByNameAsync(studentId, name): Task<Skill?>
+  +AddAsync(skill): Task<Skill>
+  +SaveChangesAsync(): Task
+}
+
+class SkillRepository <<component>> {
+  -context: SkillDbContext
+  --
+  +GetByNameAsync(...) / AddAsync(...)
+  +SaveChangesAsync()
+}
+
+class SkillDbContext {
+  +Skills: DbSet<Skill>
+}
+
+class Skill {
+  -skillId: String
+  -studentId: String
+  -name: String
+  -level: int
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
+
+SkillsController --> ISkill
+ISkill <|.. SkillService
+SkillService --> ISkillRepository
+SkillRepository ..|> ISkillRepository
+SkillRepository --> SkillDbContext
+SkillDbContext --> Skill
+
+note bottom of SkillService
+  Planned PM2 slice: duplicate name and missing required fields are rejected.
+  Reconcile with the implementation from PM2-08 before closing PM2-01.
+end note
+@enduml
