@@ -11,7 +11,7 @@ ENV DOTNET_VERSION=10.0.404
 ENV PATH="${PATH}:${DOTNET_ROOT}:/root/.dotnet/tools"
 
 # Install the .NET 10 SDK (pinned patch; bump DOTNET_VERSION when 10.0.x updates).
-RUN curl -fsSL --retry 5 --retry-all-errors --retry-delay 5 --connect-timeout 30 \
+RUN curl -fsSL --proto '=https' --tlsv1.2 --retry 5 --retry-all-errors --retry-delay 5 --connect-timeout 30 \
         "https://builds.dotnet.microsoft.com/dotnet/Sdk/${DOTNET_VERSION}/dotnet-sdk-${DOTNET_VERSION}-linux-x64.tar.gz" \
         -o /tmp/dotnet-sdk.tar.gz \
     && mkdir -p "${DOTNET_ROOT}" \
