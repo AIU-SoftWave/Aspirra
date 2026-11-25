@@ -31,12 +31,12 @@ legend right
 endlegend
 
 interface ICourse <<provided>> {
-  +AddCourseAsync(course): ServiceResult<Course>
-  +GetCourseAsync(courseId): ServiceResult<Course>
-  +UpdateCourseAsync(courseId, course): ServiceResult<Course>
-  +RemoveCourseAsync(courseId): ServiceResult<bool>
-  +GetCoursesAsync(studentId): List<Course>
-  +GetCourseProgressAsync(courseId): ServiceResult<CourseProgress>
+  +AddCourseAsync(course): Task<ServiceResult<Course>>
+  +GetCourseAsync(courseId): Task<ServiceResult<Course>>
+  +UpdateCourseAsync(courseId, course): Task<ServiceResult<Course>>
+  +RemoveCourseAsync(courseId): Task<ServiceResult<bool>>
+  +GetCoursesAsync(studentId): Task<List<Course>>
+  +GetCourseProgressAsync(courseId): Task<ServiceResult<CourseProgress>>
 }
 
 class CoursesController <<component>> {
@@ -92,35 +92,42 @@ class CourseDbContext {
 }
 
 class Course {
-  -courseId: String
-  -studentId: String
-  -name: String
-  -code: String
-  -instructor: String
-  -semester: String
-  -credits: int
-  -weeklyWorkloadHours: int
+  +CourseId: string
+  +StudentId: string
+  +Name: string
+  +Code: string
+  +Instructor: string
+  +Semester: string
+  +Credits: int
+  +WeeklyWorkloadHours: int
+  +CreatedAt: DateTime
+  +UpdatedAt: DateTime
 }
 class CourseEnrollment {
-  -enrollmentId: String
-  -courseId: String
-  -studentId: String
+  +EnrollmentId: string
+  +CourseId: string
+  +StudentId: string
+  +EnrollmentDate: DateOnly
+  +Status: string
 }
 class CourseProgress {
-  -message: String?
-  -completed: List<AssessmentItem>
-  -outstanding: List<AssessmentItem>
+  +Message: string?
+  +Completed: IReadOnlyList<AssessmentItem>
+  +Outstanding: IReadOnlyList<AssessmentItem>
 }
 class AssessmentItem {
-  -assignmentId: String
-  -title: String
-  -status: String
+  +AssignmentId: string
+  +Title: string
+  +Status: string
 }
 
 CoursesController --> ICourse
 ICourse <|.. CourseService
 CourseService --> ICourseRepository
 CourseService --> IAssessmentClient
+CourseService --> Course
+CourseService --> CourseProgress
+ICourseRepository "1" -- "0..*" Course : stores
 HttpAssessmentClient ..|> IAssessmentClient
 CourseRepository ..|> ICourseRepository
 CourseRepository --> CourseDbContext

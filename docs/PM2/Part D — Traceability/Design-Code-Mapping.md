@@ -2,6 +2,20 @@
 
 This file maps every PM2 design artifact to the code and test that implement it. Each row is verifiable by path.
 
+## Updated Class Diagrams & Message-to-Link Backbone (PM2-01)
+
+The full scenario message → class-diagram link verification table is maintained in [`Part A — Design/Class Diagram/README.md`](../Part%20A%20%E2%80%94%20Design/Class%20Diagram/README.md#message--class-link-table-pm2-01--pm2-14).
+
+| Class diagram | Implemented code verified against | Status |
+| --- | --- | --- |
+| `Part A — Design/Class Diagram/00-pm2-scenario-class-diagram.puml` | Cross-service view across all 5 PM2 scenarios (`Student` & `Scheduler` actors → controllers → interfaces → services → repositories/clients → domain) | Updated & rendered |
+| `Part A — Design/Class Diagram/02-academic-service.puml` | `src/Services/AcademicService/` (`GoalsController`, `IGoal`, `GoalService`, `IGoalRepository`, `GoalRepository`, `AcademicDbContext`, `Goal`, `GoalStatus`) | Updated & rendered |
+| `Part A — Design/Class Diagram/03-course-service.puml` | `src/Services/CourseService/` (`CoursesController`, `ICourse`, `CourseService`, `IAssessmentClient`, `HttpAssessmentClient`, `ICourseRepository`, `CourseRepository`, `CourseDbContext`, `Course`, `CourseEnrollment`, `CourseProgress`, `AssessmentItem`) | Updated & rendered |
+| `Part A — Design/Class Diagram/05-goal-planner-service.puml` | `src/Services/GoalPlannerService/` (`PlansController`, `IGoalPlanner`, `GoalPlannerService`, `IGoalClient`, `HttpGoalClient`, `IAIProvider`, `MockAIProvider`, `IPlanDraftRepository`, `PlanDraftRepository`, `GoalPlannerDbContext`, `PlanDraft`, `Milestone`, `PlanTask`, `AiPlan`, `PlanStatus`) | Updated & rendered |
+| `Part A — Design/Class Diagram/13-habit-service.puml` | `src/Services/HabitService/` (`HabitsController`, `IHabit`, `HabitService`, `IHabitRepository`, `HabitRepository`, `HabitDbContext`, `Habit`, `HabitLog`, `HabitFrequency`) | Updated & rendered |
+| `Part A — Design/Class Diagram/skill-service.puml` | `src/Services/SkillService/` (Dockerfile only — planned minimal slice, reconcile with PM2-08) | Planned baseline updated & rendered |
+| `Part A — Design/Class Diagram/notification-service.puml` | `src/Services/NotificationService/` (Dockerfile only — planned minimal slice, reconcile with PM2-09) | Planned baseline updated & rendered |
+
 ## Complete Goal (PM2-01–PM2-05)
 
 | Design artifact | Code | Test |

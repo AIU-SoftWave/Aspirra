@@ -31,12 +31,12 @@ legend right
 endlegend
 
 interface IGoalPlanner <<provided>> {
-  +GeneratePlanAsync(request): ServiceResult<PlanDraft>
-  +UpdateDraftAsync(draftId, input): ServiceResult<PlanDraft>
-  +ApproveAsync(draftId): ServiceResult<PlanDraft>
-  +DiscardAsync(draftId): ServiceResult<bool>
+  +GeneratePlanAsync(request): Task<ServiceResult<PlanDraft>>
+  +UpdateDraftAsync(draftId, input): Task<ServiceResult<PlanDraft>>
+  +ApproveAsync(draftId): Task<ServiceResult<PlanDraft>>
+  +DiscardAsync(draftId): Task<ServiceResult<bool>>
   +GetDraftAsync(draftId): Task<PlanDraft?>
-  +GetTasksAsync(goalId): List<PlanTask>
+  +GetTasksAsync(goalId): Task<List<PlanTask>>
 }
 
 class PlansController <<component>> {
@@ -101,34 +101,38 @@ class GoalPlannerDbContext {
   +PlanTasks: DbSet<PlanTask>
 }
 
+class AiPlan {
+  +Milestones: List<AiMilestone>
+}
+
 class PlanDraft {
-  -draftId: String
-  -studentId: String
-  -goalId: String?
-  -goalText: String
-  -status: PlanStatus
-  -createdAt: DateTime
-  -updatedAt: DateTime
-  -milestones: List<Milestone>
+  +DraftId: string
+  +StudentId: string
+  +GoalId: string?
+  +GoalText: string
+  +Status: PlanStatus
+  +CreatedAt: DateTime
+  +UpdatedAt: DateTime
+  +Milestones: List<Milestone>
   --
-  +approve(): void
+  +Approve(): void
 }
 class Milestone {
-  -milestoneId: String
-  -draftId: String
-  -title: String
-  -deadline: DateOnly
-  -orderIndex: int
-  -tasks: List<PlanTask>
+  +MilestoneId: string
+  +DraftId: string
+  +Title: string
+  +Deadline: DateOnly
+  +OrderIndex: int
+  +Tasks: List<PlanTask>
 }
 class PlanTask {
-  -taskId: String
-  -milestoneId: String
-  -title: String
-  -durationHours: int
-  -deadline: DateOnly
-  -dependsOnTaskId: String?
-  -orderIndex: int
+  +TaskId: string
+  +MilestoneId: string
+  +Title: string
+  +DurationHours: int
+  +Deadline: DateOnly
+  +DependsOnTaskId: string?
+  +OrderIndex: int
 }
 enum PlanStatus {
   Draft
@@ -140,6 +144,9 @@ IGoalPlanner <|.. GoalPlannerService
 GoalPlannerService --> IGoalClient
 GoalPlannerService --> IAIProvider
 GoalPlannerService --> IPlanDraftRepository
+GoalPlannerService --> PlanDraft
+IAIProvider ..> AiPlan
+IPlanDraftRepository "1" -- "0..*" PlanDraft : stores
 HttpGoalClient ..|> IGoalClient
 MockAIProvider ..|> IAIProvider
 PlanDraftRepository ..|> IPlanDraftRepository

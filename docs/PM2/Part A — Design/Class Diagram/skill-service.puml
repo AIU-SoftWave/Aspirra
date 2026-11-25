@@ -21,6 +21,14 @@ skinparam interface {
 }
 hide empty members
 
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Plain line | Association |
+endlegend
+
 interface ISkill <<provided>> {
   +AddSkillAsync(studentId, request): Task<ServiceResult<Skill>>
   +GetSkillsAsync(studentId): Task<List<Skill>>
@@ -57,17 +65,19 @@ class SkillDbContext {
 }
 
 class Skill {
-  -skillId: String
-  -studentId: String
-  -name: String
-  -level: int
-  -createdAt: DateTime
-  -updatedAt: DateTime
+  +SkillId: string
+  +StudentId: string
+  +Name: string
+  +Level: int
+  +CreatedAt: DateTime
+  +UpdatedAt: DateTime
 }
 
 SkillsController --> ISkill
 ISkill <|.. SkillService
 SkillService --> ISkillRepository
+SkillService --> Skill
+ISkillRepository "1" -- "0..*" Skill : stores
 SkillRepository ..|> ISkillRepository
 SkillRepository --> SkillDbContext
 SkillDbContext --> Skill

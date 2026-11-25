@@ -30,6 +30,7 @@ legend right
 endlegend
 
 class Student <<actor>>
+class Scheduler <<actor>>
 
 package "Academic Service — Complete Goal" {
   class GoalsController <<component>> {
@@ -100,11 +101,12 @@ Student --> GoalsController
 Student --> PlansController
 Student --> HabitsController
 Student --> SkillsController
-Student --> NotificationsController
+Scheduler --> NotificationsController
 
 GoalsController --> IGoal
 IGoal <|.. GoalService
 GoalService --> IGoalRepository
+GoalService --> Goal
 IGoalRepository --> Goal
 Goal --> GoalStatus
 
@@ -113,6 +115,7 @@ IGoalPlanner <|.. GoalPlannerService
 GoalPlannerService --> IAIProvider
 GoalPlannerService --> IPlanDraftRepository
 GoalPlannerService --> IGoalClient
+GoalPlannerService --> PlanDraft
 IPlanDraftRepository --> PlanDraft
 PlanDraft *-- "1..*" Milestone
 Milestone *-- "1..*" PlanTask
@@ -121,12 +124,15 @@ PlanDraft --> PlanStatus
 HabitsController --> IHabit
 IHabit <|.. HabitService
 HabitService --> IHabitRepository
+HabitService --> Habit
+HabitService --> HabitLog
 IHabitRepository --> Habit
 Habit *-- "0..*" HabitLog
 
 SkillsController --> ISkill
 ISkill <|.. SkillService
 SkillService --> ISkillRepository
+SkillService --> Skill
 ISkillRepository --> Skill
 
 NotificationsController --> INotification
@@ -134,13 +140,14 @@ INotification <|.. NotificationService
 NotificationService --> IAssessment
 NotificationService --> IEmailGateway
 NotificationService --> INotificationRepository
+NotificationService --> Notification
 INotificationRepository --> Notification
 Notification --> NotificationStatus
 
 note bottom of Goal
-  complete: Active/Completed -> Completed
-  archive: Active/Completed -> Archived
-  restore: Archived -> Active
+  Complete(): Active/Completed -> Completed
+  Archive(): Active/Completed -> Archived
+  Restore(): Archived -> Active
   Archived -> Completed is rejected before UpdateAsync.
 end note
 
