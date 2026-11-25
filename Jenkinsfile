@@ -64,6 +64,7 @@ pipeline {
                                     /o:"aboosalh" \\
                                     /d:sonar.host.url="https://sonarcloud.io" \\
                                     /d:sonar.token="$SONAR_TOKEN" \\
+                                    /d:sonar.qualitygate.wait=true \\
                                     /d:sonar.cs.opencover.reportsPaths="${WORKSPACE}/artifacts/coverage/**/coverage.opencover.xml"
                                 dotnet build Aspirra.slnx --no-restore --configuration Release
                                 dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
