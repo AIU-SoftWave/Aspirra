@@ -8,6 +8,7 @@ bin/
 obj/
 .vs/
 TestResults/
+artifacts/
 *.user
 *.suo
 project.lock.json

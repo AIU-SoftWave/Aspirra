@@ -29,8 +29,103 @@ jobs:
       - name: Build
         run: dotnet build Aspirra.slnx --no-restore --configuration Release
 
-      - name: Test
-        run: dotnet test Aspirra.slnx --no-build --configuration Release --logger "console;verbosity=normal"
+      - name: Test with coverage
+        run: |
+          dotnet test Aspirra.slnx --no-build --configuration Release \
+            --settings coverlet.runsettings \
+            --collect:"XPlat Code Coverage" \
+            --results-directory artifacts/coverage \
+            --logger "console;verbosity=normal" \
+            --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test and coverage artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-coverage
+          path: artifacts/coverage
+          if-no-files-found: warn
+
+  sonar:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check SonarCloud configuration
+        id: sonar-config
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::SONAR_TOKEN is not configured; skipping SonarCloud analysis."
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout repository
+        if: steps.sonar-config.outputs.enabled == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET
+        if: steps.sonar-config.outputs.enabled == 'true'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Set up JDK 21
+        if: steps.sonar-config.outputs.enabled == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Cache SonarCloud packages
+        if: steps.sonar-config.outputs.enabled == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Install SonarScanner for .NET
+        if: steps.sonar-config.outputs.enabled == 'true'
+        run: dotnet tool install --global dotnet-sonarscanner
+
+      - name: Download coverage artifact
+        if: steps.sonar-config.outputs.enabled == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: test-coverage
+          path: artifacts/coverage
+
+      - name: Restore
+        if: steps.sonar-config.outputs.enabled == 'true'
+        run: dotnet restore Aspirra.slnx
+
+      - name: Begin SonarCloud analysis
+        if: steps.sonar-config.outputs.enabled == 'true'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          dotnet sonarscanner begin \
+            /k:"AIU-SoftWave_Aspirra" \
+            /o:"aboosalh" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.token="$SONAR_TOKEN" \
+            /d:sonar.cs.opencover.reportsPaths="artifacts/coverage/**/coverage.opencover.xml"
+
+      - name: Build
+        if: steps.sonar-config.outputs.enabled == 'true'
+        run: dotnet build Aspirra.slnx --no-restore --configuration Release
+
+      - name: End SonarCloud analysis
+        if: steps.sonar-config.outputs.enabled == 'true'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
 
   docker:
     needs: test

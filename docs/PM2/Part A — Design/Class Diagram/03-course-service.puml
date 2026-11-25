@@ -1,0 +1,139 @@
+@startuml 03-course-service
+title PM2 Level 3: Code - Class Diagram (course-service) - FR-03\nOwner: Ahmed Mohamed Ahmed
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface ICourse <<provided>> {
+  +AddCourseAsync(course): ServiceResult<Course>
+  +GetCourseAsync(courseId): ServiceResult<Course>
+  +UpdateCourseAsync(courseId, course): ServiceResult<Course>
+  +RemoveCourseAsync(courseId): ServiceResult<bool>
+  +GetCoursesAsync(studentId): List<Course>
+  +GetCourseProgressAsync(courseId): ServiceResult<CourseProgress>
+}
+
+class CoursesController <<component>> {
+  -courseService: ICourse
+  --
+  +GetCourses(studentId)
+  +GetCourse(courseId)
+  +GetCourseProgress(courseId)
+  +AddCourse(course)
+  +UpdateCourse(courseId, course)
+  +RemoveCourse(courseId)
+}
+
+class CourseService <<component>> {
+  -repository: ICourseRepository
+  -assessmentClient: IAssessmentClient
+  --
+  +AddCourseAsync(...) / GetCourseAsync(...)
+  +UpdateCourseAsync(...) / RemoveCourseAsync(...)
+  +GetCoursesAsync(...) / GetCourseProgressAsync(...)
+}
+
+interface IAssessmentClient <<required - Assessment service>> {
+  +GetAssignmentsAsync(courseId): Task<IReadOnlyList<AssessmentItem>>
+}
+
+class HttpAssessmentClient <<component>> {
+  -httpClient: HttpClient
+  --
+  +GetAssignmentsAsync(courseId)
+}
+
+interface ICourseRepository <<required - Database>> {
+  +GetByIdAsync(courseId): Task<Course?>
+  +GetByStudentAsync(studentId): Task<List<Course>>
+  +ExistsAsync(code, semester, excludeCourseId): Task<bool>
+  +AddAsync(course): Task
+  +UpdateAsync(course): Task
+  +RemoveAsync(course): Task
+}
+
+class CourseRepository <<component>> {
+  -context: CourseDbContext
+  --
+  +GetByIdAsync(...) / GetByStudentAsync(...)
+  +ExistsAsync(...) / AddAsync(...)
+  +UpdateAsync(...) / RemoveAsync(...)
+}
+
+class CourseDbContext {
+  +Courses: DbSet<Course>
+  +Enrollments: DbSet<CourseEnrollment>
+}
+
+class Course {
+  -courseId: String
+  -studentId: String
+  -name: String
+  -code: String
+  -instructor: String
+  -semester: String
+  -credits: int
+  -weeklyWorkloadHours: int
+}
+class CourseEnrollment {
+  -enrollmentId: String
+  -courseId: String
+  -studentId: String
+}
+class CourseProgress {
+  -message: String?
+  -completed: List<AssessmentItem>
+  -outstanding: List<AssessmentItem>
+}
+class AssessmentItem {
+  -assignmentId: String
+  -title: String
+  -status: String
+}
+
+CoursesController --> ICourse
+ICourse <|.. CourseService
+CourseService --> ICourseRepository
+CourseService --> IAssessmentClient
+HttpAssessmentClient ..|> IAssessmentClient
+CourseRepository ..|> ICourseRepository
+CourseRepository --> CourseDbContext
+CourseDbContext --> Course
+CourseDbContext --> CourseEnrollment
+Course ..> CourseProgress
+CourseProgress --> AssessmentItem
+note bottom of CourseService
+SOLID applied:
+S - CourseService coordinates; CourseRepository persists; HttpAssessmentClient isolates HTTP.
+O - new behaviour is added by new implementations, not by editing CourseService.
+L - CourseService can replace any other ICourse implementation.
+I - ICourse and IAssessmentClient expose only the operations their clients use.
+D - CourseService depends on ICourseRepository and IAssessmentClient, not concrete classes.
+end note
+@enduml

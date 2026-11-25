@@ -1,0 +1,96 @@
+@startuml notification-service
+title PM2 Level 3: Code - Class Diagram (notification-service, planned minimal slice) - FR-18\nOwner: Muhammed Hany Hamdy
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+interface INotification <<provided>> {
+  +SendDeadlineRemindersAsync(studentId, days): Task<ServiceResult<List<Notification>>>
+}
+
+class NotificationsController <<component>> {
+  -notificationService: INotification
+  --
+  +SendDeadlineReminders(request)
+}
+
+class NotificationService <<component>> {
+  -assessment: IAssessment
+  -emailGateway: IEmailGateway
+  -repository: INotificationRepository
+  --
+  +SendDeadlineRemindersAsync(...)
+}
+
+interface IAssessment <<required - Assessment>> {
+  +GetDeadlinesAsync(studentId, days): Task<List<Deadline>>
+}
+
+interface IEmailGateway <<required - Email>> {
+  +SendAsync(to, subject, body): Task
+}
+
+interface INotificationRepository <<required - Database>> {
+  +AddAsync(notification): Task<Notification>
+  +GetByIdAsync(notificationId): Task<Notification?>
+  +SaveChangesAsync(): Task
+}
+
+class NotificationRepository <<component>> {
+  -context: NotificationDbContext
+  --
+  +AddAsync(...) / GetByIdAsync(...)
+  +SaveChangesAsync()
+}
+
+class NotificationDbContext {
+  +Notifications: DbSet<Notification>
+}
+
+class Notification {
+  -notificationId: String
+  -studentId: String
+  -type: String
+  -message: String
+  -status: NotificationStatus
+  -sentAt: DateTime?
+}
+
+enum NotificationStatus {
+  Pending
+  Sent
+  Failed
+}
+
+NotificationsController --> INotification
+INotification <|.. NotificationService
+NotificationService --> IAssessment
+NotificationService --> IEmailGateway
+NotificationService --> INotificationRepository
+NotificationRepository ..|> INotificationRepository
+NotificationRepository --> NotificationDbContext
+NotificationDbContext --> Notification
+Notification --> NotificationStatus
+
+note bottom of NotificationService
+  Planned PM2 slice: Pending -> Sent on success; Pending -> Failed on send error;
+  Failed -> Sent on retry. Reconcile with PM2-09 before closing PM2-01.
+end note
+@enduml

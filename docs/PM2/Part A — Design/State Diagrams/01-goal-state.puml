@@ -1,0 +1,23 @@
+@startuml
+title Goal State Machine
+
+hide empty description
+
+[*] --> Active : create
+
+Active --> Completed : complete
+Completed --> Completed : complete [idempotent]
+Active --> Archived : archive
+Completed --> Archived : archive
+Archived --> Active : restore
+
+Archived -[#red]-> Completed : complete [400 INVALID_TRANSITION]
+Active -[#red]-> Active : restore [400 INVALID_TRANSITION]
+Completed -[#red]-> Completed : restore [400 INVALID_TRANSITION]
+
+note right of Archived
+  Missing goal: 404 NOT_FOUND
+  Restore clears CompletionDate.
+end note
+
+@enduml

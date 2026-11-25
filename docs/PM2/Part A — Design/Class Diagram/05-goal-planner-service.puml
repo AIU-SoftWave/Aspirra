@@ -1,0 +1,160 @@
+@startuml 05-goal-planner-service
+title PM2 Level 3: Code - Class Diagram (goal-planner-service) - FR-05\nOwner: Yomna Mohamed Fekry
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Filled diamond | Composition |
+  | Plain line | Association |
+endlegend
+
+interface IGoalPlanner <<provided>> {
+  +GeneratePlanAsync(request): ServiceResult<PlanDraft>
+  +UpdateDraftAsync(draftId, input): ServiceResult<PlanDraft>
+  +ApproveAsync(draftId): ServiceResult<PlanDraft>
+  +DiscardAsync(draftId): ServiceResult<bool>
+  +GetDraftAsync(draftId): Task<PlanDraft?>
+  +GetTasksAsync(goalId): List<PlanTask>
+}
+
+class PlansController <<component>> {
+  -goalPlanner: IGoalPlanner
+  --
+  +Generate(request)
+  +Update(draftId, input)
+  +Approve(draftId)
+  +Discard(draftId)
+  +Get(draftId)
+  +GetTasks(goalId)
+}
+
+class GoalPlannerService <<component>> {
+  -goalClient: IGoalClient
+  -aiProvider: IAIProvider
+  -repository: IPlanDraftRepository
+  --
+  +GeneratePlanAsync(...) / UpdateDraftAsync(...)
+  +ApproveAsync(...) / DiscardAsync(...)
+  +GetDraftAsync(...) / GetTasksAsync(...)
+}
+
+interface IGoalClient <<required - Academic service>> {
+  +GoalExistsAsync(goalId): Task<bool>
+}
+
+class HttpGoalClient <<component>> {
+  -httpClient: HttpClient
+  --
+  +GoalExistsAsync(goalId)
+}
+
+interface IAIProvider <<required - AI provider>> {
+  +GenerateAsync(prompt): Task<AiPlan>
+}
+
+class MockAIProvider <<component>> {
+  --
+  +GenerateAsync(prompt)
+}
+
+interface IPlanDraftRepository <<required - Database>> {
+  +GetByIdAsync(draftId): Task<PlanDraft?>
+  +AddAsync(draft): Task
+  +Remove(draft): void
+  +SaveChangesAsync(): Task
+  +GetApprovedTasksByGoalAsync(goalId): Task<List<PlanTask>>
+}
+
+class PlanDraftRepository <<component>> {
+  -context: GoalPlannerDbContext
+  --
+  +GetByIdAsync(...) / AddAsync(...)
+  +Remove(...) / SaveChangesAsync(...)
+  +GetApprovedTasksByGoalAsync(...)
+}
+
+class GoalPlannerDbContext {
+  +PlanDrafts: DbSet<PlanDraft>
+  +Milestones: DbSet<Milestone>
+  +PlanTasks: DbSet<PlanTask>
+}
+
+class PlanDraft {
+  -draftId: String
+  -studentId: String
+  -goalId: String?
+  -goalText: String
+  -status: PlanStatus
+  -createdAt: DateTime
+  -updatedAt: DateTime
+  -milestones: List<Milestone>
+  --
+  +approve(): void
+}
+class Milestone {
+  -milestoneId: String
+  -draftId: String
+  -title: String
+  -deadline: DateOnly
+  -orderIndex: int
+  -tasks: List<PlanTask>
+}
+class PlanTask {
+  -taskId: String
+  -milestoneId: String
+  -title: String
+  -durationHours: int
+  -deadline: DateOnly
+  -dependsOnTaskId: String?
+  -orderIndex: int
+}
+enum PlanStatus {
+  Draft
+  Approved
+}
+
+PlansController --> IGoalPlanner
+IGoalPlanner <|.. GoalPlannerService
+GoalPlannerService --> IGoalClient
+GoalPlannerService --> IAIProvider
+GoalPlannerService --> IPlanDraftRepository
+HttpGoalClient ..|> IGoalClient
+MockAIProvider ..|> IAIProvider
+PlanDraftRepository ..|> IPlanDraftRepository
+PlanDraftRepository --> GoalPlannerDbContext
+GoalPlannerDbContext --> PlanDraft
+PlanDraft *-- "1..*" Milestone
+Milestone *-- "1..*" PlanTask
+PlanDraft --> PlanStatus
+note bottom of GoalPlannerService
+SOLID applied:
+S - GoalPlannerService orchestrates; adapters and repository each do one job.
+O - A new AI model is added by a new IAIProvider implementation; the planner is not changed.
+L - GoalPlannerService can replace any other IGoalPlanner implementation.
+I - IGoalPlanner exposes only the operations its clients use.
+D - GoalPlannerService depends on IGoalClient, IAIProvider, and IPlanDraftRepository.
+Draft -> Approved; re-approve is idempotent; edit-after-approve returns 409 PLAN_NOT_EDITABLE.
+end note
+@enduml

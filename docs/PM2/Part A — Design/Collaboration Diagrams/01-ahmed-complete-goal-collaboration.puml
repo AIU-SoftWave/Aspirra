@@ -1,0 +1,32 @@
+@startuml
+title Collaboration Diagram — Complete Goal
+
+object "student : Student" as Student
+object "controller : GoalsController" as Controller
+object "service : GoalService" as Service
+object "repository : IGoalRepository <<mock>>" as Repository
+object "goal : Goal" as Goal
+
+Student --> Controller : 1: POST /api/goals/goal-1001/complete
+Controller --> Service : 1.1: CompleteGoalAsync("goal-1001")
+Service --> Repository : 1.2: GetByIdAsync("goal-1001")
+Repository --> Service : 1.2.1: goal
+Service --> Goal : 1.3: Complete()
+Service --> Repository : 1.4: UpdateAsync(goal)
+Service --> Controller : 1.5: goal
+Controller --> Student : 1.6: 200 OK
+
+note right of Goal
+  goalId = "goal-1001"
+  studentId = "23101359"
+  title = "Reach a 3.5 GPA"
+  status = Active -> Completed
+  targetDate = 2026-12-20
+  priority = "High"
+end note
+
+note bottom of Repository
+  Mock of IGoalRepository (Moq).
+end note
+
+@enduml
