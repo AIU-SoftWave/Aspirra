@@ -7,7 +7,7 @@ One state diagram per PM2 scenario with meaningful lifecycle transitions. Invali
 - `01-goal-state.puml` — Ahmed — `#58`
 - `plan-draft-state.puml` — Yomna — `#59`
 - `habit-state.puml` — Mostafa — `#60`
-- `skill-state.puml` — Arwa — `#61`
+- `skill-state.puml` — Arwa — `#61` — done
 - `notification-state.puml` — Muhammed — `#62`
 
 ## Goal rules

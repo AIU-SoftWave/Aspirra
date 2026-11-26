@@ -7,13 +7,13 @@
 
 ## Deliverables
 
-- [ ] Minimal SkillService slice: `Skill`, `ISkillRepository`, `SkillService`, `SkillsController`
-- [ ] Add Skill object diagram
-- [ ] Add Skill sequence diagram
-- [ ] Add Skill collaboration diagram
-- [ ] Skill state diagram
-- [ ] Moq tests for save, duplicate rejection, and invalid input
-- [ ] Project added to `Aspirra.slnx`
+- [x] Minimal SkillService slice: `Skill`, `ISkillRepository`, `SkillService`, `SkillsController`
+- [x] Add Skill object diagram
+- [x] Add Skill sequence diagram
+- [x] Add Skill collaboration diagram
+- [x] Skill state diagram
+- [x] Moq tests for save, duplicate rejection, and invalid input
+- [x] Project added to `Aspirra.slnx`
 
 ## Evidence
 
