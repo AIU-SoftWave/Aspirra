@@ -1,0 +1,11 @@
+@startuml
+title HabitLog State Machine
+
+hide empty description
+
+[*] --> Incomplete : create [Completed = false]
+[*] --> Completed : complete [no log exists] / create completed log
+Incomplete --> Completed : complete / set Completed, CompletedAt
+Completed --> Completed : complete [already completed] / no change
+
+@enduml

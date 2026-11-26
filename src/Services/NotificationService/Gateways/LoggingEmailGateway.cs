@@ -14,7 +14,7 @@ public class LoggingEmailGateway : IEmailGateway
 
     public Task SendAsync(string to, string subject, string body, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Email to {To}: {Subject}", to, subject);
+        _logger.LogInformation("Email delivery simulated.");
         return Task.CompletedTask;
     }
 }
