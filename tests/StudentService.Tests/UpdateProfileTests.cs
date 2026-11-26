@@ -7,7 +7,7 @@ namespace StudentService.Tests;
 public class UpdateProfileTests
 {
     [Fact]
-    public async Task UpdateProfile_ChangesFields()
+    public async Task TC_01_2_01_UpdateProfile_ChangesFields()
     {
         using var fixture = new StudentTestFixture();
         await fixture.Service.CreateProfileAsync(
@@ -35,7 +35,7 @@ public class UpdateProfileTests
     }
 
     [Fact]
-    public async Task UpdateProfile_ClearingRequiredField_KeepsOldValues()
+    public async Task TC_01_2_02_UpdateProfile_ClearingRequiredField_KeepsOldValues()
     {
         using var fixture = new StudentTestFixture();
         var created = await fixture.Service.CreateProfileAsync(
@@ -64,7 +64,7 @@ public class UpdateProfileTests
     }
 
     [Fact]
-    public async Task UpdateProfile_ChangesAvailability()
+    public async Task TC_01_2_03_UpdateProfile_ChangesAvailability()
     {
         using var fixture = new StudentTestFixture();
         var created = await fixture.Service.CreateProfileAsync(
@@ -102,7 +102,7 @@ public class UpdateProfileTests
     }
 
     [Fact]
-    public async Task UpdateProfile_NotFound_ReturnsNotFound()
+    public async Task TC_01_2_04_UpdateProfile_NotFound_ReturnsNotFound()
     {
         using var fixture = new StudentTestFixture();
 

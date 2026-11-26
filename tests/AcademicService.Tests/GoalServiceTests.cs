@@ -43,7 +43,7 @@ public class GoalServiceTests
     }
 
     [Fact]
-    public async Task CreateGoal_WithValidData_SetsStatusActive()
+    public async Task TC_02_1_05_CreateGoal_WithValidData_SetsStatusActive()
     {
         using var context = CreateContext();
         var service = CreateService(context);
@@ -60,7 +60,7 @@ public class GoalServiceTests
     }
 
     [Fact]
-    public async Task CreateGoal_MissingTitle_ReturnsRequiredFieldError()
+    public async Task TC_02_1_06_CreateGoal_MissingTitle_ReturnsRequiredFieldError()
     {
         using var context = CreateContext();
         var service = CreateService(context);
@@ -74,7 +74,7 @@ public class GoalServiceTests
     }
 
     [Fact]
-    public async Task CreateGoal_MissingPriority_ReturnsRequiredFieldError()
+    public async Task TC_02_1_07_CreateGoal_MissingPriority_ReturnsRequiredFieldError()
     {
         using var context = CreateContext();
         var service = CreateService(context);
@@ -88,7 +88,7 @@ public class GoalServiceTests
     }
 
     [Fact]
-    public async Task CreateGoal_PastTargetDate_ReturnsInvalidDateError()
+    public async Task TC_02_1_08_CreateGoal_PastTargetDate_ReturnsInvalidDateError()
     {
         using var context = CreateContext();
         var service = CreateService(context);
@@ -102,7 +102,7 @@ public class GoalServiceTests
     }
 
     [Fact]
-    public async Task UpdateGoal_ChangesFields()
+    public async Task TC_02_2_01_UpdateGoal_ChangesFields()
     {
         using var context = CreateContext();
         var service = CreateService(context);
@@ -130,7 +130,7 @@ public class GoalServiceTests
     }
 
     [Fact]
-    public async Task UpdateGoal_PastTargetDate_KeepsOldValues()
+    public async Task TC_02_3_01_UpdateGoal_PastTargetDate_KeepsOldValues()
     {
         using var context = CreateContext();
         var service = CreateService(context);
@@ -158,7 +158,7 @@ public class GoalServiceTests
     }
 
     [Fact]
-    public async Task UpdateGoal_MissingTitle_KeepsOldValues()
+    public async Task TC_02_2_02_UpdateGoal_MissingTitle_KeepsOldValues()
     {
         using var context = CreateContext();
         var service = CreateService(context);
@@ -182,7 +182,7 @@ public class GoalServiceTests
     }
 
     [Fact]
-    public async Task CompleteGoal_SetsCompletedAndCompletionDate()
+    public async Task TC_02_4_05_CompleteGoal_SetsCompletedAndCompletionDate()
     {
         using var context = CreateContext();
         var service = CreateService(context);
@@ -196,7 +196,7 @@ public class GoalServiceTests
     }
 
     [Fact]
-    public async Task CompleteGoal_Twice_KeepsFirstCompletionDate()
+    public async Task TC_02_4_06_CompleteGoal_Twice_KeepsFirstCompletionDate()
     {
         using var context = CreateContext();
         var service = CreateService(context);
@@ -213,7 +213,7 @@ public class GoalServiceTests
     }
 
     [Fact]
-    public async Task ArchiveAndRestoreGoal_ChangesStatus()
+    public async Task TC_02_5_02_ArchiveAndRestoreGoal_ChangesStatus()
     {
         using var context = CreateContext();
         var service = CreateService(context);
@@ -227,7 +227,7 @@ public class GoalServiceTests
     }
 
     [Fact]
-    public async Task DeleteGoal_RemovesGoal()
+    public async Task TC_02_6_01_DeleteGoal_RemovesGoal()
     {
         using var context = CreateContext();
         var service = CreateService(context);
@@ -240,7 +240,7 @@ public class GoalServiceTests
     }
 
     [Fact]
-    public async Task GetGoals_FiltersByStudentAndStatus()
+    public async Task TC_02_1_09_GetGoals_FiltersByStudentAndStatus()
     {
         using var context = CreateContext();
         var service = CreateService(context);
@@ -269,7 +269,7 @@ public class GoalServiceTests
     }
 
     [Fact]
-    public async Task GetGoal_NotFound_ReturnsNotFound()
+    public async Task TC_02_1_10_GetGoal_NotFound_ReturnsNotFound()
     {
         using var context = CreateContext();
         var controller = new GoalsController(CreateService(context));

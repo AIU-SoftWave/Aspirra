@@ -26,7 +26,7 @@ public class GoalMoqTests
     }
 
     [Fact]
-    public async Task CompleteGoal_FromActive_PersistsExactlyOnce()
+    public async Task TC_02_4_03_CompleteGoal_FromActive_PersistsExactlyOnce()
     {
         var goal = GoalWithStatus(GoalStatus.Active);
         var repository = new Mock<IGoalRepository>(MockBehavior.Strict);
@@ -46,7 +46,7 @@ public class GoalMoqTests
     }
 
     [Fact]
-    public async Task CompleteGoal_FromArchived_DoesNotPersist()
+    public async Task TC_02_4_04_CompleteGoal_FromArchived_DoesNotPersist()
     {
         var goal = GoalWithStatus(GoalStatus.Archived);
         var repository = new Mock<IGoalRepository>(MockBehavior.Strict);
@@ -64,7 +64,7 @@ public class GoalMoqTests
     }
 
     [Fact]
-    public async Task RestoreGoal_FromArchived_ClearsCompletionDateAndPersists()
+    public async Task TC_02_5_01_RestoreGoal_FromArchived_ClearsCompletionDateAndPersists()
     {
         var goal = GoalWithStatus(GoalStatus.Completed);
         goal.Status = GoalStatus.Archived;
@@ -85,7 +85,7 @@ public class GoalMoqTests
     }
 
     [Fact]
-    public async Task CreateGoal_WithoutStudentId_DoesNotPersist()
+    public async Task TC_02_1_04_CreateGoal_WithoutStudentId_DoesNotPersist()
     {
         var repository = new Mock<IGoalRepository>(MockBehavior.Strict);
         var service = new GoalService(repository.Object);
