@@ -13,7 +13,7 @@ The full scenario message → class-diagram link verification table is maintaine
 | `Part A — Design/Class Diagram/03-course-service.puml` | `src/Services/CourseService/` (`CoursesController`, `ICourse`, `CourseService`, `IAssessmentClient`, `HttpAssessmentClient`, `ICourseRepository`, `CourseRepository`, `CourseDbContext`, `Course`, `CourseEnrollment`, `CourseProgress`, `AssessmentItem`) | Updated & rendered |
 | `Part A — Design/Class Diagram/05-goal-planner-service.puml` | `src/Services/GoalPlannerService/` (`PlansController`, `IGoalPlanner`, `GoalPlannerService`, `IGoalClient`, `HttpGoalClient`, `IAIProvider`, `MockAIProvider`, `IPlanDraftRepository`, `PlanDraftRepository`, `GoalPlannerDbContext`, `PlanDraft`, `Milestone`, `PlanTask`, `AiPlan`, `PlanStatus`) | Updated & rendered |
 | `Part A — Design/Class Diagram/13-habit-service.puml` | `src/Services/HabitService/` (`HabitsController`, `IHabit`, `HabitService`, `IHabitRepository`, `HabitRepository`, `HabitDbContext`, `Habit`, `HabitLog`, `HabitFrequency`) | Updated & rendered |
-| `Part A — Design/Class Diagram/skill-service.puml` | `src/Services/SkillService/` (Dockerfile only — planned minimal slice, reconcile with PM2-08) | Planned baseline updated & rendered |
+| `Part A — Design/Class Diagram/skill-service.puml` | `src/Services/SkillService/` (`SkillsController`, `ISkill`, `SkillService`, `ISkillRepository`, `SkillRepository`, `SkillDbContext`, `Skill`, `SkillType`, `SkillStatus`, `AddSkillRequest`, `SkillResponse`) | Reconciled with PM2-08 & rendered |
 | `Part A — Design/Class Diagram/notification-service.puml` | `src/Services/NotificationService/` (Dockerfile only — planned minimal slice, reconcile with PM2-09) | Planned baseline updated & rendered |
 
 ## Complete Goal (PM2-01–PM2-05)
@@ -70,13 +70,36 @@ Moq complete-flow coverage already present:
 | Consecutive daily and weekly schedules; missed and in-progress periods | `CompleteHabit_ConsecutiveDailyCompletions_CountsEachScheduledDay`, `GetStreaks_ConsecutiveWeeklySchedules_CountsScheduledDays`, `GetStreaks_MissedDailySchedule_ReturnsZero`, `GetStreaks_MissedWeeklySchedule_ReturnsZeroAfterPeriodEnds`, `GetStreaks_DailyScheduleStillInProgress_PreservesPreviousStreak`, `GetStreaks_WeeklyScheduleStillInProgress_DoesNotResetEarly` |
 | Missing habit has no persistence; streak query uses the student scope | `CompleteHabit_MissingHabit_ReturnsNotFoundWithoutRepositoryWrites`, `GetStreaks_UsesStudentScopedHabitQuery` |
 
-## Add Skill (PM2-08, owner: Arwa) — blocked on implementation
+## Add Skill (PM2-08, owner: Arwa)
 
 | Design artifact | Code | Test |
 | --- | --- | --- |
-| `Part A — Design/Class Diagram/skill-service.puml` (planned baseline) | `src/Services/SkillService/` (Dockerfile only) | `tests/SkillService.Tests/` (to be created) |
+| `Part A — Design/Class Diagram/skill-service.puml` | `src/Services/SkillService/Models/Skill.cs`, `Services/SkillService.cs`, `Controllers/SkillsController.cs`, `Repositories/SkillRepository.cs`, `Interfaces/ISkill.cs`, `Interfaces/ISkillRepository.cs` | `tests/SkillService.Tests/AddSkillMoqTests.cs`, `SkillApiTests.cs` |
+| `Part A — Design/State Diagrams/skill-state.puml` | `Skill.Activate()` in `Models/Skill.cs`; duplicate check in `SkillService.AddSkillAsync` | `SkillStateTransitionTests.cs` |
+| `Part A — Design/Object Diagrams/add-skill-object.puml` | `AddSkillRequest` (`studentId = "23101371"`, `name = "SQL"`, `type = Technical`, `level = 3`) and the created `Skill` | `SkillFixtures` (test fixtures), `AddSkill_WithValidInput_SavesActiveSkillOnce` |
+| `Part A — Design/Sequence Diagrams/add-skill-sequence.puml` | `SkillsController.AddSkill` → `SkillService.AddSkillAsync` → `ISkillRepository.GetByNameAsync` → `Skill.Activate()` → `AddAsync` → `SaveChangesAsync` | `AddSkillMoqTests` |
+| `Part A — Design/Collaboration Diagrams/add-skill-collaboration.puml` | `SkillsController` → `SkillService` → `SkillRepository` → `SkillDbContext` | `AddSkillMoqTests` (Moq `Verify`) |
 
-Reconcile the planned class diagram with the implemented slice once PM2-08 code exists.
+Message → Moq `Verify` → test:
+
+| Message | Moq `Verify` | Test |
+| --- | --- | --- |
+| `1.2: GetByNameAsync("23101371", "SQL")` | `Times.Once` | `AddSkill_WithValidInput_SavesActiveSkillOnce` |
+| `1.3: Activate()` | `AddAsync(It.Is<Skill>(s => s.Status == Active))` | `AddSkill_WithValidInput_SavesActiveSkillOnce`, `AddSkill_WhenUnique_IsSavedInActiveState` |
+| `1.4: AddAsync(skill)` | `Times.Once` | `AddSkill_WithValidInput_SavesActiveSkillOnce` |
+| `1.5: SaveChangesAsync()` | `Times.Once` | `AddSkill_WithValidInput_SavesActiveSkillOnce` |
+| Duplicate name → 409 | `AddAsync` / `SaveChangesAsync` `Times.Never` | `AddSkill_WhenDuplicateName_ReturnsDuplicateAndDoesNotPersist`, `AddSkill_SameNameTwice_ReturnsConflict` |
+| Missing / invalid field → 400 | `GetByNameAsync` / `AddAsync` `Times.Never` | `AddSkill_WithMissingOrInvalidField_IsRejectedBeforeRepository`, `AddSkill_MissingName_ReturnsBadRequest` |
+| Missing skill → 404 | `GetByIdAsync` `Times.Once` | `GetSkill_WhenMissing_ReturnsNotFound`, `GetSkill_WhenMissing_ReturnsNotFound` (API) |
+
+Transition coverage:
+
+| Transition | Code | Test |
+| --- | --- | --- |
+| [*] → New | `new Skill()` (`Status = New`) | `NewSkill_StartsInNewState` |
+| New → Active | `Skill.Activate()` | `Activate_FromNew_BecomesActive` |
+| New → rejected (duplicate) | `SkillService.AddSkillAsync` returns `DUPLICATE_SKILL` before `Activate()` | `AddSkill_WhenDuplicate_SkillIsNeverActivatedOrSaved` |
+| Active → Activate (rejected) | `Skill.Activate()` throws `SkillTransitionException` (`INVALID_TRANSITION`) | `Activate_FromActive_ThrowsInvalidTransition` |
 
 ## Send Deadline Reminders (PM2-09, owner: Muhammed) — blocked on implementation
 
