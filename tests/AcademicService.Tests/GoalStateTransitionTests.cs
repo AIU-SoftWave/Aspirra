@@ -51,7 +51,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task CompleteGoal_FromActive_ReturnsCompleted()
+    public async Task TC_02_4_07_CompleteGoal_FromActive_ReturnsCompleted()
     {
         using var context = CreateContext();
         var service = new GoalService(new GoalRepository(context));
@@ -64,7 +64,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task CompleteGoal_FromCompleted_IsIdempotent()
+    public async Task TC_02_4_08_CompleteGoal_FromCompleted_IsIdempotent()
     {
         using var context = CreateContext();
         var service = new GoalService(new GoalRepository(context));
@@ -78,7 +78,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task ArchiveGoal_FromActive_ReturnsArchived()
+    public async Task TC_02_5_03_ArchiveGoal_FromActive_ReturnsArchived()
     {
         using var context = CreateContext();
         var service = new GoalService(new GoalRepository(context));
@@ -90,7 +90,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task ArchiveGoal_FromCompleted_ReturnsArchived()
+    public async Task TC_02_5_04_ArchiveGoal_FromCompleted_ReturnsArchived()
     {
         using var context = CreateContext();
         var service = new GoalService(new GoalRepository(context));
@@ -103,7 +103,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task RestoreGoal_FromArchived_ReturnsActive()
+    public async Task TC_02_5_05_RestoreGoal_FromArchived_ReturnsActive()
     {
         using var context = CreateContext();
         var service = new GoalService(new GoalRepository(context));
@@ -116,7 +116,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task RestoreGoal_AfterArchivedCompletedGoal_ClearsCompletionDate()
+    public async Task TC_02_5_06_RestoreGoal_AfterArchivedCompletedGoal_ClearsCompletionDate()
     {
         using var context = CreateContext();
         var service = new GoalService(new GoalRepository(context));
@@ -130,7 +130,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task CompleteGoal_FromArchived_ThrowsInvalidTransitionAndDoesNotUpdate()
+    public async Task TC_02_4_09_CompleteGoal_FromArchived_ThrowsInvalidTransitionAndDoesNotUpdate()
     {
         var repository = new CountingGoalRepository { Goal = GoalWithStatus(GoalStatus.Archived) };
         var service = new GoalService(repository);
@@ -143,7 +143,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task RestoreGoal_FromActive_ThrowsInvalidTransitionAndDoesNotUpdate()
+    public async Task TC_02_5_07_RestoreGoal_FromActive_ThrowsInvalidTransitionAndDoesNotUpdate()
     {
         var repository = new CountingGoalRepository { Goal = GoalWithStatus(GoalStatus.Active) };
         var service = new GoalService(repository);
@@ -156,7 +156,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task RestoreGoal_FromCompleted_ThrowsInvalidTransitionAndDoesNotUpdate()
+    public async Task TC_02_5_08_RestoreGoal_FromCompleted_ThrowsInvalidTransitionAndDoesNotUpdate()
     {
         var repository = new CountingGoalRepository { Goal = GoalWithStatus(GoalStatus.Completed) };
         var service = new GoalService(repository);
@@ -169,7 +169,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task CompleteGoal_MissingGoal_ThrowsNotFound()
+    public async Task TC_02_4_10_CompleteGoal_MissingGoal_ThrowsNotFound()
     {
         var repository = new CountingGoalRepository { Goal = null };
         var service = new GoalService(repository);
@@ -178,7 +178,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task ArchiveGoal_MissingGoal_ThrowsNotFound()
+    public async Task TC_02_5_09_ArchiveGoal_MissingGoal_ThrowsNotFound()
     {
         var repository = new CountingGoalRepository { Goal = null };
         var service = new GoalService(repository);
@@ -187,7 +187,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task RestoreGoal_MissingGoal_ThrowsNotFound()
+    public async Task TC_02_5_10_RestoreGoal_MissingGoal_ThrowsNotFound()
     {
         var repository = new CountingGoalRepository { Goal = null };
         var service = new GoalService(repository);
@@ -196,7 +196,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task CompleteGoal_InvalidTransition_ReturnsBadRequestWithCode()
+    public async Task TC_02_4_11_CompleteGoal_InvalidTransition_ReturnsBadRequestWithCode()
     {
         var repository = new CountingGoalRepository { Goal = GoalWithStatus(GoalStatus.Archived) };
         var controller = new GoalsController(new GoalService(repository));
@@ -210,7 +210,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task RestoreGoal_InvalidTransition_ReturnsBadRequestWithCode()
+    public async Task TC_02_5_11_RestoreGoal_InvalidTransition_ReturnsBadRequestWithCode()
     {
         var repository = new CountingGoalRepository { Goal = GoalWithStatus(GoalStatus.Active) };
         var controller = new GoalsController(new GoalService(repository));
@@ -224,7 +224,7 @@ public class GoalStateTransitionTests
     }
 
     [Fact]
-    public async Task CompleteGoal_MissingGoal_ReturnsNotFound()
+    public async Task TC_02_4_12_CompleteGoal_MissingGoal_ReturnsNotFound()
     {
         var repository = new CountingGoalRepository { Goal = null };
         var controller = new GoalsController(new GoalService(repository));

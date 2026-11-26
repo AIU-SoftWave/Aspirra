@@ -25,7 +25,7 @@ public class HabitMoqTests
     }
 
     [Fact]
-    public async Task CompleteHabit_WhenNoLogExists_AddsLogAndSaves()
+    public async Task TC_13_2_01_CompleteHabit_WhenNoLogExists_AddsLogAndSaves()
     {
         var habit = DailyHabit();
         var repository = new Mock<IHabitRepository>(MockBehavior.Strict);
@@ -54,7 +54,7 @@ public class HabitMoqTests
     }
 
     [Fact]
-    public async Task CompleteHabit_WhenLogAlreadyCompleted_DoesNotAddLog()
+    public async Task TC_13_2_02_CompleteHabit_WhenLogAlreadyCompleted_DoesNotAddLog()
     {
         var habit = DailyHabit();
         var existingLog = new HabitLog { LogId = "log-1", HabitId = "habit-1", Completed = true };
@@ -80,7 +80,7 @@ public class HabitMoqTests
     }
 
     [Fact]
-    public async Task CompleteHabit_WhenHabitMissing_ReturnsNotFoundAndDoesNotPersist()
+    public async Task TC_13_2_03_CompleteHabit_WhenHabitMissing_ReturnsNotFoundAndDoesNotPersist()
     {
         var repository = new Mock<IHabitRepository>(MockBehavior.Strict);
         repository

@@ -1,0 +1,65 @@
+@startuml
+title Sequence Diagram - Complete Habit
+
+actor Student
+participant HabitsController as Controller
+participant HabitService as Service
+participant "IHabitRepository <<mock>>" as Repository
+participant "Habit" as Habit
+participant "HabitLog" as Log
+
+Student -> Controller : 1: POST /api/habits/habit-1/complete\n{ date: 2026-11-23 }
+activate Controller
+Controller -> Service : 1.1: CompleteHabitAsync("habit-1", 2026-11-23)
+activate Service
+Service -> Repository : 1.2: GetHabitAsync("habit-1")
+activate Repository
+Repository --> Service : 1.2.1: habit
+deactivate Repository
+alt habit is missing
+  Service --> Controller : NotFound
+  Controller --> Student : 404
+else habit exists
+  Service -> Repository : 1.3: GetLogAsync("habit-1", 2026-11-23)
+  activate Repository
+  Repository --> Service : 1.3.1: log
+  deactivate Repository
+  alt no log exists
+    create Log
+    Service -> Log : 1.3.2: create HabitLog(HabitId, LogDate, Completed, CompletedAt)
+    Service -> Repository : 1.4: AddLogAsync(log)
+    activate Repository
+    Repository --> Service : added
+    deactivate Repository
+  else incomplete log exists
+    Service -> Service : 1.3.2: set log.Completed, CompletedAt
+  else log already completed
+    Service -> Service : 1.3.2: no change
+  end
+  Service -> Repository : 1.5: SaveChangesAsync()
+  activate Repository
+  Repository --> Service : saved
+  deactivate Repository
+  Service -> Repository : 1.6: GetLogsAsync("habit-1")
+  activate Repository
+  Repository --> Service : logs
+  deactivate Repository
+  Service -> Service : 1.7: CalculateStreak(habit, date, logs)
+  alt CompleteHabit_FirstCompletion_AddsLogAndRecalculatesStreak
+    Service -> Habit : 1.7.1: CurrentStreak = 1
+  else CompleteHabit_ConsecutiveDailyCompletions_CountsEachScheduledDay
+    Service -> Habit : 1.7.1: CurrentStreak = 3
+  else CompleteHabit_MissedScheduledDay_ResetsStreakToOne
+    Service -> Habit : 1.7.1: CurrentStreak = 1
+  end
+  Service -> Repository : 1.8: SaveChangesAsync()
+  activate Repository
+  Repository --> Service : saved
+  deactivate Repository
+  Service --> Controller : 1.9: habit
+  Controller --> Student : 1.10: 200 OK { HabitResponse }
+end
+deactivate Service
+deactivate Controller
+
+@enduml

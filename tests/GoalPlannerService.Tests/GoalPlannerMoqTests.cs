@@ -21,7 +21,7 @@ public class GoalPlannerMoqTests
     }
 
     [Fact]
-    public async Task Approve_WithExistingGoal_ApprovesAndSavesOnce()
+    public async Task TC_05_6_01_Approve_WithExistingGoal_ApprovesAndSavesOnce()
     {
         var draft = DraftWithGoal("goal-1");
         var repository = new Mock<IPlanDraftRepository>(MockBehavior.Strict);
@@ -47,7 +47,7 @@ public class GoalPlannerMoqTests
     }
 
     [Fact]
-    public async Task Approve_WhenGoalDoesNotExist_ReturnsGoalNotFoundAndDoesNotSave()
+    public async Task TC_05_6_02_Approve_WhenGoalDoesNotExist_ReturnsGoalNotFoundAndDoesNotSave()
     {
         var draft = DraftWithGoal("missing-goal");
         var repository = new Mock<IPlanDraftRepository>(MockBehavior.Strict);
@@ -70,7 +70,7 @@ public class GoalPlannerMoqTests
     }
 
     [Fact]
-    public async Task Approve_WhenDraftMissing_ReturnsNotFound()
+    public async Task TC_05_6_03_Approve_WhenDraftMissing_ReturnsNotFound()
     {
         var repository = new Mock<IPlanDraftRepository>(MockBehavior.Strict);
         var aiProvider = new Mock<IAIProvider>(MockBehavior.Strict);

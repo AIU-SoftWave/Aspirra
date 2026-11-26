@@ -58,16 +58,17 @@ Moq approve-flow coverage already present:
 
 | Design artifact | Code | Test |
 | --- | --- | --- |
-| `Part A — Design/Class Diagram/13-habit-service.puml` | `src/Services/HabitService/Controllers/HabitsController.cs`, `Services/HabitService.cs`, `Interfaces/IHabitRepository.cs`, `Models/Habit.cs`, `Models/HabitLog.cs` | `tests/HabitService.Tests/HabitServiceTests.cs`, `HabitMoqTests.cs` |
-| Object / sequence / collaboration / state diagrams (owner: Mostafa) | `HabitService.CompleteHabitAsync`, `CalculateStreak` | `HabitMoqTests.CompleteHabit_*` |
+| `Part A — Design/Class Diagram/13-habit-service.puml` | `src/Services/HabitService/Controllers/HabitsController.cs`, `Services/HabitService.cs`, `Interfaces/IHabitRepository.cs`, `Models/Habit.cs`, `Models/HabitLog.cs` | `tests/HabitService.Tests/HabitServiceTests.cs`, `CompleteHabitMoqTests.cs` |
+| Object / sequence / collaboration / state diagrams (owner: Mostafa) | `HabitService.CompleteHabitAsync`, `CalculateStreak` | `CompleteHabitMoqTests.CompleteHabit_*`, `CompleteHabitMoqTests.GetStreaks_*` |
 
 Moq complete-flow coverage already present:
 
 | Interaction | Test |
 | --- | --- |
-| Complete with no log adds a log and saves twice | `CompleteHabit_WhenNoLogExists_AddsLogAndSaves` |
-| Complete with completed log does not re-add | `CompleteHabit_WhenLogAlreadyCompleted_DoesNotAddLog` |
-| Complete missing habit returns NOT_FOUND, no persist | `CompleteHabit_WhenHabitMissing_ReturnsNotFoundAndDoesNotPersist` |
+| First completion creates one log and verifies repository persistence | `CompleteHabit_FirstCompletion_AddsLogAndRecalculatesStreak` |
+| Same-day duplicate and incomplete-log reuse | `CompleteHabit_SameDayDuplicate_DoesNotAddAnotherLogOrIncrementStreak`, `CompleteHabit_IncompleteLog_UpdatesExistingLogWithoutAddingAnother` |
+| Consecutive daily and weekly schedules; missed and in-progress periods | `CompleteHabit_ConsecutiveDailyCompletions_CountsEachScheduledDay`, `GetStreaks_ConsecutiveWeeklySchedules_CountsScheduledDays`, `GetStreaks_MissedDailySchedule_ReturnsZero`, `GetStreaks_MissedWeeklySchedule_ReturnsZeroAfterPeriodEnds`, `GetStreaks_DailyScheduleStillInProgress_PreservesPreviousStreak`, `GetStreaks_WeeklyScheduleStillInProgress_DoesNotResetEarly` |
+| Missing habit has no persistence; streak query uses the student scope | `CompleteHabit_MissingHabit_ReturnsNotFoundWithoutRepositoryWrites`, `GetStreaks_UsesStudentScopedHabitQuery` |
 
 ## Add Skill (PM2-08, owner: Arwa) — blocked on implementation
 
