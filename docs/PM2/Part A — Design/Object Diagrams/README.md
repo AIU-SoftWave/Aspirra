@@ -7,7 +7,7 @@ One object diagram per PM2 scenario. Show a snapshot of real objects, their link
 - `01-ahmed-complete-goal-object.puml` — Ahmed — `#55` — done
 - `generate-goal-plan-object.puml` — Yomna — `#59`
 - `complete-habit-object.puml` — Mostafa — `#60`
-- `add-skill-object.puml` — Arwa — `#61`
+- `add-skill-object.puml` — Arwa — `#61` — done
 - `deadline-reminders-object.puml` — Muhammed — `#62`
 
 ## Rules

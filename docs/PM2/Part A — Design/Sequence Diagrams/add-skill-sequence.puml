@@ -1,0 +1,48 @@
+@startuml
+title Sequence Diagram — Add Skill
+
+actor "Student" as Student
+participant "controller : SkillsController" as Controller
+participant "service : SkillService" as Service
+participant "repository : ISkillRepository" as Repository
+participant "sql : Skill" as Skill
+
+Student -> Controller : 1: POST /api/skills {studentId, name, type, level}
+activate Controller
+Controller -> Service : 1.1: AddSkillAsync(studentId, request)
+activate Service
+
+alt missing or invalid field
+  Service --> Controller : Fail(REQUIRED_FIELD / INVALID_TYPE / INVALID_LEVEL)
+  Controller --> Student : 400 Bad Request
+else valid input
+  Service -> Skill ** : <<create>> (status = New)
+  Service -> Repository : 1.2: GetByNameAsync(studentId, name)
+  activate Repository
+  Repository --> Service : 1.2.1: existing skill or null
+  deactivate Repository
+
+  alt duplicate name
+    Service --> Controller : Fail(DUPLICATE_SKILL, "Skill already added")
+    Controller --> Student : 409 Conflict
+  else no duplicate
+    Service -> Skill : 1.3: Activate()
+    activate Skill
+    Skill --> Service : status = Active
+    deactivate Skill
+    Service -> Repository : 1.4: AddAsync(sql)
+    activate Repository
+    Repository --> Service : sql
+    deactivate Repository
+    Service -> Repository : 1.5: SaveChangesAsync()
+    activate Repository
+    Repository --> Service : saved
+    deactivate Repository
+    Service --> Controller : 1.6: Ok(sql)
+    Controller --> Student : 1.7: 201 Created {skill}
+  end
+end
+deactivate Service
+deactivate Controller
+
+@enduml

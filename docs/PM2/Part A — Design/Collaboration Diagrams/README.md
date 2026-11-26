@@ -7,7 +7,7 @@ One collaboration (communication) diagram per PM2 scenario. Show the same object
 - `01-ahmed-complete-goal-collaboration.puml` — Ahmed — `#57` — done
 - `generate-goal-plan-collaboration.puml` — Yomna — `#59`
 - `complete-habit-collaboration.puml` — Mostafa — `#60`
-- `add-skill-collaboration.puml` — Arwa — `#61`
+- `add-skill-collaboration.puml` — Arwa — `#61` — done
 - `deadline-reminders-collaboration.puml` — Muhammed — `#62`
 
 ## Rules
@@ -37,3 +37,14 @@ One collaboration (communication) diagram per PM2 scenario. Show the same object
 | Both `SaveChangesAsync()` calls | `SaveChangesAsync` `Times.Exactly(2)` for one completion | `CompleteHabit_FirstCompletion_AddsLogAndRecalculatesStreak` |
 | `GetLogsAsync("habit-1")` | `GetLogsAsync` `Times.Once()` | `CompleteHabit_FirstCompletion_AddsLogAndRecalculatesStreak` |
 | Missing habit → no subsequent repository calls | `GetLogAsync`, `AddLogAsync`, `GetLogsAsync`, and `SaveChangesAsync` `Times.Never()` | `CompleteHabit_MissingHabit_ReturnsNotFoundWithoutRepositoryWrites` |
+
+## Message → verify → test (Add Skill)
+
+| Message | Moq `Verify` | Test |
+| --- | --- | --- |
+| `1.2: GetByNameAsync("23101371", "SQL")` | `Times.Once` | `AddSkill_WithValidInput_SavesActiveSkillOnce` |
+| `1.3 [no duplicate]: Activate()` | `AddAsync(It.Is<Skill>(s => s.Status == SkillStatus.Active))` | `AddSkill_WithValidInput_SavesActiveSkillOnce` |
+| `1.4 [no duplicate]: AddAsync(sql)` | `Times.Once` | `AddSkill_WithValidInput_SavesActiveSkillOnce` |
+| `1.5 [no duplicate]: SaveChangesAsync()` | `Times.Once` | `AddSkill_WithValidInput_SavesActiveSkillOnce` |
+| Duplicate name → 409 | `AddAsync` / `SaveChangesAsync` `Times.Never` | `AddSkill_WhenDuplicateName_ReturnsDuplicateAndDoesNotPersist` |
+| Missing / invalid field → 400 | `GetByNameAsync` `Times.Never` | `AddSkill_WithMissingOrInvalidField_IsRejectedBeforeRepository` |

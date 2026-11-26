@@ -1,0 +1,19 @@
+@startuml
+title Skill State Diagram
+hide empty description
+skinparam shadowing false
+
+state New
+state Active
+
+[*] --> New : AddSkillAsync() [all fields valid]
+New --> Active : GetByNameAsync() [no duplicate]\n/ Activate(), AddAsync(), SaveChangesAsync()
+New --> [*] : GetByNameAsync() [duplicate]\n/ reject 409 DUPLICATE_SKILL
+
+Active -[#red]-> Active : <color:red>Activate() [already Active] / throw INVALID_TRANSITION</color>
+
+note right of New
+  Invalid input never creates a Skill (400).
+end note
+
+@enduml
