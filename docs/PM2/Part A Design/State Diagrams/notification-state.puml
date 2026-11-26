@@ -1,0 +1,20 @@
+@startuml
+title Notification State Diagram
+hide empty description
+skinparam shadowing false
+
+state Pending
+state Sent : entry / attempts++, sentAt = now
+state Failed : entry / attempts++
+
+[*] --> Pending : SendDeadlineRemindersAsync() [deadline not completed]
+Pending --> Sent : SendAsync() [email sent] / MarkSent()
+Pending --> Failed : SendAsync() [email failed] / MarkFailed()
+Failed --> Sent : RetryAsync() [email sent] / MarkSent()
+Failed --> Failed : RetryAsync() [email failed] / MarkFailed(), return 502
+Sent --> [*]
+
+Sent -[#red]-> Sent : <color:red>RetryAsync() [not Failed] / reject 400 INVALID_TRANSITION</color>
+Pending -[#red]-> Pending : <color:red>RetryAsync() [not Failed] / reject 400 INVALID_TRANSITION</color>
+
+@enduml

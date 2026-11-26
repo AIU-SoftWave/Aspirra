@@ -1,0 +1,40 @@
+@startuml
+allowmixing
+title Collaboration Diagram — Send Deadline Reminders
+left to right direction
+skinparam shadowing false
+skinparam object {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+
+actor "Scheduler" as Scheduler
+object "<u>controller : NotificationsController</u>" as Controller
+object "<u>service : NotificationService</u>" as Service
+object "<u>assessment : IAssessment</u> «mock»" as Assessment
+object "<u>emailGateway : IEmailGateway</u> «mock»" as Email
+object "<u>repository : INotificationRepository</u> «mock»" as Repository
+object "<u>dbProject : Deadline</u>" as Deadline {
+  assessmentId = "asg-3001"
+  isCompleted = false
+}
+object "<u>reminder : Notification</u>" as Notification {
+  assessmentId = "asg-3001"
+  status = Pending -> Sent
+}
+
+Scheduler -- Controller : 1: POST /api/notifications/deadline-reminders →\n1.8: 200 OK ←
+Controller -- Service : 1.1: SendDeadlineRemindersAsync("student-1001", "student1001@aiu.edu.eg", 1) →\n1.7: Ok([reminder]) ←
+Service -- Assessment : 1.2: GetDeadlinesAsync("student-1001", 1) →\n1.2.1: [dbProject] ←
+Assessment -- Deadline
+Service -- Deadline
+Service -- Repository : 1.3 [not completed]: AddAsync(reminder) →\n1.6: SaveChangesAsync() →
+Service -- Email : 1.4: SendAsync("student1001@aiu.edu.eg", subject, body) →
+Service -- Notification : 1.5 [email sent]: MarkSent(now) →
+
+note bottom of Repository
+  Moq Verify: GetDeadlinesAsync once, AddAsync once,
+  SendAsync once, SaveChangesAsync once.
+end note
+
+@enduml

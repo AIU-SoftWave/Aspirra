@@ -1,0 +1,47 @@
+@startuml
+title Object Diagram — Send Deadline Reminders (snapshot after the reminder is sent)
+left to right direction
+skinparam shadowing false
+skinparam object {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+
+object "<u>controller : NotificationsController</u>" as Controller {
+  notificationService = service
+}
+object "<u>service : NotificationService</u>" as Service {
+  assessment = assessment
+  emailGateway = emailGateway
+  repository = repository
+}
+object "<u>assessment : IAssessment</u> «mock»" as Assessment
+object "<u>emailGateway : IEmailGateway</u> «mock»" as Email
+object "<u>repository : INotificationRepository</u> «mock»" as Repository
+object "<u>dbProject : Deadline</u>" as Deadline {
+  assessmentId = "asg-3001"
+  studentId = "student-1001"
+  title = "Database Project"
+  kind = "Assignment"
+  dueDate = 2026-11-27
+  isCompleted = false
+}
+object "<u>reminder : Notification</u>" as Notification {
+  studentId = "student-1001"
+  assessmentId = "asg-3001"
+  recipient = "student1001@aiu.edu.eg"
+  type = "DeadlineReminder"
+  status = Sent
+  attempts = 1
+}
+
+Controller -- Service : uses INotification
+Service -- Assessment : uses
+Service -- Email : uses
+Service -- Repository : uses
+Assessment -- Deadline : returns
+Service -- Deadline : reads
+Service -- Notification : creates
+Repository "1" -- "0..*" Notification : stores
+
+@enduml
