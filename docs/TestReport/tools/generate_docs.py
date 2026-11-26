@@ -46,12 +46,10 @@ for t in tcmap:
 # ---- results ---------------------------------------------------------------
 results = {}
 trx_files = sorted(pathlib.Path(sys.argv[1]).glob("*.trx")) if len(sys.argv) > 1 else []
-if True:
-    ns = {"t": "http://microsoft.com/schemas/VisualStudio/TeamTest/2010"}
-    for r in (x for f in trx_files for x in ET.parse(f).getroot().iterfind(".//t:UnitTestResult", ns)):
-        m = re.search(r"\.(TC_\d+_\d+_\d+)_", r.get("testName", ""))
-        if m:
-            results[m.group(1).replace("_", "-", 1).replace("_", ".", 1).replace("_", "-", 1)] = r.get("outcome")
+for r in (x for f in trx_files for x in ET.parse(f).getroot().iterfind(".//{*}UnitTestResult")):
+    m = re.search(r"\.(TC_\d+_\d+_\d+)_", r.get("testName", ""))
+    if m:
+        results[m.group(1).replace("_", "-", 1).replace("_", ".", 1).replace("_", "-", 1)] = r.get("outcome")
 # normalise keys: TC_01_1_01 -> TC-01.1-01
 def key(tc): return tc  # tc ids in tcmap are already TC-01.1-01
 # (the key transform above yields TC-01.1-01)
@@ -83,7 +81,7 @@ def src_link(t):
 def esc(s): return s.replace("|", "\\|")
 
 # ---- 01 requirements -------------------------------------------------------
-def pass_criteria(fr, rows):
+def pass_criteria(fr):
     tcs = by_fr.get(fr, [])
     if tcs:
         ids = ", ".join(t["tc"] for t in tcs)
@@ -102,7 +100,7 @@ for key_, name, gh, groups in MEMBERS:
                   "| FR | Requirement | Must be true to pass | Test cases |", "|---|---|---|---|"]
         for fid, text in frs[g]["rows"]:
             n = len(by_fr.get(fid, []))
-            lines.append(f"| {fid} | {esc(text)} | {esc(pass_criteria(fid, frs[g]['rows']))} | {n if n else 'planned'} |")
+            lines.append(f"| {fid} | {esc(text)} | {esc(pass_criteria(fid))} | {n if n else 'planned'} |")
         lines.append("")
 (OUT / "01-testing-requirements.md").write_text("\n".join(lines), encoding="utf-8")
 
@@ -121,7 +119,7 @@ for idx, (key_, name, gh, groups) in enumerate(MEMBERS, 1):
                 for t in tcs:
                     d, i, e = describe(t["base"])
                     st = status(t["tc"])
-                    act = "As expected" if st == "Passed" else ("Deviates from expected" if st == "Failed" else "—")
+                    act = {"Passed": "As expected", "Failed": "Deviates from expected"}.get(st, "—")
                     L.append(f"| {t['tc']} | {fid} | {esc(d)} | {esc(i)} | {esc(e)} | {act} | {st} |")
             else:
                 n = fid.split("-")[1]; a, b = n.split(".")
