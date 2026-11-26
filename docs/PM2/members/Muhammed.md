@@ -7,13 +7,13 @@
 
 ## Deliverables
 
-- [ ] Minimal NotificationService slice: `Notification`, `IAssessment`, `IEmailGateway`, `INotificationRepository`, `NotificationService`, `NotificationsController`
-- [ ] Send Deadline Reminders object diagram
-- [ ] Send Deadline Reminders sequence diagram
-- [ ] Send Deadline Reminders collaboration diagram
-- [ ] Notification state diagram
-- [ ] Moq tests for deadline read, email send, save, failure, and retry
-- [ ] Project added to `Aspirra.slnx`
+- [x] Minimal NotificationService slice: `Notification`, `IAssessment`, `IEmailGateway`, `INotificationRepository`, `NotificationService`, `NotificationsController`
+- [x] Send Deadline Reminders object diagram
+- [x] Send Deadline Reminders sequence diagram
+- [x] Send Deadline Reminders collaboration diagram
+- [x] Notification state diagram
+- [x] Moq tests for deadline read, email send, save, failure, and retry
+- [x] Project added to `Aspirra.slnx`
 
 ## Evidence
 
