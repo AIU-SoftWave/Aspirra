@@ -26,3 +26,14 @@ One collaboration (communication) diagram per PM2 scenario. Show the same object
 | `UpdateAsync(goal)` | `Times.Once` | `CompleteGoal_FromActive_PersistsExactlyOnce` |
 | Archived → `Complete()` | `UpdateAsync` `Times.Never` | `CompleteGoal_FromArchived_DoesNotPersist` |
 | Missing goal → 404 | `UpdateAsync` `Times.Never` | `CompleteGoal_MissingGoal_ThrowsNotFound` |
+
+## Message → verify → test (Complete Habit + streak)
+
+| Message | Moq `Verify` | Test |
+| --- | --- | --- |
+| `GetHabitAsync("habit-1")` | `GetHabitAsync` `Times.Once()` | `CompleteHabit_FirstCompletion_AddsLogAndRecalculatesStreak` |
+| `GetLogAsync("habit-1", date)` | `GetLogAsync` `Times.Once()` | `CompleteHabit_FirstCompletion_AddsLogAndRecalculatesStreak` |
+| `AddLogAsync(log)` | `AddLogAsync` `Times.Once()`; duplicate and existing-incomplete cases use `Times.Never()` | `CompleteHabit_FirstCompletion_AddsLogAndRecalculatesStreak`, `CompleteHabit_SameDayDuplicate_DoesNotAddAnotherLogOrIncrementStreak`, `CompleteHabit_IncompleteLog_UpdatesExistingLogWithoutAddingAnother` |
+| Both `SaveChangesAsync()` calls | `SaveChangesAsync` `Times.Exactly(2)` for one completion | `CompleteHabit_FirstCompletion_AddsLogAndRecalculatesStreak` |
+| `GetLogsAsync("habit-1")` | `GetLogsAsync` `Times.Once()` | `CompleteHabit_FirstCompletion_AddsLogAndRecalculatesStreak` |
+| Missing habit → no subsequent repository calls | `GetLogAsync`, `AddLogAsync`, `GetLogsAsync`, and `SaveChangesAsync` `Times.Never()` | `CompleteHabit_MissingHabit_ReturnsNotFoundWithoutRepositoryWrites` |

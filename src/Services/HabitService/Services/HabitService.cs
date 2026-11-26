@@ -117,7 +117,7 @@ public class HabitService : IHabit
             {
                 HabitId = habit.HabitId,
                 Name = habit.Name,
-                CurrentStreak = habit.CurrentStreak,
+                CurrentStreak = CalculateStreak(habit, currentDay, logs),
                 DoneToday = logs.Any(log => log.Completed && log.LogDate == currentDay)
             });
         }
@@ -167,7 +167,7 @@ public class HabitService : IHabit
         return false;
     }
 
-    private static int CalculateStreak(Habit habit, DateOnly completionDate, IEnumerable<HabitLog> logs)
+    private static int CalculateStreak(Habit habit, DateOnly asOfDate, IEnumerable<HabitLog> logs)
     {
         var completedDates = logs
             .Where(log => log.Completed)
@@ -176,13 +176,22 @@ public class HabitService : IHabit
 
         var createdDate = DateOnly.FromDateTime(habit.CreatedAt.ToUniversalTime());
         var interval = habit.Frequency == HabitFrequency.Weekly ? 7 : 1;
-        var anchor = completionDate;
+        var anchor = asOfDate;
 
         if (habit.Frequency == HabitFrequency.Weekly)
         {
             var scheduledDay = habit.CreatedAt.ToUniversalTime().DayOfWeek;
-            var offset = ((int)anchor.DayOfWeek - (int)scheduledDay + 7) % 7;
+            var offset = ((int)asOfDate.DayOfWeek - (int)scheduledDay + 7) % 7;
             anchor = anchor.AddDays(-offset);
+
+            if (anchor == asOfDate && !completedDates.Contains(anchor))
+            {
+                anchor = anchor.AddDays(-interval);
+            }
+        }
+        else if (!completedDates.Contains(anchor))
+        {
+            anchor = anchor.AddDays(-interval);
         }
 
         var streak = 0;

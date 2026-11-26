@@ -1,0 +1,37 @@
+@startuml
+title Object Diagram - Complete Habit
+
+object "<u>controller:HabitsController</u>" as Controller {
+  _habitService = service
+}
+
+object "<u>service:HabitService</u>" as Service {
+  _repository = repository
+}
+
+object "<u>repository:IHabitRepository</u> <<mock>>" as Repository
+
+object "<u>habit:Habit</u>" as Habit {
+  HabitId = "habit-1"
+  StudentId = "student-1"
+  Name = "Study"
+  Frequency = Daily
+  CurrentStreak = 1
+  CreatedAt = 2026-11-23T00:00:00Z
+}
+
+object "<u>log:HabitLog</u>" as Log {
+  LogId = "log-20261123"
+  HabitId = "habit-1"
+  LogDate = 2026-11-23
+  Completed = true
+  CompletedAt = 2026-11-23T00:00:00Z
+}
+
+Controller -- Service : IHabit
+Service -- Repository : IHabitRepository
+Service -- Habit : completes
+Repository -- Habit : returns
+Repository -- Log : stores
+Habit *-- Log : HabitLogs
+@enduml

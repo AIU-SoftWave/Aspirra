@@ -52,8 +52,10 @@ class HabitService <<component>> {
   -repository: IHabitRepository
   --
   +CreateHabitAsync(...)
-  +CompleteHabitAsync(...) / GetHabitsAsync(...)
-  +GetStreaksAsync(...) / LinkToGoalAsync(...)
+  +CompleteHabitAsync(...)
+  +GetHabitsAsync(...) / GetStreaksAsync(...)
+  +LinkToGoalAsync(...)
+  -CalculateStreak(habit, asOfDate, logs): int
 }
 
 interface IHabitRepository <<required - Database>> {
