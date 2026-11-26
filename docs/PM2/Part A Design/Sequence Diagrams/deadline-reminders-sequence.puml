@@ -1,0 +1,56 @@
+@startuml
+title Sequence Diagram — Send Deadline Reminders
+
+actor "Scheduler" as Scheduler
+participant "controller : NotificationsController" as Controller
+participant "service : NotificationService" as Service
+participant "assessment : IAssessment" as Assessment
+participant "repository : INotificationRepository" as Repository
+participant "emailGateway : IEmailGateway" as Email
+participant "reminder : Notification" as Notification
+
+Scheduler -> Controller : 1: POST /api/notifications/deadline-reminders {studentId, email, days}
+activate Controller
+Controller -> Service : 1.1: SendDeadlineRemindersAsync(studentId, email, days)
+activate Service
+
+alt missing studentId / email or days not in 1..30
+  Service --> Controller : Fail(REQUIRED_FIELD / INVALID_DAYS)
+  Controller --> Scheduler : 400 Bad Request
+else valid input
+  Service -> Assessment : 1.2: GetDeadlinesAsync(studentId, days)
+  activate Assessment
+  Assessment --> Service : 1.2.1: deadlines
+  deactivate Assessment
+
+  loop for each deadline [not completed]
+    Service -> Notification ** : <<create>> (status = Pending)
+    Service -> Repository : 1.3: AddAsync(reminder)
+    activate Repository
+    Repository --> Service : reminder
+    deactivate Repository
+    Service -> Email : 1.4: SendAsync(to, subject, body)
+    activate Email
+    alt email sent
+      Email --> Service : ok
+      deactivate Email
+      Service -> Notification : 1.5: MarkSent(now)
+    else email failed
+      Email --> Service : exception
+      Service -> Notification : 1.5: MarkFailed(now)
+    end
+  end
+
+  opt at least one reminder
+    Service -> Repository : 1.6: SaveChangesAsync()
+    activate Repository
+    Repository --> Service : saved
+    deactivate Repository
+  end
+  Service --> Controller : 1.7: Ok(reminders)
+  Controller --> Scheduler : 1.8: 200 OK [reminders]
+end
+deactivate Service
+deactivate Controller
+
+@enduml

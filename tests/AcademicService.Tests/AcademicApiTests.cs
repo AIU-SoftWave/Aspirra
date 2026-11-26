@@ -50,7 +50,7 @@ public class AcademicApiTests
     };
 
     [Fact]
-    public async Task Health_ReturnsHealthy()
+    public async Task TC_02_1_01_Health_ReturnsHealthy()
     {
         using var factory = new AcademicApiFactory();
         using var client = factory.CreateClient();
@@ -63,7 +63,7 @@ public class AcademicApiTests
     }
 
     [Fact]
-    public async Task CreateGoal_ReturnsCreatedGoalAndCanBeRetrieved()
+    public async Task TC_02_1_02_CreateGoal_ReturnsCreatedGoalAndCanBeRetrieved()
     {
         using var factory = new AcademicApiFactory();
         using var client = factory.CreateClient();
@@ -92,7 +92,7 @@ public class AcademicApiTests
     }
 
     [Fact]
-    public async Task CreateGoal_MissingTitle_ReturnsRequiredFieldPayload()
+    public async Task TC_02_1_03_CreateGoal_MissingTitle_ReturnsRequiredFieldPayload()
     {
         using var factory = new AcademicApiFactory();
         using var client = factory.CreateClient();
@@ -114,7 +114,7 @@ public class AcademicApiTests
     }
 
     [Fact]
-    public async Task CompleteGoal_WhenArchived_ReturnsInvalidTransition()
+    public async Task TC_02_4_01_CompleteGoal_WhenArchived_ReturnsInvalidTransition()
     {
         using var factory = new AcademicApiFactory();
         using var client = factory.CreateClient();
@@ -141,7 +141,7 @@ public class AcademicApiTests
     }
 
     [Fact]
-    public async Task CompleteGoal_WhenMissing_ReturnsNotFound()
+    public async Task TC_02_4_02_CompleteGoal_WhenMissing_ReturnsNotFound()
     {
         using var factory = new AcademicApiFactory();
         using var client = factory.CreateClient();

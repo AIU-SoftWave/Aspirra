@@ -13,7 +13,7 @@ namespace AssessmentService.Tests
         private static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.UtcNow);
 
         [Fact]
-        public async Task AddAssignment_WithRequiredFields_SetsNotStarted()
+        public async Task TC_04_1_01_AddAssignment_WithRequiredFields_SetsNotStarted()
         {
             await using var context = CreateContext();
             var service = CreateService(context);
@@ -33,7 +33,7 @@ namespace AssessmentService.Tests
         }
 
         [Fact]
-        public async Task AddAssignment_MissingTitle_ReturnsRequiredFieldError()
+        public async Task TC_04_1_02_AddAssignment_MissingTitle_ReturnsRequiredFieldError()
         {
             await using var context = CreateContext();
             var service = CreateService(context);
@@ -52,7 +52,7 @@ namespace AssessmentService.Tests
         }
 
         [Fact]
-        public async Task AddExam_WithValidData_IsAddedToUpcoming()
+        public async Task TC_04_2_01_AddExam_WithValidData_IsAddedToUpcoming()
         {
             await using var context = CreateContext();
             var service = CreateService(context);
@@ -75,7 +75,7 @@ namespace AssessmentService.Tests
         }
 
         [Fact]
-        public async Task AddExam_PastDate_ReturnsInvalidDateError()
+        public async Task TC_04_2_02_AddExam_PastDate_ReturnsInvalidDateError()
         {
             await using var context = CreateContext();
             var service = CreateService(context);
@@ -96,7 +96,7 @@ namespace AssessmentService.Tests
         }
 
         [Fact]
-        public async Task SetAssignmentStatus_ToCompleted_UpdatesStatus()
+        public async Task TC_04_3_01_SetAssignmentStatus_ToCompleted_UpdatesStatus()
         {
             await using var context = CreateContext();
             var service = CreateService(context);
@@ -112,7 +112,7 @@ namespace AssessmentService.Tests
         }
 
         [Fact]
-        public async Task SetAssignmentStatus_InvalidStatus_ReturnsError()
+        public async Task TC_04_3_02_SetAssignmentStatus_InvalidStatus_ReturnsError()
         {
             await using var context = CreateContext();
             var service = CreateService(context);
@@ -127,7 +127,7 @@ namespace AssessmentService.Tests
         }
 
         [Fact]
-        public async Task SetAssignmentStatus_AssignmentNotFound_ReturnsNotFound()
+        public async Task TC_04_3_03_SetAssignmentStatus_AssignmentNotFound_ReturnsNotFound()
         {
             await using var context = CreateContext();
             var service = CreateService(context);
@@ -141,7 +141,7 @@ namespace AssessmentService.Tests
         }
 
         [Fact]
-        public async Task SetExamReminder_StoresDaysBefore()
+        public async Task TC_04_4_01_SetExamReminder_StoresDaysBefore()
         {
             await using var context = CreateContext();
             var service = CreateService(context);
@@ -157,7 +157,7 @@ namespace AssessmentService.Tests
         }
 
         [Fact]
-        public async Task SetExamReminder_NegativeDays_ReturnsInvalidReminder()
+        public async Task TC_04_4_02_SetExamReminder_NegativeDays_ReturnsInvalidReminder()
         {
             await using var context = CreateContext();
             var service = CreateService(context);
@@ -172,7 +172,7 @@ namespace AssessmentService.Tests
         }
 
         [Fact]
-        public async Task GetAssignmentsByCourse_ReturnsExpectedShape()
+        public async Task TC_04_1_03_GetAssignmentsByCourse_ReturnsExpectedShape()
         {
             await using var context = CreateContext();
             var service = CreateService(context);
@@ -198,7 +198,7 @@ namespace AssessmentService.Tests
         }
 
         [Fact]
-        public async Task GetAssessments_FiltersByStudent()
+        public async Task TC_04_2_03_GetAssessments_FiltersByStudent()
         {
             await using var context = CreateContext();
             var service = CreateService(context);

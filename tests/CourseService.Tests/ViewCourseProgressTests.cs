@@ -7,7 +7,7 @@ namespace CourseService.Tests;
 public class ViewCourseProgressTests
 {
     [Fact]
-    public async Task ViewCourseProgress_SeparatesCompletedAndOutstanding()
+    public async Task TC_03_3_01_ViewCourseProgress_SeparatesCompletedAndOutstanding()
     {
         var assignments = new[]
         {
@@ -32,7 +32,7 @@ public class ViewCourseProgressTests
     }
 
     [Fact]
-    public async Task ViewCourseProgress_NoAssignments_ReturnsNoAssignmentsMessage()
+    public async Task TC_03_3_02_ViewCourseProgress_NoAssignments_ReturnsNoAssignmentsMessage()
     {
         using var fixture = new CourseTestFixture();
         var course = CourseTestFixture.NewCourse();
@@ -48,7 +48,7 @@ public class ViewCourseProgressTests
     }
 
     [Fact]
-    public async Task ViewCourseProgress_CourseNotFound_ReturnsNotFound()
+    public async Task TC_03_3_03_ViewCourseProgress_CourseNotFound_ReturnsNotFound()
     {
         using var fixture = new CourseTestFixture();
 
