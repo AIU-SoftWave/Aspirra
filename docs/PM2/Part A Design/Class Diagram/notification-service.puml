@@ -1,0 +1,144 @@
+@startuml notification-service
+title PM2 Level 3: Code - Class Diagram (notification-service) - FR-18\nOwner: Muhammed Hany Hamdy
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Plain line | Association |
+endlegend
+
+interface INotification <<provided>> {
+  +SendDeadlineRemindersAsync(studentId, email, days): Task<ServiceResult<List<Notification>>>
+  +RetryAsync(notificationId): Task<ServiceResult<Notification>>
+  +GetNotificationAsync(notificationId): Task<ServiceResult<Notification>>
+}
+
+class NotificationsController <<component>> {
+  -notificationService: INotification
+  --
+  +SendDeadlineReminders(request: SendDeadlineRemindersRequest): IActionResult
+  +Retry(notificationId): IActionResult
+  +GetNotification(notificationId): IActionResult
+}
+
+class NotificationService <<component>> {
+  -assessment: IAssessment
+  -emailGateway: IEmailGateway
+  -repository: INotificationRepository
+  --
+  +SendDeadlineRemindersAsync(...)
+  +RetryAsync(...) / GetNotificationAsync(...)
+  -TrySendAsync(notification): Task<bool>
+}
+
+interface IAssessment <<required - Assessment>> {
+  +GetDeadlinesAsync(studentId, days): Task<List<Deadline>>
+}
+
+interface IEmailGateway <<required - Email>> {
+  +SendAsync(to, subject, body): Task
+}
+
+interface INotificationRepository <<required - Database>> {
+  +AddAsync(notification): Task<Notification>
+  +GetByIdAsync(notificationId): Task<Notification?>
+  +SaveChangesAsync(): Task
+}
+
+class HttpAssessmentClient <<component>> {
+  -httpClient: HttpClient
+  --
+  +GetDeadlinesAsync(studentId, days)
+}
+
+class LoggingEmailGateway <<component>> {
+  +SendAsync(to, subject, body)
+}
+
+class NotificationRepository <<component>> {
+  -context: NotificationDbContext
+  --
+  +AddAsync(...) / GetByIdAsync(...)
+  +SaveChangesAsync()
+}
+
+class NotificationDbContext {
+  +Notifications: DbSet<Notification>
+}
+
+class Notification {
+  +NotificationId: string
+  +StudentId: string
+  +AssessmentId: string
+  +Recipient: string
+  +Type: string
+  +Subject: string
+  +Message: string
+  +Status: NotificationStatus
+  +Attempts: int
+  +SentAt: DateTime?
+  +CanRetry: bool
+  --
+  +MarkSent(now): void
+  +MarkFailed(now): void
+}
+
+class Deadline {
+  +AssessmentId: string
+  +StudentId: string
+  +Title: string
+  +Kind: string
+  +DueDate: DateOnly
+  +IsCompleted: bool
+}
+
+enum NotificationStatus {
+  Pending
+  Sent
+  Failed
+}
+
+NotificationsController --> INotification
+INotification <|.. NotificationService
+NotificationService --> IAssessment
+NotificationService --> IEmailGateway
+NotificationService --> INotificationRepository
+NotificationService --> Notification
+IAssessment ..> Deadline
+NotificationService ..> Deadline : reads
+HttpAssessmentClient ..|> IAssessment
+LoggingEmailGateway ..|> IEmailGateway
+INotificationRepository "1" -- "0..*" Notification : stores
+NotificationRepository ..|> INotificationRepository
+NotificationRepository --> NotificationDbContext
+NotificationDbContext --> Notification
+Notification --> NotificationStatus
+
+note bottom of NotificationService
+  Pending -> Sent on success; Pending -> Failed on send error;
+  Failed -> Sent on retry (Failed -> Failed if it fails again).
+  Retry of Sent or Pending is rejected (400 INVALID_TRANSITION).
+end note
+@enduml
