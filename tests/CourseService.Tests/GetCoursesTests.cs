@@ -6,7 +6,7 @@ namespace CourseService.Tests;
 public class GetCoursesTests
 {
     [Fact]
-    public async Task GetCourses_FiltersByStudent()
+    public async Task TC_03_1_04_GetCourses_FiltersByStudent()
     {
         using var fixture = new CourseTestFixture();
         await fixture.Service.AddCourseAsync(CourseTestFixture.NewCourse(studentId: "student-1", code: "CS101"));

@@ -6,7 +6,7 @@ namespace CourseService.Tests;
 public class UpdateCourseTests
 {
     [Fact]
-    public async Task UpdateCourse_ChangesFields()
+    public async Task TC_03_4_01_UpdateCourse_ChangesFields()
     {
         using var fixture = new CourseTestFixture();
         var course = CourseTestFixture.NewCourse();

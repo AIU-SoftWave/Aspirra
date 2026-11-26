@@ -16,7 +16,7 @@ public class PlansControllerTests
     private static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.UtcNow);
 
     [Fact]
-    public async Task GeneratePlan_WithDescription_CreatesDraftWithMilestonesAndTasks()
+    public async Task TC_05_2_01_GeneratePlan_WithDescription_CreatesDraftWithMilestonesAndTasks()
     {
         var (controller, db, _) = CreateController(new FakeAIProvider(_ => ValidAiPlan()));
 
@@ -39,7 +39,7 @@ public class PlansControllerTests
     }
 
     [Fact]
-    public async Task GeneratePlan_EmptyDescription_ReturnsRequiredFieldError()
+    public async Task TC_05_1_01_GeneratePlan_EmptyDescription_ReturnsRequiredFieldError()
     {
         var (controller, _, _) = CreateController(new FakeAIProvider(_ => ValidAiPlan()));
 
@@ -56,7 +56,7 @@ public class PlansControllerTests
     }
 
     [Fact]
-    public async Task GeneratePlan_AiUnavailable_ReturnsAiUnavailableError()
+    public async Task TC_05_2_02_GeneratePlan_AiUnavailable_ReturnsAiUnavailableError()
     {
         var (controller, _, _) = CreateController(
             new FakeAIProvider(_ => throw new InvalidOperationException("provider down")));
@@ -74,7 +74,7 @@ public class PlansControllerTests
     }
 
     [Fact]
-    public async Task GeneratePlan_InvalidStructure_ReturnsPlanInvalidError()
+    public async Task TC_05_2_03_GeneratePlan_InvalidStructure_ReturnsPlanInvalidError()
     {
         var invalidPlan = new AiPlan
         {
@@ -106,7 +106,7 @@ public class PlansControllerTests
     }
 
     [Fact]
-    public async Task UpdateDraft_EditsMilestonesAndTasks()
+    public async Task TC_05_4_01_UpdateDraft_EditsMilestonesAndTasks()
     {
         var (controller, db, _) = CreateController(new FakeAIProvider(_ => ValidAiPlan()));
         var generated = await controller.Generate(new GeneratePlanRequest
@@ -156,7 +156,7 @@ public class PlansControllerTests
     }
 
     [Fact]
-    public async Task UpdateDraft_ApprovedPlan_ReturnsNotEditable()
+    public async Task TC_05_5_01_UpdateDraft_ApprovedPlan_ReturnsNotEditable()
     {
         var (controller, _, _) = CreateController(new FakeAIProvider(_ => ValidAiPlan()));
         var generated = await controller.Generate(new GeneratePlanRequest
@@ -190,7 +190,7 @@ public class PlansControllerTests
     }
 
     [Fact]
-    public async Task Approve_ValidDraft_SetsApproved()
+    public async Task TC_05_6_04_Approve_ValidDraft_SetsApproved()
     {
         var (controller, db, goalClient) = CreateController(new FakeAIProvider(_ => ValidAiPlan()));
         var generated = await controller.Generate(new GeneratePlanRequest
@@ -213,7 +213,7 @@ public class PlansControllerTests
     }
 
     [Fact]
-    public async Task Approve_GoalMissing_ReturnsGoalNotFound()
+    public async Task TC_05_6_05_Approve_GoalMissing_ReturnsGoalNotFound()
     {
         var (controller, db, _) = CreateController(
             new FakeAIProvider(_ => ValidAiPlan()),
@@ -237,7 +237,7 @@ public class PlansControllerTests
     }
 
     [Fact]
-    public async Task Discard_DeletesDraft()
+    public async Task TC_05_3_01_Discard_DeletesDraft()
     {
         var (controller, db, _) = CreateController(new FakeAIProvider(_ => ValidAiPlan()));
         var generated = await controller.Generate(new GeneratePlanRequest
@@ -257,7 +257,7 @@ public class PlansControllerTests
     }
 
     [Fact]
-    public async Task GetTasks_ReturnsOnlyApprovedPlanTasks()
+    public async Task TC_05_3_02_GetTasks_ReturnsOnlyApprovedPlanTasks()
     {
         var (controller, _, _) = CreateController(new FakeAIProvider(_ => ValidAiPlan()));
 
@@ -300,7 +300,7 @@ public class PlansControllerTests
     }
 
     [Fact]
-    public async Task Approve_AlreadyApproved_IsIdempotent()
+    public async Task TC_05_6_06_Approve_AlreadyApproved_IsIdempotent()
     {
         var (controller, _, _) = CreateController(new FakeAIProvider(_ => ValidAiPlan()));
         var generated = await controller.Generate(new GeneratePlanRequest
@@ -319,7 +319,7 @@ public class PlansControllerTests
     }
 
     [Fact]
-    public async Task GetDraft_Missing_ReturnsNotFound()
+    public async Task TC_05_3_03_GetDraft_Missing_ReturnsNotFound()
     {
         var (controller, _, _) = CreateController(new FakeAIProvider(_ => ValidAiPlan()));
 
@@ -331,7 +331,7 @@ public class PlansControllerTests
     }
 
     [Fact]
-    public async Task Discard_Missing_ReturnsNotFound()
+    public async Task TC_05_3_04_Discard_Missing_ReturnsNotFound()
     {
         var (controller, _, _) = CreateController(new FakeAIProvider(_ => ValidAiPlan()));
 

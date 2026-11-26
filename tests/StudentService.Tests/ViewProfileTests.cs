@@ -8,7 +8,7 @@ namespace StudentService.Tests;
 public class ViewProfileTests
 {
     [Fact]
-    public async Task ViewProfile_ReturnsAllFields()
+    public async Task TC_01_3_01_ViewProfile_ReturnsAllFields()
     {
         using var fixture = new StudentTestFixture();
         var profile = StudentTestFixture.NewProfile(
@@ -42,7 +42,7 @@ public class ViewProfileTests
     }
 
     [Fact]
-    public async Task ViewProfile_OptionalFieldMissing_ShowsNotSet()
+    public async Task TC_01_3_02_ViewProfile_OptionalFieldMissing_ShowsNotSet()
     {
         using var fixture = new StudentTestFixture();
         var profile = new Profile
@@ -73,7 +73,7 @@ public class ViewProfileTests
     }
 
     [Fact]
-    public async Task GetProfile_NotFound_ReturnsNotFound()
+    public async Task TC_01_3_03_GetProfile_NotFound_ReturnsNotFound()
     {
         using var fixture = new StudentTestFixture();
         var controller = new ProfilesController(fixture.Service);
@@ -91,7 +91,7 @@ public class ViewProfileTests
     }
 
     [Fact]
-    public async Task GetAvailability_ReturnsSlots()
+    public async Task TC_01_3_04_GetAvailability_ReturnsSlots()
     {
         using var fixture = new StudentTestFixture();
         await fixture.Service.CreateProfileAsync(
@@ -110,7 +110,7 @@ public class ViewProfileTests
     }
 
     [Fact]
-    public async Task GetAvailability_NotFound_ReturnsNotFound()
+    public async Task TC_01_3_05_GetAvailability_NotFound_ReturnsNotFound()
     {
         using var fixture = new StudentTestFixture();
 

@@ -48,7 +48,7 @@ public class HabitServiceTests
         DateOnly.FromDateTime(habit.CreatedAt.ToUniversalTime());
 
     [Fact]
-    public async Task CreateHabit_WithValidData_SetsZeroStreak()
+    public async Task TC_13_1_01_CreateHabit_WithValidData_SetsZeroStreak()
     {
         var (service, _) = CreateService();
 
@@ -69,7 +69,7 @@ public class HabitServiceTests
     }
 
     [Fact]
-    public async Task CreateHabit_MissingName_ReturnsRequiredFieldError()
+    public async Task TC_13_1_02_CreateHabit_MissingName_ReturnsRequiredFieldError()
     {
         var (service, _) = CreateService();
 
@@ -86,7 +86,7 @@ public class HabitServiceTests
     }
 
     [Fact]
-    public async Task CreateHabit_InvalidFrequency_ReturnsInvalidFrequencyError()
+    public async Task TC_13_1_03_CreateHabit_InvalidFrequency_ReturnsInvalidFrequencyError()
     {
         var (service, _) = CreateService();
 
@@ -103,7 +103,7 @@ public class HabitServiceTests
     }
 
     [Fact]
-    public async Task CompleteHabit_FirstTime_SetsStreakToOne()
+    public async Task TC_13_3_01_CompleteHabit_FirstTime_SetsStreakToOne()
     {
         var (service, context) = CreateService();
         var habit = await CreateDailyHabitAsync(service);
@@ -120,7 +120,7 @@ public class HabitServiceTests
     }
 
     [Fact]
-    public async Task CompleteHabit_ConsecutiveDays_IncrementsStreak()
+    public async Task TC_13_3_02_CompleteHabit_ConsecutiveDays_IncrementsStreak()
     {
         var (service, _) = CreateService();
         var habit = await CreateDailyHabitAsync(service);
@@ -135,7 +135,7 @@ public class HabitServiceTests
     }
 
     [Fact]
-    public async Task CompleteHabit_MissedScheduledDay_ResetsStreakToOne()
+    public async Task TC_13_3_03_CompleteHabit_MissedScheduledDay_ResetsStreakToOne()
     {
         var (service, _) = CreateService();
         var habit = await CreateDailyHabitAsync(service);
@@ -149,7 +149,7 @@ public class HabitServiceTests
     }
 
     [Fact]
-    public async Task CompleteHabit_SameDayTwice_DoesNotIncrementStreak()
+    public async Task TC_13_3_04_CompleteHabit_SameDayTwice_DoesNotIncrementStreak()
     {
         var (service, context) = CreateService();
         var habit = await CreateDailyHabitAsync(service);
@@ -166,7 +166,7 @@ public class HabitServiceTests
     }
 
     [Fact]
-    public async Task GetStreaks_ShowsDoneToday()
+    public async Task TC_13_3_05_GetStreaks_ShowsDoneToday()
     {
         var (service, _) = CreateService();
         var completedHabit = await CreateHabitAsync(service, "student-1", "Read", "Daily");
@@ -186,7 +186,7 @@ public class HabitServiceTests
     }
 
     [Fact]
-    public async Task LinkHabitToGoal_StoresGoalId()
+    public async Task TC_13_4_01_LinkHabitToGoal_StoresGoalId()
     {
         var (service, context) = CreateService();
         var habit = await CreateDailyHabitAsync(service);
@@ -200,7 +200,7 @@ public class HabitServiceTests
     }
 
     [Fact]
-    public async Task LinkHabitToGoal_HabitNotFound_ReturnsNotFound()
+    public async Task TC_13_4_02_LinkHabitToGoal_HabitNotFound_ReturnsNotFound()
     {
         var (service, _) = CreateService();
 

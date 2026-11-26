@@ -7,7 +7,7 @@ namespace CourseService.Tests;
 public class AddCourseTests
 {
     [Fact]
-    public async Task AddCourse_WithValidData_StoresCreditsAndWorkload()
+    public async Task TC_03_2_01_AddCourse_WithValidData_StoresCreditsAndWorkload()
     {
         using var fixture = new CourseTestFixture();
         var course = CourseTestFixture.NewCourse(credits: 4, weeklyWorkloadHours: 9);
@@ -24,7 +24,7 @@ public class AddCourseTests
     }
 
     [Fact]
-    public async Task AddCourse_MissingRequiredField_ReturnsRequiredFieldError()
+    public async Task TC_03_1_01_AddCourse_MissingRequiredField_ReturnsRequiredFieldError()
     {
         using var fixture = new CourseTestFixture();
         var course = CourseTestFixture.NewCourse(name: "  ");
@@ -39,7 +39,7 @@ public class AddCourseTests
     }
 
     [Fact]
-    public async Task AddCourse_DuplicateCodeAndSemester_ReturnsDuplicateError()
+    public async Task TC_03_1_02_AddCourse_DuplicateCodeAndSemester_ReturnsDuplicateError()
     {
         using var fixture = new CourseTestFixture();
         await fixture.Service.AddCourseAsync(CourseTestFixture.NewCourse());
@@ -55,7 +55,7 @@ public class AddCourseTests
     }
 
     [Fact]
-    public async Task AddCourse_SameCodeDifferentSemester_Allowed()
+    public async Task TC_03_1_03_AddCourse_SameCodeDifferentSemester_Allowed()
     {
         using var fixture = new CourseTestFixture();
         await fixture.Service.AddCourseAsync(CourseTestFixture.NewCourse(semester: "Fall 2026"));

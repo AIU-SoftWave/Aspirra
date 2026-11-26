@@ -7,7 +7,7 @@ namespace StudentService.Tests;
 public class CreateProfileTests
 {
     [Fact]
-    public async Task CreateProfile_WithRequiredFields_CreatesProfile()
+    public async Task TC_01_1_01_CreateProfile_WithRequiredFields_CreatesProfile()
     {
         using var fixture = new StudentTestFixture();
         var profile = StudentTestFixture.NewProfile();
@@ -28,7 +28,7 @@ public class CreateProfileTests
     }
 
     [Fact]
-    public async Task CreateProfile_MissingAcademicLevel_ReturnsRequiredFieldError()
+    public async Task TC_01_4_01_CreateProfile_MissingAcademicLevel_ReturnsRequiredFieldError()
     {
         using var fixture = new StudentTestFixture();
         var profile = StudentTestFixture.NewProfile(academicLevel: null);
@@ -43,7 +43,7 @@ public class CreateProfileTests
     }
 
     [Fact]
-    public async Task CreateProfile_EndBeforeStart_ReturnsInvalidTimeSlot()
+    public async Task TC_01_4_02_CreateProfile_EndBeforeStart_ReturnsInvalidTimeSlot()
     {
         using var fixture = new StudentTestFixture();
         var profile = StudentTestFixture.NewProfile(
@@ -62,7 +62,7 @@ public class CreateProfileTests
     }
 
     [Fact]
-    public async Task CreateProfile_Duplicate_ReturnsDuplicateError()
+    public async Task TC_01_1_02_CreateProfile_Duplicate_ReturnsDuplicateError()
     {
         using var fixture = new StudentTestFixture();
         await fixture.Service.CreateProfileAsync(
@@ -81,7 +81,7 @@ public class CreateProfileTests
     }
 
     [Fact]
-    public async Task CreateProfile_MissingMajor_ReturnsRequiredFieldError()
+    public async Task TC_01_4_03_CreateProfile_MissingMajor_ReturnsRequiredFieldError()
     {
         using var fixture = new StudentTestFixture();
         var profile = StudentTestFixture.NewProfile(major: "");

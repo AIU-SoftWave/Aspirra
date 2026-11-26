@@ -7,7 +7,7 @@ namespace CourseService.Tests;
 public class RemoveCourseTests
 {
     [Fact]
-    public async Task RemoveCourse_DeletesCourse()
+    public async Task TC_03_5_01_RemoveCourse_DeletesCourse()
     {
         using var fixture = new CourseTestFixture();
         var course = CourseTestFixture.NewCourse();
