@@ -6,7 +6,7 @@
     <Project Path="src/Services/CourseService/CourseService.csproj" />
     <Project Path="src/Services/GoalPlannerService/GoalPlannerService.csproj" />
     <Project Path="src/Services/HabitService/HabitService.csproj" />
-    <Project Path="src/Services/NotificationService/NotificationService.csproj" />
+    <Project Path="src/Services/SkillService/SkillService.csproj" />
     <Project Path="src/Services/StudentService/StudentService.csproj" />
   </Folder>
   <Folder Name="/tests/">
@@ -15,7 +15,7 @@
     <Project Path="tests/CourseService.Tests/CourseService.Tests.csproj" />
     <Project Path="tests/GoalPlannerService.Tests/GoalPlannerService.Tests.csproj" />
     <Project Path="tests/HabitService.Tests/HabitService.Tests.csproj" />
-    <Project Path="tests/NotificationService.Tests/NotificationService.Tests.csproj" />
+    <Project Path="tests/SkillService.Tests/SkillService.Tests.csproj" />
     <Project Path="tests/StudentService.Tests/StudentService.Tests.csproj" />
   </Folder>
 </Solution>

@@ -7,8 +7,8 @@ One sequence diagram per PM2 scenario. Show the ordered messages that implement 
 - `01-ahmed-complete-goal-sequence.puml` — Ahmed — `#56` — done
 - `generate-goal-plan-sequence.puml` — Yomna — `#59`
 - `complete-habit-sequence.puml` — Mostafa — `#60`
-- `add-skill-sequence.puml` — Arwa — `#61`
-- `deadline-reminders-sequence.puml` — Muhammed — `#62` — done
+- `add-skill-sequence.puml` — Arwa — `#61` — done
+- `deadline-reminders-sequence.puml` — Muhammed — `#62`
 
 ## Rules
 

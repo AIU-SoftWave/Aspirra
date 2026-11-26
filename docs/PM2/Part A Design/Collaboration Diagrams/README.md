@@ -7,8 +7,8 @@ One collaboration (communication) diagram per PM2 scenario. Show the same object
 - `01-ahmed-complete-goal-collaboration.puml` — Ahmed — `#57` — done
 - `generate-goal-plan-collaboration.puml` — Yomna — `#59`
 - `complete-habit-collaboration.puml` — Mostafa — `#60`
-- `add-skill-collaboration.puml` — Arwa — `#61`
-- `deadline-reminders-collaboration.puml` — Muhammed — `#62` — done
+- `add-skill-collaboration.puml` — Arwa — `#61` — done
+- `deadline-reminders-collaboration.puml` — Muhammed — `#62`
 
 ## Rules
 
@@ -27,14 +27,14 @@ One collaboration (communication) diagram per PM2 scenario. Show the same object
 | Archived → `Complete()` | `UpdateAsync` `Times.Never` | `CompleteGoal_FromArchived_DoesNotPersist` |
 | Missing goal → 404 | `UpdateAsync` `Times.Never` | `CompleteGoal_MissingGoal_ThrowsNotFound` |
 
-## Message → verify → test (Send Deadline Reminders)
+## Message → verify → test (Add Skill)
 
 | Message | Moq `Verify` | Test |
 | --- | --- | --- |
-| `1.2: GetDeadlinesAsync("student-1001", 1)` | `Times.Once` | `SendReminders_WhenEmailSucceeds_SavesSentNotification` |
-| `1.3 [not completed]: AddAsync(reminder)` | `Times.Once` | `SendReminders_WhenEmailSucceeds_SavesSentNotification` |
-| `1.4: SendAsync("student1001@aiu.edu.eg", subject, body)` | `Times.Once` | `SendReminders_WhenEmailSucceeds_SavesSentNotification` |
-| `1.5 [email sent]: MarkSent(now)` | status `Sent`, `Attempts = 1` | `SendReminders_WhenEmailSucceeds_SavesSentNotification` |
-| `1.6: SaveChangesAsync()` | `Times.Once` | `SendReminders_WhenEmailSucceeds_SavesSentNotification` |
-| Email failed → `MarkFailed(now)` | `SaveChangesAsync` `Times.Once`, status `Failed` | `SendReminders_WhenEmailFails_SavesFailedNotification` |
-| Completed deadline → no reminder | `AddAsync` / `SendAsync` `Times.Never` | `SendReminders_WithCompletedDeadline_SendsNothing` |
+| `1.2: GetByNameAsync("23101371", "SQL")` | `Times.Once` | `AddSkill_WithValidInput_SavesActiveSkillOnce` |
+| `1.3 [no duplicate]: Activate()` | `AddAsync(It.Is<Skill>(s => s.Status == SkillStatus.Active))` | `AddSkill_WithValidInput_SavesActiveSkillOnce` |
+| `1.4 [no duplicate]: AddAsync(sql)` | `Times.Once` | `AddSkill_WithValidInput_SavesActiveSkillOnce` |
+| `1.5 [no duplicate]: SaveChangesAsync()` | `Times.Once` | `AddSkill_WithValidInput_SavesActiveSkillOnce` |
+| Duplicate name → 409 | `AddAsync` / `SaveChangesAsync` `Times.Never` | `AddSkill_WhenDuplicateName_ReturnsDuplicateAndDoesNotPersist` |
+| Missing / invalid field → 400 | `GetByNameAsync` `Times.Never` | `AddSkill_WithMissingOrInvalidField_IsRejectedBeforeRepository` |
+

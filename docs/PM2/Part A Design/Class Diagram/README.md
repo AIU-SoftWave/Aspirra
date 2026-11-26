@@ -11,8 +11,8 @@ Updated PM2 class diagrams. Every message in the object, sequence, and collabora
 | `03-course-service.puml` | Course boundary | Ahmed |
 | `05-goal-planner-service.puml` | PlanDraft, Milestone, PlanTask, IGoalPlanner, IAIProvider, IPlanDraftRepository, IGoalClient | Yomna |
 | `13-habit-service.puml` | Habit, HabitLog, IHabitRepository, HabitService, HabitsController | Mostafa |
-| `skill-service.puml` | Planned minimal Skill slice (reconcile with PM2-08) | Arwa |
-| `notification-service.puml` | Notification, NotificationStatus, Deadline, INotification, IAssessment, IEmailGateway, INotificationRepository, NotificationService, NotificationsController | Muhammed |
+| `skill-service.puml` | Skill, SkillType, SkillStatus, ISkill, ISkillRepository, SkillService, SkillsController | Arwa |
+| `notification-service.puml` | Planned minimal Notification slice (reconcile with PM2-09) | Muhammed |
 
 ## Rules
 
@@ -42,11 +42,11 @@ Every message in PM2-02 through PM2-09 traverses an explicit link in the updated
 | Complete Habit + streak (PM2-07) | `CompleteHabitAsync(habitId, date)` | `HabitsController` → `IHabit` (`HabitService`) | `HabitsController --> IHabit`, `IHabit <\|.. HabitService` | `00-pm2-scenario-class-diagram.puml`, `13-habit-service.puml` |
 | Complete Habit + streak (PM2-07) | `GetHabitAsync` / `GetLogAsync` / `AddLogAsync` / `GetLogsAsync` / `SaveChangesAsync` | `HabitService` → `IHabitRepository` | `HabitService --> IHabitRepository`, `IHabitRepository "1" -- "0..*" Habit`, `IHabitRepository "1" -- "0..*" HabitLog` | `00-pm2-scenario-class-diagram.puml`, `13-habit-service.puml` |
 | Complete Habit + streak (PM2-07) | Update `CurrentStreak` / append `HabitLog` | `HabitService` → `Habit`, `HabitLog` | `HabitService --> Habit`, `HabitService --> HabitLog`, `Habit *-- "0..*" HabitLog` | `00-pm2-scenario-class-diagram.puml`, `13-habit-service.puml` |
-| Add Skill (PM2-08, planned slice) | `POST /api/skills` | `Student` → `SkillsController` | `Student --> SkillsController` | `00-pm2-scenario-class-diagram.puml` |
-| Add Skill (PM2-08, planned slice) | `AddSkillAsync(studentId, request)` | `SkillsController` → `ISkill` (`SkillService`) | `SkillsController --> ISkill`, `ISkill <\|.. SkillService` | `00-pm2-scenario-class-diagram.puml`, `skill-service.puml` |
-| Add Skill (PM2-08, planned slice) | `GetByNameAsync` / `AddAsync` / `SaveChangesAsync` | `SkillService` → `ISkillRepository` / `Skill` | `SkillService --> ISkillRepository`, `SkillService --> Skill`, `ISkillRepository "1" -- "0..*" Skill` | `00-pm2-scenario-class-diagram.puml`, `skill-service.puml` |
-| Send Deadline Reminders (PM2-09) | `POST /api/notifications/deadline-reminders` | `Scheduler` → `NotificationsController` | `Scheduler --> NotificationsController` | `00-pm2-scenario-class-diagram.puml` |
-| Send Deadline Reminders (PM2-09) | `SendDeadlineRemindersAsync(studentId, email, days)` | `NotificationsController` → `INotification` (`NotificationService`) | `NotificationsController --> INotification`, `INotification <\|.. NotificationService` | `00-pm2-scenario-class-diagram.puml`, `notification-service.puml` |
-| Send Deadline Reminders (PM2-09) | `GetDeadlinesAsync(studentId, days)` | `NotificationService` → `IAssessment` | `NotificationService --> IAssessment`, `IAssessment ..> Deadline` | `00-pm2-scenario-class-diagram.puml`, `notification-service.puml` |
-| Send Deadline Reminders (PM2-09) | `SendAsync(to, subject, body)` | `NotificationService` → `IEmailGateway` | `NotificationService --> IEmailGateway` | `00-pm2-scenario-class-diagram.puml`, `notification-service.puml` |
-| Send Deadline Reminders (PM2-09) | `AddAsync` / `MarkSent()` / `MarkFailed()` / `SaveChangesAsync` | `NotificationService` → `INotificationRepository` / `Notification` | `NotificationService --> INotificationRepository`, `NotificationService --> Notification`, `Notification --> NotificationStatus` | `00-pm2-scenario-class-diagram.puml`, `notification-service.puml` |
+| Add Skill (PM2-08) | `POST /api/skills` | `Student` → `SkillsController` | `Student --> SkillsController` | `00-pm2-scenario-class-diagram.puml` |
+| Add Skill (PM2-08) | `AddSkillAsync(studentId, request)` | `SkillsController` → `ISkill` (`SkillService`) | `SkillsController --> ISkill`, `ISkill <\|.. SkillService` | `00-pm2-scenario-class-diagram.puml`, `skill-service.puml` |
+| Add Skill (PM2-08) | `GetByNameAsync` / `Activate()` / `AddAsync` / `SaveChangesAsync` | `SkillService` → `ISkillRepository` / `Skill` | `SkillService --> ISkillRepository`, `SkillService --> Skill`, `ISkillRepository "1" -- "0..*" Skill` | `00-pm2-scenario-class-diagram.puml`, `skill-service.puml` |
+| Send Deadline Reminders (PM2-09, planned slice) | `POST /api/notifications/deadline-reminders` | `Scheduler` → `NotificationsController` | `Scheduler --> NotificationsController` | `00-pm2-scenario-class-diagram.puml` |
+| Send Deadline Reminders (PM2-09, planned slice) | `SendDeadlineRemindersAsync(studentId, days)` | `NotificationsController` → `INotification` (`NotificationService`) | `NotificationsController --> INotification`, `INotification <\|.. NotificationService` | `00-pm2-scenario-class-diagram.puml`, `notification-service.puml` |
+| Send Deadline Reminders (PM2-09, planned slice) | `GetDeadlinesAsync(studentId, days)` | `NotificationService` → `IAssessment` | `NotificationService --> IAssessment`, `IAssessment ..> Deadline` | `00-pm2-scenario-class-diagram.puml`, `notification-service.puml` |
+| Send Deadline Reminders (PM2-09, planned slice) | `SendAsync(to, subject, body)` | `NotificationService` → `IEmailGateway` | `NotificationService --> IEmailGateway` | `00-pm2-scenario-class-diagram.puml`, `notification-service.puml` |
+| Send Deadline Reminders (PM2-09, planned slice) | `AddAsync` / `SaveChangesAsync` & status update | `NotificationService` → `INotificationRepository` / `Notification` | `NotificationService --> INotificationRepository`, `NotificationService --> Notification`, `Notification --> NotificationStatus` | `00-pm2-scenario-class-diagram.puml`, `notification-service.puml` |

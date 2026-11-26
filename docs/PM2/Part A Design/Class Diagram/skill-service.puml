@@ -1,0 +1,130 @@
+@startuml skill-service
+title PM2 Level 3: Code - Class Diagram (skill-service) - FR-10\nOwner: Arwa Mohey Hamdy
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam nodesep 35
+skinparam ranksep 55
+skinparam ArrowColor #444444
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  BackgroundColor<<component>> #D5EFE0
+  BorderColor<<component>> #2E8B57
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+}
+hide empty members
+
+legend right
+  |<#D5EFE0>   | Class of a component |
+  |<#FFFFFF>   | Interface / domain class |
+  | Solid arrow, open head | Uses (required interface / class) |
+  | Dotted arrow, hollow head | Implements (provided interface) |
+  | Plain line | Association |
+endlegend
+
+interface ISkill <<provided>> {
+  +AddSkillAsync(studentId, request): Task<ServiceResult<Skill>>
+  +GetSkillsAsync(studentId): Task<List<Skill>>
+  +GetSkillAsync(skillId): Task<ServiceResult<Skill>>
+}
+
+class SkillsController <<component>> {
+  -skillService: ISkill
+  --
+  +AddSkill(request: AddSkillRequest): IActionResult
+  +GetSkills(studentId): IActionResult
+  +GetSkill(skillId): IActionResult
+}
+
+class SkillService <<component>> {
+  -repository: ISkillRepository
+  --
+  +AddSkillAsync(studentId, request): Task<ServiceResult<Skill>>
+  +GetSkillsAsync(studentId): Task<List<Skill>>
+  +GetSkillAsync(skillId): Task<ServiceResult<Skill>>
+}
+
+interface ISkillRepository <<required - Database>> {
+  +GetByNameAsync(studentId, name): Task<Skill?>
+  +GetByIdAsync(skillId): Task<Skill?>
+  +GetByStudentAsync(studentId): Task<List<Skill>>
+  +AddAsync(skill): Task<Skill>
+  +SaveChangesAsync(): Task
+}
+
+class SkillRepository <<component>> {
+  -context: SkillDbContext
+  --
+  +GetByNameAsync(...) / GetByIdAsync(...)
+  +GetByStudentAsync(...) / AddAsync(...)
+  +SaveChangesAsync()
+}
+
+class SkillDbContext {
+  +Skills: DbSet<Skill>
+}
+
+class Skill {
+  +SkillId: string
+  +StudentId: string
+  +Name: string
+  +Type: SkillType
+  +Level: int
+  +Status: SkillStatus
+  +CreatedAt: DateTime
+  +UpdatedAt: DateTime
+  --
+  +Activate(): void
+}
+
+enum SkillType {
+  Technical
+  Soft
+}
+
+enum SkillStatus {
+  New
+  Active
+}
+
+class AddSkillRequest {
+  +StudentId: string?
+  +Name: string?
+  +Type: string?
+  +Level: int?
+}
+
+class SkillResponse {
+  +SkillId: string
+  +Name: string
+  +Type: string
+  +Level: int
+  +Status: string
+}
+
+SkillsController --> ISkill
+SkillsController ..> AddSkillRequest
+SkillsController ..> SkillResponse
+ISkill <|.. SkillService
+SkillService --> ISkillRepository
+SkillService --> Skill
+ISkillRepository "1" -- "0..*" Skill : stores
+SkillRepository ..|> ISkillRepository
+SkillRepository --> SkillDbContext
+SkillDbContext --> Skill
+Skill --> SkillType
+Skill --> SkillStatus
+
+note bottom of SkillService
+  AddSkillAsync: validate -> GetByNameAsync (duplicate = 409)
+  -> skill.Activate() (New -> Active) -> AddAsync -> SaveChangesAsync.
+  Missing/invalid fields = 400; missing skill = 404.
+end note
+@enduml
